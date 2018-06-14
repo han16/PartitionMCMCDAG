@@ -1,0 +1,56 @@
+---
+title: 'Simulation studies'
+author: "Shengtong Han"
+date: YYYY-MM-DD
+output: html_document
+df_print: paged
+---
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE}
+#knitr::read_chunk("chunks.R")
+library(knitr)
+library(kableExtra)
+library(gplots)
+
+library(GGally)
+library(network)
+library(sna)
+library(ggplot2)
+library(RColorBrewer)
+library(intergraph)
+
+library(igraph)
+set.seed(123)
+```
+
+
+```{r, echo=F, eval=F}
+https://briatte.github.io/ggnet/
+net = rgraph(10, mode = "graph", tprob = 0.5)
+net = network(net, directed = FALSE)
+
+# vertex names
+network.vertex.names(net) = letters[1:10]
+ggnet2(net)
+ggnet2(network(rgraph(10, tprob = 0.25), directed = TRUE),
+       arrow.size = 12, arrow.gap = 0.025)
+```
+
+
+```{r, echo=F, eval=F}
+g=graph.formula(A-+B,B-+C)
+layout=matrix(c(2,1, 1,0, 3,0),byrow=TRUE,nrow=3)
+plot.igraph(g,layout=layout,edge.color="black",vertex.color="white", vertex.label=c("A","B","C"),vertex.size=20,vertex.label.cex=3, vertex.label.color="black",edge.width=3,edge.arrow.size=1.2,edge.arrow.width=1.2)
+```
+
+## Simple DAG in partition MCMC paper. 
+
+
+```{r,echo=T}
+g=graph.formula(1-+2,3-+2, 4-+2, 5-+2, 3-+4, 5-+4)
+#layout=matrix(c(2,1, 1,0, 3,0),byrow=TRUE,nrow=3)
+plot.igraph(g,edge.color="black",vertex.color="white", vertex.label=c("1","2","3", "4", "5"),vertex.size=40,vertex.label.cex=3, vertex.label.color="black",edge.width=3,edge.arrow.size=1.2,edge.arrow.width=1.2)
+```
