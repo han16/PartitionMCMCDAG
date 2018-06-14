@@ -49,7 +49,7 @@ plot.igraph(g,layout=layout,edge.color="black",vertex.color="white", vertex.labe
 ## Simple DAG in partition MCMC paper. 
 
 
-```{r,echo=T}
+```{r,echo=F}
 g=graph.formula(1-+2,3-+2, 4-+2, 5-+2, 3-+4, 5-+4)
 #layout=matrix(c(2,1, 1,0, 3,0),byrow=TRUE,nrow=3)
 plot.igraph(g,edge.color="black",vertex.color="white", vertex.label=c("1","2","3", "4", "5"),vertex.size=40,vertex.label.cex=3, vertex.label.color="black",edge.width=3,edge.arrow.size=1.2,edge.arrow.width=1.2)
