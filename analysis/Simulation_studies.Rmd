@@ -1,0 +1,257 @@
+---
+title: 'Simulation studies'
+author: "Shengtong Han"
+date: YYYY-MM-DD
+output: html_document
+df_print: paged
+---
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+```{r read-chunk, include=FALSE}
+#knitr::read_chunk("chunks.R")
+library(knitr)
+library(kableExtra)
+library(gplots)
+
+library(GGally)
+library(network)
+library(sna)
+library(ggplot2)
+library(RColorBrewer)
+library(intergraph)
+
+library(igraph)
+set.seed(123)
+```
+
+
+```{r, echo=F, eval=F}
+https://briatte.github.io/ggnet/
+net = rgraph(10, mode = "graph", tprob = 0.5)
+net = network(net, directed = FALSE)
+
+# vertex names
+network.vertex.names(net) = letters[1:10]
+ggnet2(net)
+ggnet2(network(rgraph(10, tprob = 0.25), directed = TRUE),
+       arrow.size = 12, arrow.gap = 0.025)
+```
+
+
+```{r, echo=F, eval=F}
+g=graph.formula(A-+B,B-+C)
+layout=matrix(c(2,1, 1,0, 3,0),byrow=TRUE,nrow=3)
+plot.igraph(g,layout=layout,edge.color="black",vertex.color="white", vertex.label=c("A","B","C"),vertex.size=20,vertex.label.cex=3, vertex.label.color="black",edge.width=3,edge.arrow.size=1.2,edge.arrow.width=1.2)
+```
+
+## Simple DAG in partition MCMC paper. 
+
+
+```{r,echo=F}
+g=graph.formula(1-+2,3-+2, 4-+2, 5-+2, 3-+4, 5-+4)
+#layout=matrix(c(2,1, 1,0, 3,0),byrow=TRUE,nrow=3)
+plot.igraph(g,edge.color="black",vertex.color="white", vertex.label=c("1","2","3", "4", "5"),vertex.size=40,vertex.label.cex=3, vertex.label.color="black",edge.width=3,edge.arrow.size=1.2,edge.arrow.width=1.2)
+```
+
+### Settings 
+
+$$X_2=2X_1+2X_3+2X_4+2X_5+\epsilon\\
+X_4=2X_3+2X_5+\epsilon$$
+
+
+
+```{r}
+#setwd("D:/ResearchWork/PartitionMCMCDAG/NumericalAnalysis/codes/PartitionMCMCPaper_supp/uasa_a_1133426_sm6549/partitionMCMCcode/partitionMCMCcode/") # not working in chunk, but it does in console 
+
+
+```
+
+
+```{r, echo=F}
+# First choose the MCMC scheme
+
+MCMCtype<-1 # 1 means standard structure, 2 with new edge reversal
+# 3 means order MCMC, 4 means partition MCMC
+# 5 means partition MCMC with new edge reversal
+
+seedset<-1 # set a seed?
+seednumber<-101 # an example used
+
+# Choose whether to save the plots to png or pdf
+saveoutput<-1 # 1 means save
+filetypes<-c(".png",".pdf") # choose png or pdf for the figures
+filetypey<-1 # we use png here  
+
+# load the necessary functions
+
+source('./edgerevandstructure/structurefns.R')
+source('./edgerevandstructure/structureMCMC.R')
+source('./edgerevandstructure/newedgerevfns.R')
+source('./edgerevandstructure/newedgerevmove.R')
+source('./orderandpartition/orderMCMC.R')
+source('./orderandpartition/orderfns.R')
+source('./orderandpartition/partitionMCMC.R')
+source('./orderandpartition/partitionmoves.R')
+source('./orderandpartition/partitionfns.R')
+source('./orderandpartition/samplefns.R')
+source('./scoring/combinations.R')
+source('./scoring/scorefns.R')
+source('./scoring/scoretables.R')
+
+# load a simple score proportional to the number of edges in the DAG
+
+source('./scoring/numedgescore.R')
+
+# where to save the data
+
+dirname<-"./simpleexamplegraphs/"
+
+# Choose size of DAGs to consider
+
+n<-3
+
+# Choose maximum number of parents
+
+maxparents<-2 # Maximum number of parents to allow
+
+starttime<-proc.time() # for timing the problem
+
+# Fill up a matrix with possible parents
+
+parenttable<-listpossibleparents(maxparents,c(1:n)) # function listpossibleparents is from ('./scoring/scoretables.R')  and it lists all possible parents for a node and it may induce cycles 
+tablelength<-nrow(parenttable[[1]]) # size of the table
+# Now need to score them!
+
+scoretable<-scorepossibleparents(parenttable,n) # from ('./scoring/scoretables.R'), count the number of parents for every node  
+
+endtime<-proc.time()
+endtime<-endtime-starttime
+print('Time to initialise the score table')
+print(endtime)
+```
+
+
+
+```{r, echo=T}
+switch(as.character(MCMCtype),
+  "1"={ # standard structure MCMC
+	iterations<-100 #number of iterations in the chain
+	moveprobs<-c(1) # having length 1 disallows the new edge reversal move
+	if(!(length(moveprobs)==1)){print('Vector of move probabilities has the wrong length!')}
+  },
+  "2"={ # with new edge reversal
+	iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is standard structure MCMC (including the possibility to stay still [officially needed for convergence])
+# 2 is new edge reversal move
+	moveprobs<-c(0.93,0.07)
+	moveprobs<-moveprobs/sum(moveprobs) # normalisation
+	if(!(length(moveprobs)==2)){print('Vector of move probabilities has the wrong length!')}
+  },
+  "3"={ # order MCMC
+	iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap any two elements
+# 2 is to only swap adjacent elements
+# 3 is to stay still (officially needed for convergence)
+	prob1<-99
+	if(n>3){ prob1<-round(6*99*n/(n^2+10*n-24)) }
+	prob1<-prob1/100
+	moveprobs<-c(prob1,0.99-prob1,0.01)
+	moveprobs<-moveprobs/sum(moveprobs) # normalisation
+	if(!(length(moveprobs)==3)){print('Vector of move probabilities has the wrong length!')}
+  },
+  "4"={ # partition MCMC
+	iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap two nodes from different partition elements
+# 2 is to only swap nodes from adjacent elements
+# 3 is to split or join partition elements
+# 4 is to move a single node
+# 5 is to stay still (officially needed for convergence)
+	prob1start<-40/100
+	prob1<-prob1start*100
+	if(n>3){ prob1<-round(6*prob1*n/(n^2+10*n-24)) }
+	prob1<-prob1/100
+	prob2start<-99/100-prob1start
+	prob2<-prob2start*100
+	if(n>3){ prob2<-round(6*prob2*n/(n^2+10*n-24)) }
+	prob2<-prob2/100
+	moveprobs<-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01)
+	moveprobs<-moveprobs/sum(moveprobs) # normalisation
+	if(!(length(moveprobs)==5)){print('Vector of move probabilities has the wrong length!')}
+  },
+  "5"={ # partition MCMC with edge reversal
+	iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap two nodes from different partition elements
+# 2 is to only swap nodes from adjacent elements
+# 3 is to split or join partition elements
+# 4 is to move a single node
+# 5 is to stay still (officially needed for convergence)
+# 6 is the new edge reversal
+	prob1start<-37/100
+	prob1<-prob1start*100
+	if(n>3){ prob1<-round(6*prob1*n/(n^2+10*n-24)) }
+	prob1<-prob1/100
+	prob2start<-92/100-prob1start
+	prob2<-prob2start*100
+	if(n>3){ prob2<-round(6*prob2*n/(n^2+10*n-24)) }
+	prob2<-prob2/100
+	moveprobs<-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01,0.07)
+	moveprobs<-moveprobs/sum(moveprobs) # normalisation
+	if(!(length(moveprobs)==6)){print('Vector of move probabilities has the wrong length!')}
+  },
+  {# if none is chosen, we have a problem
+    print('Not implemented')
+  })
+```
+
+
+
+```{r, echo=T}
+stepsave<-1 #stepsave<-iterations/1000 #how often to save the result
+
+  if(seedset>0){
+    set.seed(seednumber) # choose one?
+  }
+```
+
+
+```{r, echo=T}
+# Run the MCMC codes
+
+  starttime<-proc.time() # for timing the problem
+
+  if(MCMCtype<3){
+
+    startDAG<-matrix(numeric(n*n),nrow=n) # starting DAG is empty say
+    revallowed<-1 # allow standard edge reversals
+
+    example<-structureMCMC(n,startDAG,iterations,stepsave,maxparents,parenttable,scoretable,revallowed,moveprobs) # structureMCMC function is from folder-edgerevandstructure
+
+  } else if (MCMCtype==3){
+
+    startorder<-c(1:n) # starting order
+
+    example<-orderMCMC(n,startorder,iterations,stepsave,parenttable,scoretable,moveprobs)
+
+  } else if (MCMCtype>3){
+
+    startpermutation<-c(1:n) # pick a starting permutation
+    startpartition<-c(n) # and a starting partition - c(n) gives the empty DAG
+
+    example<-partitionMCMC(n,startpermutation,startpartition,iterations,stepsave,parenttable,scoretable,moveprobs)
+
+  }
+
+  endtime<-proc.time()
+  endtime<-endtime-starttime
+  print('Time to run the')
+  print(iterations)
+  print('iterations')
+  print(endtime)
+```
+
