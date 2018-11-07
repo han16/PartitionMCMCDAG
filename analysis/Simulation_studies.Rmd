@@ -63,7 +63,7 @@ X_4=2X_3+2X_5+\epsilon$$
 
 
 ```{r}
-#setwd("D:/ResearchWork/PartitionMCMCDAG/NumericalAnalysis/codes/PartitionMCMCPaper_supp/uasa_a_1133426_sm6549/partitionMCMCcode/partitionMCMCcode/") # not working in chunk, but it does in console 
+setwd("/Users/han24/Documents/Research/PartitionMCMCDAG/PartitionMCMCDAG/analysis/") # not working in chunk, but it does in console 
 
 
 ```
@@ -86,28 +86,31 @@ filetypey<-1 # we use png here
 
 # load the necessary functions
 
-source('./edgerevandstructure/structurefns.R')
-source('./edgerevandstructure/structureMCMC.R')
-source('./edgerevandstructure/newedgerevfns.R')
-source('./edgerevandstructure/newedgerevmove.R')
-source('./orderandpartition/orderMCMC.R')
-source('./orderandpartition/orderfns.R')
-source('./orderandpartition/partitionMCMC.R')
-source('./orderandpartition/partitionmoves.R')
-source('./orderandpartition/partitionfns.R')
-source('./orderandpartition/samplefns.R')
-source('./scoring/combinations.R')
-source('./scoring/scorefns.R')
-source('./scoring/scoretables.R')
+source('../partitionMCMCcode/edgerevandstructure/structurefns.R')
+source('../partitionMCMCcode/edgerevandstructure/structureMCMC.R')
+source('../partitionMCMCcode/edgerevandstructure/newedgerevfns.R')
+source('../partitionMCMCcode/edgerevandstructure/newedgerevmove.R')
+source('../partitionMCMCcode/orderandpartition/orderMCMC.R')
+source('../partitionMCMCcode/orderandpartition/orderfns.R')
+source('../partitionMCMCcode/orderandpartition/partitionMCMC.R')
+source('../partitionMCMCcode/orderandpartition/partitionmoves.R')
+source('../partitionMCMCcode/orderandpartition/partitionfns.R')
+source('../partitionMCMCcode/orderandpartition/samplefns.R')
+source('../partitionMCMCcode/scoring/combinations.R')
+source('../partitionMCMCcode/scoring/scorefns.R')
+source('../partitionMCMCcode/scoring/scoretables.R')
 
 # load a simple score proportional to the number of edges in the DAG
 
-source('./scoring/numedgescore.R')
+source('../partitionMCMCcode/scoring/numedgescore.R')
 
 # where to save the data
 
 dirname<-"./simpleexamplegraphs/"
 
+```
+
+```{r, echo=T}
 # Choose size of DAGs to consider
 
 n<-3

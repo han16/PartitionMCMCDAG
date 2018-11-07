@@ -1,0 +1,512 @@
+#for (i in elements){
+i=1
+remainingelements<-elements[-i]
+matrixofparents<-rep(NA,maxparents)
+for (r in 1:maxparents){
+possparents<-combinations(length(remainingelements),r,remainingelements)
+if(r<maxparents){
+for (j in 1:(maxparents-r)){
+possparents <- cbind(possparents, NA)
+}
+}
+matrixofparents<-rbind(matrixofparents,possparents,deparse.level=0)
+}
+listy[[i]] <- matrixofparents
+}   # end of i
+#for (i in elements){
+i=1
+remainingelements<-elements[-i]
+matrixofparents<-rep(NA,maxparents)
+for (r in 1:maxparents){
+possparents<-combinations(length(remainingelements),r,remainingelements)
+if(r<maxparents){
+for (j in 1:(maxparents-r)){
+possparents <- cbind(possparents, NA)
+}
+}
+matrixofparents<-rbind(matrixofparents,possparents,deparse.level=0)
+}
+listy[[i]] <- matrixofparents
+#  }   # end of i
+i
+listy[[1]]
+remainingelements
+#for (i in elements){
+i=1
+remainingelements<-elements[-i]
+matrixofparents<-rep(NA,maxparents)
+#  for (r in 1:maxparents){
+r=1
+possparents<-combinations(length(remainingelements),r,remainingelements)
+if(r<maxparents){
+for (j in 1:(maxparents-r)){
+possparents <- cbind(possparents, NA)
+}
+}
+matrixofparents<-rbind(matrixofparents,possparents,deparse.level=0)
+#   }   # end of r
+listy[[i]] <- matrixofparents
+#  }   # end of i
+listy[[1]]
+r
+possparents
+combinations(length(remainingelements),r,remainingelements)
+?xombinations
+?combinations
+combinations(4,1,1:4)
+combinations(4,2,1:4)
+parenttable
+tablelength<-nrow(parenttable[[1]]) # size of the table
+tablelength
+scoretable<-scorepossibleparents(parenttable,n)
+source('./scoring/scorefns.R')
+source('./scoring/scoretables.R')
+DAGcorescore
+source('./scoring/numedgescore.R')
+scoretable<-scorepossibleparents(parenttable,n) # just the number of parents from ('./scoring/numedgescore.R')
+scoretable
+n
+scoretable
+switch(as.character(MCMCtype),
+"1"={ # standard structure MCMC
+iterations<-100 #number of iterations in the chain
+moveprobs<-c(1) # having length 1 disallows the new edge reversal move
+if(!(length(moveprobs)==1)){print('Vector of move probabilities has the wrong length!')}
+},
+"2"={ # with new edge reversal
+iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is standard structure MCMC (including the possibility to stay still [officially needed for convergence])
+# 2 is new edge reversal move
+moveprobs<-c(0.93,0.07)
+moveprobs<-moveprobs/sum(moveprobs) # normalisation
+if(!(length(moveprobs)==2)){print('Vector of move probabilities has the wrong length!')}
+},
+"3"={ # order MCMC
+iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap any two elements
+# 2 is to only swap adjacent elements
+# 3 is to stay still (officially needed for convergence)
+prob1<-99
+if(n>3){ prob1<-round(6*99*n/(n^2+10*n-24)) }
+prob1<-prob1/100
+moveprobs<-c(prob1,0.99-prob1,0.01)
+moveprobs<-moveprobs/sum(moveprobs) # normalisation
+if(!(length(moveprobs)==3)){print('Vector of move probabilities has the wrong length!')}
+},
+"4"={ # partition MCMC
+iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap two nodes from different partition elements
+# 2 is to only swap nodes from adjacent elements
+# 3 is to split or join partition elements
+# 4 is to move a single node
+# 5 is to stay still (officially needed for convergence)
+prob1start<-40/100
+prob1<-prob1start*100
+if(n>3){ prob1<-round(6*prob1*n/(n^2+10*n-24)) }
+prob1<-prob1/100
+prob2start<-99/100-prob1start
+prob2<-prob2start*100
+if(n>3){ prob2<-round(6*prob2*n/(n^2+10*n-24)) }
+prob2<-prob2/100
+moveprobs<-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01)
+moveprobs<-moveprobs/sum(moveprobs) # normalisation
+if(!(length(moveprobs)==5)){print('Vector of move probabilities has the wrong length!')}
+},
+"5"={ # partition MCMC with edge reversal
+iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap two nodes from different partition elements
+# 2 is to only swap nodes from adjacent elements
+# 3 is to split or join partition elements
+# 4 is to move a single node
+# 5 is to stay still (officially needed for convergence)
+# 6 is the new edge reversal
+prob1start<-37/100
+prob1<-prob1start*100
+if(n>3){ prob1<-round(6*prob1*n/(n^2+10*n-24)) }
+prob1<-prob1/100
+prob2start<-92/100-prob1start
+prob2<-prob2start*100
+if(n>3){ prob2<-round(6*prob2*n/(n^2+10*n-24)) }
+prob2<-prob2/100
+moveprobs<-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01,0.07)
+moveprobs<-moveprobs/sum(moveprobs) # normalisation
+if(!(length(moveprobs)==6)){print('Vector of move probabilities has the wrong length!')}
+},
+{# if none is chosen, we have a problem
+print('Not implemented')
+})
+MCMCtype<-1 # 1 means standard structure, 2 with new edge reversal
+switch(as.character(MCMCtype),
+"1"={ # standard structure MCMC
+iterations<-100 #number of iterations in the chain
+moveprobs<-c(1) # having length 1 disallows the new edge reversal move
+if(!(length(moveprobs)==1)){print('Vector of move probabilities has the wrong length!')}
+},
+"2"={ # with new edge reversal
+iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is standard structure MCMC (including the possibility to stay still [officially needed for convergence])
+# 2 is new edge reversal move
+moveprobs<-c(0.93,0.07)
+moveprobs<-moveprobs/sum(moveprobs) # normalisation
+if(!(length(moveprobs)==2)){print('Vector of move probabilities has the wrong length!')}
+},
+"3"={ # order MCMC
+iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap any two elements
+# 2 is to only swap adjacent elements
+# 3 is to stay still (officially needed for convergence)
+prob1<-99
+if(n>3){ prob1<-round(6*99*n/(n^2+10*n-24)) }
+prob1<-prob1/100
+moveprobs<-c(prob1,0.99-prob1,0.01)
+moveprobs<-moveprobs/sum(moveprobs) # normalisation
+if(!(length(moveprobs)==3)){print('Vector of move probabilities has the wrong length!')}
+},
+"4"={ # partition MCMC
+iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap two nodes from different partition elements
+# 2 is to only swap nodes from adjacent elements
+# 3 is to split or join partition elements
+# 4 is to move a single node
+# 5 is to stay still (officially needed for convergence)
+prob1start<-40/100
+prob1<-prob1start*100
+if(n>3){ prob1<-round(6*prob1*n/(n^2+10*n-24)) }
+prob1<-prob1/100
+prob2start<-99/100-prob1start
+prob2<-prob2start*100
+if(n>3){ prob2<-round(6*prob2*n/(n^2+10*n-24)) }
+prob2<-prob2/100
+moveprobs<-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01)
+moveprobs<-moveprobs/sum(moveprobs) # normalisation
+if(!(length(moveprobs)==5)){print('Vector of move probabilities has the wrong length!')}
+},
+"5"={ # partition MCMC with edge reversal
+iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap two nodes from different partition elements
+# 2 is to only swap nodes from adjacent elements
+# 3 is to split or join partition elements
+# 4 is to move a single node
+# 5 is to stay still (officially needed for convergence)
+# 6 is the new edge reversal
+prob1start<-37/100
+prob1<-prob1start*100
+if(n>3){ prob1<-round(6*prob1*n/(n^2+10*n-24)) }
+prob1<-prob1/100
+prob2start<-92/100-prob1start
+prob2<-prob2start*100
+if(n>3){ prob2<-round(6*prob2*n/(n^2+10*n-24)) }
+prob2<-prob2/100
+moveprobs<-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01,0.07)
+moveprobs<-moveprobs/sum(moveprobs) # normalisation
+if(!(length(moveprobs)==6)){print('Vector of move probabilities has the wrong length!')}
+},
+{# if none is chosen, we have a problem
+print('Not implemented')
+})
+op <- par(mar = c(5,6,4,2) + 0.1)
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_C.ExpObsVar.bed", header=F)
+plot(simons_control_100k[,6], type="l", ylim=c(-0.5, 11), ylab="", xlab="window index", main="A_to_C")
+abline(h=1.75, col="red")
+#axis(2,cex.axis=1.2)
+mtext(expression(frac(y[i]-hat(mu)[i], sqrt(hat(mu)[i]))), side=2, line=2.2, cex=1.2)
+par(op)
+op <- par(mar = c(5,6,4,2) + 0.1)
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_G.ExpObsVar.bed", header=F)
+plot(simons_control_100k[,6], type="l", ylim=c(-0.5, 11), ylab="", xlab="window index", main="A_to_G")
+abline(h=1.75, col="red")
+#axis(2,cex.axis=1.2)
+mtext(expression(frac(y[i]-hat(mu)[i], sqrt(hat(mu)[i]))), side=2, line=2.2, cex=1.2)
+par(op)
+op <- par(mar = c(5,6,4,2) + 0.1)
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_C.ExpObsVar.bed", header=F)
+plot(simons_control_100k[,6], type="l", ylim=c(-0.5, 11), ylab="", xlab="window index", main="A_to_C")
+abline(h=1.75, col="red")
+#axis(2,cex.axis=1.2)
+mtext(expression(frac(y[i]-hat(mu)[i], sqrt(hat(mu)[i]))), side=2, line=2.2, cex=1.2)
+par(op)
+op <- par(mar = c(5,6,4,2) + 0.1)
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_G.ExpObsVar.bed", header=F)
+plot(simons_control_100k[,6], type="l", ylim=c(-1, 11), ylab="", xlab="window index", main="A_to_G")
+abline(h=1.75, col="red")
+#axis(2,cex.axis=1.2)
+mtext(expression(frac(y[i]-hat(mu)[i], sqrt(hat(mu)[i]))), side=2, line=2.2, cex=1.2)
+par(op)
+op <- par(mar = c(5,6,4,2) + 0.1)
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_C.ExpObsVar.bed", header=F)
+plot(simons_control_100k[,6], type="l", ylim=c(-0.5, 11), ylab="", xlab="window index", main="A_to_C")
+abline(h=1.75, col="red")
+#axis(2,cex.axis=1.2)
+mtext(expression(frac(y[i]-hat(mu)[i], sqrt(hat(mu)[i]))), side=2, line=2.2, cex=1.2)
+par(op)
+op <- par(mar = c(5,6,4,2) + 0.1)
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_G.ExpObsVar.bed", header=F)
+y.min=min(simons_control_100k[,6])-1; y.max=max(simons_control_100k[,6])+1
+plot(simons_control_100k[,6], type="l", ylim=c(y.min,y.max), ylab="", xlab="window index", main="A_to_G")
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_G.ExpObsVar.bed", header=F)
+min(simons_control_100k[,6])
+(simons_control_100k[1:10,])
+simons_control_100k[is.na(simons_control_100k),]
+sum()[is.na(simons_control_100k)]
+sum(is.na(simons_control_100k))
+simons_control_100k[is.na(simons_control_100k[,6])==T,]
+op <- par(mar = c(5,6,4,2) + 0.1)
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_C.ExpObsVar.bed", header=F)
+plot(simons_control_100k[,6], type="l", ylim=c(-0.5, 11), ylab="", xlab="window index", main="A_to_C")
+abline(h=1.75, col="red")
+#axis(2,cex.axis=1.2)
+mtext(expression(frac(y[i]-hat(mu)[i], sqrt(hat(mu)[i]))), side=2, line=2.2, cex=1.2)
+par(op)
+op <- par(mar = c(5,6,4,2) + 0.1)
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_G.ExpObsVar.bed", header=F)
+simons_contro_100k=simons_contro_100k[complete.cases(simons_contro_100k), ]
+op <- par(mar = c(5,6,4,2) + 0.1)
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_C.ExpObsVar.bed", header=F)
+plot(simons_control_100k[,6], type="l", ylim=c(-0.5, 11), ylab="", xlab="window index", main="A_to_C")
+abline(h=1.75, col="red")
+#axis(2,cex.axis=1.2)
+mtext(expression(frac(y[i]-hat(mu)[i], sqrt(hat(mu)[i]))), side=2, line=2.2, cex=1.2)
+par(op)
+op <- par(mar = c(5,6,4,2) + 0.1)
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_G.ExpObsVar.bed", header=F)
+simons_control_100k=simons_contro_100k[complete.cases(simons_contro_100k), ]
+op <- par(mar = c(5,6,4,2) + 0.1)
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_C.ExpObsVar.bed", header=F)
+plot(simons_control_100k[,6], type="l", ylim=c(-0.5, 11), ylab="", xlab="window index", main="A_to_C")
+abline(h=1.75, col="red")
+#axis(2,cex.axis=1.2)
+mtext(expression(frac(y[i]-hat(mu)[i], sqrt(hat(mu)[i]))), side=2, line=2.2, cex=1.2)
+par(op)
+op <- par(mar = c(5,6,4,2) + 0.1)
+simons_control_100k=read.table("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation.A_to_G.ExpObsVar.bed", header=F)
+simons_control_100k=simons_control_100k[complete.cases(simons_control_100k), ]
+y.min=min(simons_control_100k[,6])-1; y.max=max(simons_control_100k[,6])+1
+plot(simons_control_100k[,6], type="l", ylim=c(y.min,y.max), ylab="", xlab="window index", main="A_to_G")
+abline(h=1.75, col="red")
+#axis(2,cex.axis=1.2)
+mtext(expression(frac(y[i]-hat(mu)[i], sqrt(hat(mu)[i]))), side=2, line=2.2, cex=1.2)
+par(op)
+op <- par(mar = c(5,6,4,2) + 0.1)
+path="D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\"
+prefix="table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation."
+for (i in 1:length(mut.type))
+{
+simons_control_100k=read.table(paste(path, prefix, mut.type[i], ".ExpObsVar.bed", sep=""), header=F)
+simons_control_100k=simons_control_100k[complete.cases(simons_control_100k), ]
+y.min=min(simons_control_100k[,6])-1; y.max=max(simons_control_100k[,6])+1
+plot(simons_control_100k[,6], type="l", ylim=c(y.min, y.max), ylab="", xlab="window index", main=mut.type[i])
+abline(h=1.75, col="red")
+#axis(2,cex.axis=1.2)
+mtext(expression(frac(y[i]-hat(mu)[i], sqrt(hat(mu)[i]))), side=2, line=2.2, cex=1.2)
+par(op)
+}
+mut.type=c("A_to_C", "A_to_G", "A_to_T", "C_to_A", "C_to_G", "C_to_T")
+op <- par(mar = c(5,6,4,2) + 0.1)
+path="D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\"
+prefix="table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation."
+for (i in 1:length(mut.type))
+{
+simons_control_100k=read.table(paste(path, prefix, mut.type[i], ".ExpObsVar.bed", sep=""), header=F)
+simons_control_100k=simons_control_100k[complete.cases(simons_control_100k), ]
+y.min=min(simons_control_100k[,6])-1; y.max=max(simons_control_100k[,6])+1
+plot(simons_control_100k[,6], type="l", ylim=c(y.min, y.max), ylab="", xlab="window index", main=mut.type[i])
+abline(h=1.75, col="red")
+#axis(2,cex.axis=1.2)
+mtext(expression(frac(y[i]-hat(mu)[i], sqrt(hat(mu)[i]))), side=2, line=2.2, cex=1.2)
+par(op)
+}
+path="D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\"
+prefix="table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation."
+for (i in 1:length(mut.type))
+{
+simons_control_100k=read.table(paste(path, prefix, mut.type[i], ".ExpObsVar.bed", sep=""), header=F)
+simons_control_100k=simons_control_100k[complete.cases(simons_control_100k), ]
+y.min=min(simons_control_100k[,6])-1; y.max=max(simons_control_100k[,6])+1
+op <- par(mar = c(5,6,4,2) + 0.1)
+plot(simons_control_100k[,6], type="l", ylim=c(y.min, y.max), ylab="", xlab="window index", main=mut.type[i])
+abline(h=1.75, col="red")
+#axis(2,cex.axis=1.2)
+mtext(expression(frac(y[i]-hat(mu)[i], sqrt(hat(mu)[i]))), side=2, line=2.2, cex=1.2)
+par(op)
+}
+simons.control.para.est.100bp=list(); simons.control.para.est.100k=list()
+for (i in 1:length(mut.type))
+{
+simons.control.para.est.100bp[[i]]=loadRData(paste("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation", mut.type[i], "RData", sep="."))
+simons.control.para.est.100k[[i]]=loadRData(paste("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation", mut.type[i], "RData", sep="."))
+}
+knitr::read_chunk("chunks.R")
+library(knitr)
+library(kableExtra)
+library(RColorBrewer)
+library(gplots)
+set.seed(123)
+loadRData <- function(fileName){
+#loads an RData file, and returns it
+load(fileName)
+get(ls()[ls() != "fileName"])
+}
+simons.control.para.est.100bp=list(); simons.control.para.est.100k=list()
+for (i in 1:length(mut.type))
+{
+simons.control.para.est.100bp[[i]]=loadRData(paste("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation", mut.type[i], "RData", sep="."))
+simons.control.para.est.100k[[i]]=loadRData(paste("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation", mut.type[i], "RData", sep="."))
+}
+mut.type=c("A_to_C", "A_to_G", "A_to_T")
+cova=c("DHS", "CpGisland", "Lamin", "GC", "RT", "RR", "Exon", "H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1","H3K4me3","H3K9ac", "H3K9me3")
+simons.control.para.est.100bp=list(); simons.control.para.est.100k=list()
+for (i in 1:length(mut.type))
+{
+simons.control.para.est.100bp[[i]]=loadRData(paste("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation", mut.type[i], "RData", sep="."))
+simons.control.para.est.100k[[i]]=loadRData(paste("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation", mut.type[i], "RData", sep="."))
+}
+names(simons.control.para.est.100bp)=mut.type
+names(simons.control.para.est.100k)=mut.type
+for (cova.index in 1:length(cova))
+{
+#  cova.index=1
+cova.across.mut=matrix(nrow=2, ncol=length(mut.type))
+simons.control.conf.inter=matrix(nrow=length(mut.type), ncol=2)
+colnames(simons.control.conf.inter)=c("lower", "upper")
+rownames(simons.control.conf.inter)=names(simons.control.para.est.100bp)
+simons.control.conf.inter.100k=matrix(nrow=length(mut.type), ncol=2)
+colnames(simons.control.conf.inter.100k)=c("lower", "upper")
+rownames(simons.control.conf.inter.100k)=names(simons.control.para.est.100k)
+for (i in 1:length(mut.type))
+{
+cova.across.mut[1,i]=simons.control.para.est.100bp[[i]]$para.est[cova.index+1]
+simons.control.conf.inter[i,]=simons.control.para.est.100bp[[i]]$para.conf[cova.index+1,]
+cova.across.mut[2,i]=simons.control.para.est.100k[[i]]$para.est[cova.index+1]
+simons.control.conf.inter.100k[i,]=simons.control.para.est.100k[[i]]$para.conf[cova.index+1,]
+}
+colnames(cova.across.mut)=names(simons.control.para.est.100bp)
+barcenters=barplot(cova.across.mut, beside=T,ylab=expression(paste(beta)),col=c("red", "blue"), legend=c("simons_contr_100bp", "simons_contr_100k"), ylim=c(min(simons.control.conf.inter, simons.control.conf.inter.100k), max(simons.control.conf.inter, simons.control.conf.inter.100k)),  main=cova[cova.index],  cex.names=0.65, args.legend = list(x ='topright', bty='n', inset=c(-0.005,0), cex=0.8), xpd = FALSE, las=2)
+segments(barcenters, rbind(simons.control.conf.inter[,1], simons.control.conf.inter.100k[,1]), barcenters,rbind(simons.control.conf.inter[,2], simons.control.conf.inter.100k[,2]), lwd = 1.5)
+arrows(barcenters, rbind(simons.control.conf.inter[,1], simons.control.conf.inter.100k[,1]), barcenters,rbind(simons.control.conf.inter[,2], simons.control.conf.inter.100k[,2]), lwd = 1.5, angle = 90,code = 3, length = 0.05)
+} # end of cova.index
+knitr::read_chunk("chunks.R")
+library(knitr)
+library(kableExtra)
+library(RColorBrewer)
+library(gplots)
+set.seed(123)
+loadRData <- function(fileName){
+#loads an RData file, and returns it
+load(fileName)
+get(ls()[ls() != "fileName"])
+}
+slices <- c(990, 3812, 815, 1274, 5314, 1298)
+lbls <- c("A->C", "A->G", "A->T", "C->G", "C->T", "C->A")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels
+lbls <- paste(lbls,"%",sep="") # ad % to labels
+pie(slices,labels = lbls, col=rainbow(length(lbls)),
+main="Percentage of mutation types in Wong_NC_2016_693_control_SNV ")
+slices <- c(3582, 13477, 3331, 4822, 21220, 3862)
+lbls <- c("A->C", "A->G", "A->T", "C->G", "C->T", "C->A")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels
+lbls <- paste(lbls,"%",sep="") # ad % to labels
+pie(slices,labels = lbls, col=rainbow(length(lbls)),
+main="Percentage of mutation types in Jonsson data ")
+slices <- c(3899, 15083, 3664, 5393, 23977, 5404)
+lbls <- c("A->C", "A->G", "A->T", "C->G", "C->T", "C->A")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels
+lbls <- paste(lbls,"%",sep="") # ad % to labels
+pie(slices,labels = lbls, col=rainbow(length(lbls)),
+main="Percentage of mutation types in Simons control data ")
+slices <- c(4239, 15893, 4086, 5433, 24418, 5942)
+lbls <- c("A->C", "A->G", "A->T", "C->G", "C->T", "C->A")
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(lbls, pct) # add percents to labels
+lbls <- paste(lbls,"%",sep="") # ad % to labels
+pie(slices,labels = lbls, col=rainbow(length(lbls)),
+main="Percentage of mutation types in Yuen data ")
+mut.type=c("A_to_C", "A_to_G", "A_to_T", "C_to_A.CpG","C_to_A.nonCpG", "C_to_G.CpG", "C_to_G.nonCpG", "C_to_T.CpG", "C_to_T.nonCpG")
+cova=c("DHS", "CpGisland", "Lamin", "GC", "RT", "RR", "Exon", "H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1","H3K4me3","H3K9ac", "H3K9me3")
+wong.control.para.est=list(); simons.control.para.est=list(); jonsson.para.est=list()
+yuen.para.est=list()
+for (i in 1:length(mut.type))
+{
+wong.control.para.est[[i]]=loadRData(paste("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Wong_NC_2016_693_control_SNV_100bp.window_mutation", mut.type[i], "RData", sep="."))
+simons.control.para.est[[i]]=loadRData(paste("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation", mut.type[i], "RData", sep="."))
+jonsson.para.est[[i]]=loadRData(paste("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Jonsson_Yuen\\comb_SNPs_Jonsson.mutation", mut.type[i], "RData", sep="."))
+yuen.para.est[[i]]=loadRData(paste("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Jonsson_Yuen\\comb_SNPs_Yuen.mutation", mut.type[i], "RData", sep="."))
+}
+names(wong.control.para.est)=mut.type
+names(simons.control.para.est)=mut.type
+names(jonsson.para.est)=mut.type
+names(yuen.para.est)=mut.type
+for (cova.index in 1:length(cova))
+{
+#  cova.index=1
+cova.across.mut=matrix(nrow=4, ncol=length(mut.type))
+wong.control.conf.inter=matrix(nrow=length(mut.type), ncol=2)
+colnames(wong.control.conf.inter)=c("lower", "upper")
+rownames(wong.control.conf.inter)=names(wong.control.para.est)
+simons.control.conf.inter=matrix(nrow=length(mut.type), ncol=2)
+colnames(simons.control.conf.inter)=c("lower", "upper")
+rownames(simons.control.conf.inter)=names(simons.control.para.est)
+jonsson.conf.inter=matrix(nrow=length(mut.type), ncol=2)
+colnames(jonsson.conf.inter)=c("lower", "upper")
+rownames(jonsson.conf.inter)=names(jonsson.para.est)
+yuen.conf.inter=matrix(nrow=length(mut.type), ncol=2)
+colnames(yuen.conf.inter)=c("lower", "upper")
+rownames(yuen.conf.inter)=names(yuen.para.est)
+for (i in 1:length(mut.type))
+{
+cova.across.mut[1,i]=wong.control.para.est[[i]]$para.est[cova.index+1]
+wong.control.conf.inter[i,]=wong.control.para.est[[i]]$para.conf[cova.index+1,]
+cova.across.mut[2,i]=simons.control.para.est[[i]]$para.est[cova.index+1]
+simons.control.conf.inter[i,]=simons.control.para.est[[i]]$para.conf[cova.index+1,]
+cova.across.mut[3,i]=jonsson.para.est[[i]]$para.est[cova.index+1]
+jonsson.conf.inter[i,]=jonsson.para.est[[i]]$para.conf[cova.index+1, ]
+cova.across.mut[4,i]=yuen.para.est[[i]]$para.est[cova.index+1]
+yuen.conf.inter[i,]=yuen.para.est[[i]]$para.conf[cova.index+1, ]
+}
+colnames(cova.across.mut)=names(wong.control.para.est)
+barcenters=barplot(cova.across.mut, beside=T,ylab=expression(paste(beta)),col=c("red", "blue", "green", "yellow"), legend=c("Wong_contr", "simons_contr", "jonsson", "yuen"), ylim=c(min(wong.control.conf.inter, simons.control.conf.inter, jonsson.conf.inter, yuen.conf.inter, cova.across.mut), max(wong.control.conf.inter, simons.control.conf.inter, jonsson.conf.inter, yuen.conf.inter,cova.across.mut)),  main=cova[cova.index],  cex.names=0.65, args.legend = list(x ='topright', bty='n', inset=c(-0.005,0), cex=0.8), xpd = FALSE, las=2)
+segments(barcenters, rbind(wong.control.conf.inter[,1], simons.control.conf.inter[,1], jonsson.conf.inter[,1], yuen.conf.inter[,1]), barcenters,rbind(wong.control.conf.inter[,2], simons.control.conf.inter[,2], jonsson.conf.inter[,2], yuen.conf.inter[,2]), lwd = 1.5)
+arrows(barcenters, rbind(wong.control.conf.inter[,1], simons.control.conf.inter[,1], jonsson.conf.inter[,1], yuen.conf.inter[,1]), barcenters,rbind(wong.control.conf.inter[,2], simons.control.conf.inter[,2], jonsson.conf.inter[,2], yuen.conf.inter[,2]), lwd = 1.5, angle = 90,code = 3, length = 0.05)
+} # end of cova.index
+mut.type=c("A_to_C", "A_to_G", "A_to_T")
+cova=c("DHS", "CpGisland", "Lamin", "GC", "RT", "RR", "Exon", "H3K27ac", "H3K27me3", "H3K36me3", "H3K4me1","H3K4me3","H3K9ac", "H3K9me3")
+simons.control.para.est.100bp=list(); simons.control.para.est.100k=list()
+for (i in 1:length(mut.type))
+{
+simons.control.para.est.100bp[[i]]=loadRData(paste("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation", mut.type[i], "RData", sep="."))
+simons.control.para.est.100k[[i]]=loadRData(paste("D:\\ResearchWork\\StatisticalGenetics\\Mutation-Rate-project\\parameter_estimate\\Simons\\100kwindow\\table.ASCWGS_20180504.WGS1902_hg19_controls_SNV_remove_recurrent_mutation", mut.type[i], "RData", sep="."))
+}
+names(simons.control.para.est.100bp)=mut.type
+names(simons.control.para.est.100k)=mut.type
+for (cova.index in 1:length(cova))
+{
+#  cova.index=1
+cova.across.mut=matrix(nrow=2, ncol=length(mut.type))
+simons.control.conf.inter=matrix(nrow=length(mut.type), ncol=2)
+colnames(simons.control.conf.inter)=c("lower", "upper")
+rownames(simons.control.conf.inter)=names(simons.control.para.est.100bp)
+simons.control.conf.inter.100k=matrix(nrow=length(mut.type), ncol=2)
+colnames(simons.control.conf.inter.100k)=c("lower", "upper")
+rownames(simons.control.conf.inter.100k)=names(simons.control.para.est.100k)
+for (i in 1:length(mut.type))
+{
+cova.across.mut[1,i]=simons.control.para.est.100bp[[i]]$para.est[cova.index+1]
+simons.control.conf.inter[i,]=simons.control.para.est.100bp[[i]]$para.conf[cova.index+1,]
+cova.across.mut[2,i]=simons.control.para.est.100k[[i]]$para.est[cova.index+1]
+simons.control.conf.inter.100k[i,]=simons.control.para.est.100k[[i]]$para.conf[cova.index+1,]
+}
+colnames(cova.across.mut)=names(simons.control.para.est.100bp)
+barcenters=barplot(cova.across.mut, beside=T,ylab=expression(paste(beta)),col=c("red", "blue"), legend=c("simons_contr_100bp", "simons_contr_100k"), ylim=c(min(simons.control.conf.inter, simons.control.conf.inter.100k), max(simons.control.conf.inter, simons.control.conf.inter.100k)),  main=cova[cova.index],  cex.names=0.65, args.legend = list(x ='topright', bty='n', inset=c(-0.005,0), cex=0.8), xpd = FALSE, las=2)
+segments(barcenters, rbind(simons.control.conf.inter[,1], simons.control.conf.inter.100k[,1]), barcenters,rbind(simons.control.conf.inter[,2], simons.control.conf.inter.100k[,2]), lwd = 1.5)
+arrows(barcenters, rbind(simons.control.conf.inter[,1], simons.control.conf.inter.100k[,1]), barcenters,rbind(simons.control.conf.inter[,2], simons.control.conf.inter.100k[,2]), lwd = 1.5, angle = 90,code = 3, length = 0.05)
+} # end of cova.index
