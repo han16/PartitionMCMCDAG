@@ -6,7 +6,10 @@ output:
 ---
 
 
-* [simpleexample.R](simpleexample.html)
+
+* [structureMCMC](structureMCMC.html)
+
+* [simpleexample](simpleexample.html)
 
 
 * Simulation is [here](Simulation_studies.html)
