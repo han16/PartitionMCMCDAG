@@ -1,0 +1,53 @@
+---
+title: "scorepossibleparents"
+author: "Shengtong"
+date: "2018-11-06"
+output: workflowr::wflow_html
+---
+
+scorepossibleparents returns the number of parents for every node 
+
+```{r, echo=T}
+DAGcorescore=function(j,parentnodes,n){
+  
+  lp<-length(parentnodes) #number of parents
+  return(lp)
+
+}
+```
+
+```{r, echo=T}
+TableDAGscore=function(parentrows, j, n){
+	nrows<-nrow(parentrows)
+	P_local <- numeric(nrows)   
+   
+	for (i in 1:nrows)  {
+		parentnodes <- parentrows[i,which(parentrows[i,]>0)] # for every row, extract numeric values as parents 
+		P_local[i]<-DAGcorescore(j,parentnodes,n)  # DAGcorescore is in numedgescore.R 
+	}
+
+return(P_local)
+}
+```
+
+
+```{r, echo=T}
+scorepossibleparents=function(parenttable,n){
+
+  listy<-vector("list",n)
+
+  for (j in 1:n){
+    scoretemp<-TableDAGscore(parenttable[[j]], j, n)      # TableDAGscore is in scorefns.R 
+    listy[[j]] <- as.matrix(scoretemp)
+  }  
+
+return(listy)
+
+}
+```
+
+```{r, echo=T, eval=F}
+# first run listpossibleparents 
+parenttable<-listpossibleparents(maxparents,c(1:n))
+scoretable<-scorepossibleparents(parenttable,n) 
+```

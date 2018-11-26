@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Shengtong" />
+
+<meta name="date" content="2018-11-06" />
+
+<title>structureMCMC</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
+<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
+<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PartitionMCMCDAG</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://han16.github.io/PartitionMCMCDAG/">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">structureMCMC</h1>
+<h4 class="author"><em>Shengtong</em></h4>
+<h4 class="date"><em>2018-11-06</em></h4>
+
+</div>
+
+
+<p><strong>Last updated:</strong> 2018-11-20</p>
+<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
+<ul>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20180606)</code> </summary></p>
+<p>The command <code>set.seed(20180606)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</details>
+</li>
+<li>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/han16/PartitionMCMCDAG/tree/ff86df7be21fc63710cf432c50f941c570120fc9" target="_blank">ff86df7</a> </summary></p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+<pre><code>
+Ignored files:
+    Ignored:    analysis/.Rhistory
+
+</code></pre>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+</li>
+</ul>
+<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
+<ul>
+<table style="border-collapse:separate; border-spacing:5px;">
+<thead>
+<tr>
+<th style="text-align:left;">
+File
+</th>
+<th style="text-align:left;">
+Version
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:left;">
+Date
+</th>
+<th style="text-align:left;">
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/han16/PartitionMCMCDAG/blob/ff86df7be21fc63710cf432c50f941c570120fc9/analysis/structureMCMC.Rmd" target="_blank">ff86df7</a>
+</td>
+<td style="text-align:left;">
+Shengtong
+</td>
+<td style="text-align:left;">
+2018-11-08
+</td>
+<td style="text-align:left;">
+Nov82018
+</td>
+</tr>
+</tbody>
+</table>
+</ul>
+<p></details></p>
+<hr />
+<pre class="r"><code># this code is taken from the Dortmund course programmed by Miriam Lohr
+# I have only changed the scoring function to be correct
+# replaced sample by &#39;propersample&#39;
+# and corrected the fan.in for edge reversal!
+
+# The possibility of the new edge reversal move is also built in
+# It is activated as long as moveprobs has two components
+# The second being the probability of choosing the new edge reversal
+
+# Standard edge reversal can also be toggled with &#39;revallowed&#39;
+
+structureMCMC &lt;- function(n,incidence,iterations,stepsave,fan.in,parenttable,scoretable,revallowed,moveprobs){
+
+  newedgerevallowed&lt;-1 # allow the new edge reversal moves
+  if(length(moveprobs)==1){
+    newedgerevallowed&lt;-0 # or don&#39;t allow them
+    chosenmove&lt;-1 
+  }
+
+  currentDAGlogscores&lt;-DAGnodescore(incidence, n, c(1:n)) # score directly DAGnodescore is in scoring/scorefns.R
+  #currentDAGlogscores&lt;-DAGscorefromtable(incidence,n,c(1:n),parenttable,scoretable) # or from the table of scores
+  currentDAGlogscore&lt;-sum(currentDAGlogscores) # score of incidence matrix
+
+  L1 &lt;- list() #stores the adjecency matrices
+  L2 &lt;- list() # stores the log BGe score of the DAGs
+
+  zlimit&lt;- floor(iterations/stepsave) + 1 # number of outer iterations
+  length(L1) &lt;- zlimit
+  length(L2) &lt;- zlimit
+
+  L1[[1]]&lt;-incidence #starting adjacency matrix
+  L2[[1]]&lt;-currentDAGlogscore #starting DAG score
+
+# first ancestor matrix
+  ancest1 &lt;- ancestor(incidence)    # ancestor is in structurefns.R
+
+####### ... the number of neighbour graphs/proposal probability for the FIRST graph
+### 1.) number of neighbour graphs obtained by edge deletions
+  num_deletion &lt;- sum(incidence)
+
+  emptymatrix&lt;-matrix(numeric(n*n),nrow=n)
+  fullmatrix&lt;-matrix(rep(1,n*n),nrow=n)
+  Ematrix&lt;-diag(1,n,n)
+
+### 2.) number of neighbour graphs obtained by edge additions    1- E(i,j) - I(i,j) - A(i,j)
+  fan.in=maxparents
+  inter_add &lt;- which(fullmatrix - Ematrix - incidence - ancest1 &gt;0) # why need to -ancest1 ??
+  add &lt;- emptymatrix
+  add[inter_add] &lt;- 1
+  add[,which(colSums(incidence)&gt;fan.in-1)] &lt;- 0  ### what is here ?
+  num_addition &lt;- sum(add)
+
+### 3.) number of neighbour graphs obtained by edge reversals    I - (I^t * A)^t
+  inter_rev &lt;- which(incidence - t(t(incidence)%*% ancest1)==1)
+  re &lt;- emptymatrix
+  re[inter_rev] &lt;- 1
+  re[which(colSums(incidence)&gt;fan.in-1),] &lt;- 0 # this has to be this way around
+  num_reversal &lt;- sum(re)
+
+##### total number of neighbour graphs:
+  currentnbhoodnorevs &lt;- sum(num_deletion,num_addition)+1
+  currentnbhood &lt;- currentnbhoodnorevs+num_reversal
+
+  for (z in 2:zlimit){
+    for (count in 1:stepsave){
+
+      if(newedgerevallowed&gt;0){ # if we allow the new edge reversal move then sample the move type   
+        chosenmove&lt;-sample.int(2,1,prob=moveprobs) # sample what type of move
+      }
+      switch(as.character(chosenmove),
+      &quot;1&quot;={ # standard structure MCMC
+
+### sample one of the three single edge operations
+    if(revallowed==1){
+      operation&lt;-sample.int(4,1,prob=c(num_reversal,num_deletion,num_addition,1)) # sample the type of move including staying still
+    } else {
+      operation&lt;-sample.int(3,1,prob=c(num_deletion,num_addition,1))+1 # sample the type of move including staying still
+    }
+
+# 1 is edge reversal, 2 is deletion and 3 is additon. 4 represents choosing the current DAG
+
+  if(operation&lt;4){ # if we don&#39;t stay still
+
+#### shifting of the incidence matrix
+    incidence_new &lt;- incidence
+
+# creating a matrix with dimensions of the incidence matrix and all entries zero except for the entry of the chosen edge
+    help_matrix &lt;- emptymatrix
+
+    if (operation==2){              # if edge deletion was sampled
+      new_edge &lt;- propersample(which(incidence&gt;0)) # sample one of the existing edges
+      incidence_new[new_edge] &lt;- 0            # and delete it
+      help_matrix[new_edge] &lt;- 1
+    }
+    if (operation==1){    # if edge reversal was sampled
+      new_edge &lt;- propersample(which(re==1))      # sample one of the existing edges where a reversal leads to a valid graph
+      incidence_new[new_edge] &lt;- 0             # delete it
+      help_matrix[new_edge] &lt;- 1               # an only a &quot;1&quot; at the entry of the new (reversed) edge
+      incidence_new &lt;- incidence_new + t(help_matrix) # sum the deleted matrix and the &quot;help-matrix&quot;
+    }
+    if (operation==3){     # if edge addition was sampled
+      new_edge &lt;- propersample(which(add==1)) # sample one of the existing edges where a addition leads to a valid graph
+      incidence_new[new_edge] &lt;- 1             # and add it
+      help_matrix[new_edge] &lt;- 1
+    }
+
+### Updating the ancestor matrix
+
+# numbers of the nodes that belong to the shifted egde
+    parent &lt;- which(rowSums(help_matrix)==1)
+    child &lt;- which(colSums(help_matrix)==1)
+
+### updating the ancestor matrix (after edge reversal)
+## edge deletion
+    ancestor_new &lt;- ancest1
+    if (operation==1){                                                                          
+      ancestor_new[c(child,which(ancest1[,child]==1)),] &lt;- 0   # delete all ancestors of the child and its descendants                                           
+      top_name &lt;- des_top_order(incidence_new, ancest1, child)
+      for (d in top_name){
+        for(g in which(incidence_new[,d]==1)) {
+        ancestor_new[d,c(g,(which(ancestor_new[g,]==1)))] &lt;- 1
+        }
+      }
+
+      anc_parent &lt;- which(ancestor_new[child,]==1)          # ancestors of the new parent
+      des_child &lt;- which(ancestor_new[,parent]==1)          # descendants of the child
+      ancestor_new[c(parent,des_child),c(child,anc_parent)] &lt;- 1
+    }
+
+### updating the ancestor matrix (after edge deletion)
+    if (operation==2){
+      ancestor_new[c(child,which(ancest1[,child]==1)),] &lt;- 0   # delete all ancestors of the child and its descendants                                           #
+      top_name &lt;- des_top_order(incidence_new, ancest1, child)
+      for (d in top_name){
+        for(g in which(incidence_new[,d]==1)) {
+        ancestor_new[d,c(g,(which(ancestor_new[g,]==1)))] &lt;- 1
+        }
+      }
+    }
+
+# updating the ancestor matrix (after edge addition)
+    if (operation==3){
+      anc_parent &lt;- which(ancest1[parent,]==1)             # ancestors of the new parent
+      des_child &lt;- which(ancest1[,child]==1)               # descendants of the child
+      ancestor_new[c(child,des_child),c(parent,anc_parent)] &lt;- 1
+    }
+
+####### ... the number of neighbour graphs/proposal probability for the proposed graph
+### 1.) number of neighbour graphs obtained by edge deletions
+    num_deletion_new &lt;- sum(incidence_new)
+
+### number of neighbour graphs obtained by edge additions    1- E(i,j) - I(i,j) - A(i,j)
+    inter_add.new &lt;- which(fullmatrix - Ematrix - incidence_new - ancestor_new &gt;0)
+    add.new &lt;- emptymatrix
+    add.new[inter_add.new] &lt;- 1
+    add.new[,which(colSums(incidence_new)&gt;fan.in-1)] &lt;- 0
+    num_addition_new &lt;- sum(add.new)
+
+### number of neighbour graphs obtained by edge reversals    I - (I^t * A)^t
+    inter_rev.new&lt;- which(incidence_new - t(t(incidence_new)%*% ancestor_new)==1)
+    re.new &lt;- emptymatrix
+    re.new[inter_rev.new] &lt;- 1
+    re.new[which(colSums(incidence_new)&gt;fan.in-1),] &lt;- 0 # this has to be this way around!
+    num_reversal_new &lt;- sum(re.new)
+
+##### total number of neighbour graphs:
+    proposednbhoodnorevs&lt;-sum(num_deletion_new, num_addition_new) + 1
+    proposednbhood &lt;- proposednbhoodnorevs + num_reversal_new
+
+    rescorenodes &lt;- child
+
+    if (operation==1){                      # if single edge operation was an edge reversal
+      rescorenodes&lt;-c(child,parent)
+    }
+
+  proposedDAGrescored&lt;-DAGnodescore(incidence_new, n, rescorenodes) # rescore relevant nodes directly
+    #proposedDAGrescored&lt;-DAGscorefromtable(incidence_new, n, rescorenodes,parenttable,scoretable) # or from the score table
+    proposedDAGlogscore&lt;-currentDAGlogscore-sum(currentDAGlogscores[rescorenodes])+sum(proposedDAGrescored[rescorenodes]) #and the new log total score by updating only the necessary nodes
+
+    if(revallowed==1){
+      scoreratio&lt;-exp(proposedDAGlogscore-currentDAGlogscore)*(currentnbhood/proposednbhood) #acceptance probability
+    } else{
+      scoreratio&lt;-exp(proposedDAGlogscore-currentDAGlogscore)*(currentnbhoodnorevs/proposednbhoodnorevs) #acceptance probability
+    }
+
+    if(runif(1)&lt;scoreratio){ #Move accepted then set the current order and scores to the proposal
+      incidence &lt;- incidence_new
+      currentDAGlogscores[rescorenodes]&lt;-proposedDAGrescored[rescorenodes]
+      currentDAGlogscore&lt;-proposedDAGlogscore
+      ancest1 &lt;- ancestor_new
+      currentnbhood&lt;-proposednbhood
+      currentnbhoodnorevs&lt;-proposednbhoodnorevs 
+      num_deletion &lt;- num_deletion_new
+      num_addition &lt;- num_addition_new
+      num_reversal &lt;- num_reversal_new
+      add &lt;- add.new
+      re &lt;- re.new
+    }
+  }  # end of staying still loop
+      },
+      &quot;2&quot;={ # new edge reversal move
+    testy&lt;-newedgereversalmove(n,incidence,parenttable,scoretable)
+    if(is.list(testy)){ # if move was accepted
+      incidence&lt;-testy$incidence # update the matrix
+    rescorenodes&lt;-testy$rescore # the child and parent which were swapped
+      currentDAGlogscores[rescorenodes]&lt;-DAGnodescore(incidence, n, rescorenodes)[rescorenodes]
+      currentDAGlogscore&lt;-sum(currentDAGlogscores) # score of incidence matrix 
+
+# The new ancestor matrix
+    ancest1&lt;-testy$ancestor
+
+####### ... the number of neighbour graphs/proposal probability for the FIRST graph
+### 1.) number of neighbour graphs obtained by edge deletions
+      num_deletion &lt;- sum(incidence)
+
+### 2.) number of neighbour graphs obtained by edge additions    1- E(i,j) - I(i,j) - A(i,j)
+      inter_add &lt;- which(fullmatrix - Ematrix - incidence - ancest1 &gt;0)
+      add &lt;- emptymatrix
+      add[inter_add] &lt;- 1
+      add[,which(colSums(incidence)&gt;fan.in-1)] &lt;- 0
+      num_addition &lt;- sum(add)
+
+### 3.) number of neighbour graphs obtained by edge reversals    I - (I^t * A)^t
+      inter_rev &lt;- which(incidence - t(t(incidence)%*% ancest1)==1)
+      re &lt;- emptymatrix
+      re[inter_rev] &lt;- 1
+      re[which(colSums(incidence)&gt;fan.in-1),] &lt;- 0 # and correct here too!
+      num_reversal &lt;- sum(re)
+
+##### total number of neighbour graphs:
+      currentnbhoodnorevs &lt;- sum(num_deletion,num_addition) + 1
+      currentnbhood &lt;- currentnbhoodnorevs + num_reversal
+    }
+      },
+      {# if neither is chosen, we have a problem
+        print(&#39;The move sampling has failed!&#39;)
+      })
+    }
+    
+  L1[[z]] &lt;- incidence
+  L2[[z]] &lt;- currentDAGlogscore 
+  }
+return(list(L1,L2))
+}
+
+################################################################################</code></pre>
+<div id="session-information" class="section level2">
+<h2>Session information</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.5.1 (2018-07-02)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 17134)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] workflowr_1.1.1   Rcpp_1.0.0        digest_0.6.18    
+ [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
+ [7] git2r_0.23.0      magrittr_1.5      evaluate_0.12    
+[10] stringi_1.2.4     whisker_0.3-2     R.oo_1.22.0      
+[13] R.utils_2.7.0     rmarkdown_1.10    tools_3.5.1      
+[16] stringr_1.3.1     yaml_2.2.0        compiler_3.5.1   
+[19] htmltools_0.3.6   knitr_1.20       </code></pre>
+</div>
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+<hr>
+<p>
+  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+  analysis was created with
+  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
+</p>
+<hr>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

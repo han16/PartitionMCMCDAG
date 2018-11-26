@@ -6,6 +6,11 @@ output:
 ---
 
 
+* [listpossibleparents](listpossibleparents.html)
+
+* [scorepossibleparents](scorepossibleparents.html)
+
+* [DAGnodescore](DAGnodescore.html)
 
 * [structureMCMC](structureMCMC.html)
 

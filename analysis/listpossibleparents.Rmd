@@ -1,0 +1,103 @@
+---
+title: "listpossibleparents"
+author: "Shengtong"
+date: "2018-11-06"
+output: workflowr::wflow_html
+---
+listpossibleparents returns all possible parent cases. 
+
+
+```{r, echo=T}
+combinations=function(n, r, v = 1:n, set = TRUE, repeats.allowed=FALSE)
+{
+  # n: number if remaining nodes 
+  # r: number of parents 
+  
+  ###### this ensures n is a numeric, scale (length=1), greater than 1 and integer value 
+  if(mode(n) != "numeric" || length(n) != 1 
+     || n < 1 || (n %% 1) != 0) stop("bad value of n")   # %%: modulus (x mod y) 5%%2 is 1
+  ##### same thing for r 
+  if(mode(r) != "numeric" || length(r) != 1 
+     || r < 1 || (r %% 1) != 0) stop("bad value of r") 
+  #print(v)
+  
+  if(!is.atomic(v) || length(v) < n)  # ensure v is atomic and of the same length as n 
+    stop("v is either non-atomic or too short")
+  
+  if( (r > n) & repeats.allowed==FALSE)  # number of maxparents MUST NOT exceed the remaining elements 
+    stop("r > n and repeats.allowed=FALSE")
+  
+  if(set) {                               # always run this by the initial settings 
+    v <- unique(sort(v))
+    if (length(v) < n) stop("too few different elements") # again ensure length(v) is equal to n 
+  }   # end of set 
+  v0 <- vector(mode(v), 0)
+  ## Inner workhorse
+  if(repeats.allowed)
+    sub <- function(n, r, v)
+      { 
+        if(r == 0) v0 else
+        if(r == 1) matrix(v, n, 1) else
+        if(n == 1) matrix(v, 1, r) else
+        rbind( cbind(v[1], Recall(n, r-1, v)),
+              Recall(n-1, r, v[-1]))
+      }
+  else
+    ######################  ????? 
+    sub <- function(n, r, v)  
+      { 
+        if(r == 0) v0 else  # no parents 
+        if(r == 1) matrix(v, n, 1) else  # one parent 
+        if(r == n) matrix(v, 1, n) else  # maximum number of parents 
+        rbind(cbind(v[1], Recall(n-1, r-1, v[-1])),
+              Recall(n-1, r, v[-1]))
+    }
+  
+  sub(n, r, v[1:n])
+}
+```
+
+```{r, echo=T}
+#The Recall function is used to recursively call a function. That is, suppose we are writing a function called f and we #want to call f within itself. Then instead of calling on f within itself, we use the Recall function in its place
+  myFactorial <- function(n){
+   if(n == 1){
+     return(1)
+   } else {
+     return(n*Recall(n-1))
+   }
+ }
+ myFactorial(5)
+```
+
+
+```{r, echo=T}
+listpossibleparents=function(maxparents,elements){
+
+  listy<-vector("list",length(elements)) # generare a list with length of length(elements)
+
+  for (i in elements){
+    remainingelements<-elements[-i]
+
+    matrixofparents<-rep(NA,maxparents)  
+    for (r in 1:maxparents){
+      possparents<-combinations(length(remainingelements),r,remainingelements)
+      if(r<maxparents){
+        for (j in 1:(maxparents-r)){
+	  possparents <- cbind(possparents, NA)
+        }
+      }
+    matrixofparents<-rbind(matrixofparents,possparents,deparse.level=0)
+    } # end of r 
+    
+  listy[[i]] <- matrixofparents
+  }   # end of i 
+
+return(listy)
+}
+```
+
+
+```{r, echo=T}
+maxparents=2; n=3
+listpossibleparents(maxparents, c(1:n))
+```
