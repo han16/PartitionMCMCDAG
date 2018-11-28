@@ -4,6 +4,7 @@ author: "Shengtong"
 date: "2018-11-06"
 output: workflowr::wflow_html
 ---
+DAGnodescore counts the number of parents 
 
 ```{r, echo=T}
 DAGcorescore=function(j,parentnodes,n){

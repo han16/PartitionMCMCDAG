@@ -5,6 +5,51 @@ date: "2018-11-06"
 output: workflowr::wflow_html
 ---
 
+## Neighbors for every move type and update the ancestors 
+
+
+
+
+```{r, echo=T}
+# randomly sample the node
+propersample=function(x)
+{if(length(x)==1) x else sample(x,1)}
+```
+
+```{r, echo=T}
+# what is the purpose of this function??? 
+top_order=function(incidence){
+Order <- numeric(n)
+fan_in <- numeric(n)
+no_fan_in <- numeric(0)
+m <- 1
+for (p in 1:n){                                       # number of parent nodes at the beginning
+fan_in[p] <- sum(incidence[,p])
+}
+no_fan_in <- which(fan_in==0)
+while (length(which(Order==0))>0){                    # as long as there is a node without an order
+fan_in[which(incidence[no_fan_in[1],]==1)] <- fan_in[which(incidence[no_fan_in[1],]==1)] - 1
+no_fan_in <- c(no_fan_in, c(which(incidence[no_fan_in[1],]==1),which(fan_in==0))[duplicated(c(which(incidence[no_fan_in[1],]==1),which(fan_in==0)))])
+Order[m] <- no_fan_in[1]
+no_fan_in <- no_fan_in[-1]
+m <- m+1
+}
+return(Order)
+}
+```
+
+```{r, echo=T}
+des_top_order=function(incidence, ancest1,child){
+top <- top_order(incidence)
+position_child <- which(top==child)
+top_all_after <- top[position_child:n]                # top. order without the "first" nodes
+desc <- which(ancest1[,child]==1)                     # descendants of the child
+inter_step <- c(child,desc,top_all_after)
+des_top <- inter_step[which(duplicated(inter_step))]
+return(des_top)
+}
+```
+
 
 ```{r, echo=T}
 # this code is taken from the Dortmund course programmed by Miriam Lohr
@@ -26,9 +71,9 @@ structureMCMC <- function(n,incidence,iterations,stepsave,fan.in,parenttable,sco
     chosenmove<-1 
   }
 
-  currentDAGlogscores<-DAGnodescore(incidence, n, c(1:n)) # score directly DAGnodescore is in scoring/scorefns.R
+  currentDAGlogscores<-DAGnodescore(incidence, n, c(1:n)) # count the number of parents 
   #currentDAGlogscores<-DAGscorefromtable(incidence,n,c(1:n),parenttable,scoretable) # or from the table of scores
-  currentDAGlogscore<-sum(currentDAGlogscores) # score of incidence matrix
+  currentDAGlogscore<-sum(currentDAGlogscores) # total number of parents 
 
   L1 <- list() #stores the adjecency matrices
   L2 <- list() # stores the log BGe score of the DAGs
@@ -41,7 +86,7 @@ structureMCMC <- function(n,incidence,iterations,stepsave,fan.in,parenttable,sco
   L2[[1]]<-currentDAGlogscore #starting DAG score
 
 # first ancestor matrix
-  ancest1 <- ancestor(incidence)    # ancestor is in structurefns.R
+  ancest1 <- ancestor(incidence)    # find ancestors for every node  
 
 ####### ... the number of neighbour graphs/proposal probability for the FIRST graph
 ### 1.) number of neighbour graphs obtained by edge deletions
@@ -53,13 +98,13 @@ structureMCMC <- function(n,incidence,iterations,stepsave,fan.in,parenttable,sco
 
 ### 2.) number of neighbour graphs obtained by edge additions    1- E(i,j) - I(i,j) - A(i,j)
   fan.in=maxparents
-  inter_add <- which(fullmatrix - Ematrix - incidence - ancest1 >0) # why need to -ancest1 ??
+  inter_add <- which(fullmatrix - Ematrix - incidence - ancest1 >0) # why need to -ancest1 ?????????????????
   add <- emptymatrix
   add[inter_add] <- 1
-  add[,which(colSums(incidence)>fan.in-1)] <- 0  ### what is here ?
+  add[,which(colSums(incidence)>fan.in-1)] <- 0  ### what is here ? subject to maxparents constraint 
   num_addition <- sum(add)
 
-### 3.) number of neighbour graphs obtained by edge reversals    I - (I^t * A)^t
+### 3.) number of neighbour graphs obtained by edge reversals    I - (I^t * A)^t  why is it that? 
   inter_rev <- which(incidence - t(t(incidence)%*% ancest1)==1)
   re <- emptymatrix
   re[inter_rev] <- 1
@@ -76,17 +121,23 @@ structureMCMC <- function(n,incidence,iterations,stepsave,fan.in,parenttable,sco
       if(newedgerevallowed>0){ # if we allow the new edge reversal move then sample the move type	
         chosenmove<-sample.int(2,1,prob=moveprobs) # sample what type of move
       }
+      #############################
+      #############################
+      ## begin switch
       switch(as.character(chosenmove),
+###############################
+###############################
+## begin "1"
       "1"={ # standard structure MCMC
 
 ### sample one of the three single edge operations
 	if(revallowed==1){
-	  operation<-sample.int(4,1,prob=c(num_reversal,num_deletion,num_addition,1)) # sample the type of move including staying still
+	  operation<-sample.int(4,1,prob=c(num_reversal,num_deletion,num_addition,1)) # sample the type of move including staying still; each type is sampled with the probability proportional to its number of neighbors
 	} else {
 	  operation<-sample.int(3,1,prob=c(num_deletion,num_addition,1))+1 # sample the type of move including staying still
 	}
 
-# 1 is edge reversal, 2 is deletion and 3 is additon. 4 represents choosing the current DAG
+# 1 is edge reversal, 2 is deletion and 3 is additon. 4 represents choosing the current DAG !!!!!!!
 
   if(operation<4){ # if we don't stay still
 
@@ -102,6 +153,7 @@ structureMCMC <- function(n,incidence,iterations,stepsave,fan.in,parenttable,sco
 	  help_matrix[new_edge] <- 1
 	}
 	if (operation==1){    # if edge reversal was sampled
+	  ########### re and add are previously defined 
 	  new_edge <- propersample(which(re==1))      # sample one of the existing edges where a reversal leads to a valid graph
 	  incidence_new[new_edge] <- 0             # delete it
   	  help_matrix[new_edge] <- 1               # an only a "1" at the entry of the new (reversed) edge
@@ -206,7 +258,9 @@ structureMCMC <- function(n,incidence,iterations,stepsave,fan.in,parenttable,sco
 	  re <- re.new
 	}
   }  # end of staying still loop
-      },
+      },  # end of "1"
+#########################################
+#########################################
       "2"={ # new edge reversal move
 	testy<-newedgereversalmove(n,incidence,parenttable,scoretable)
 	if(is.list(testy)){ # if move was accepted
@@ -243,12 +297,15 @@ structureMCMC <- function(n,incidence,iterations,stepsave,fan.in,parenttable,sco
       },
       {# if neither is chosen, we have a problem
 	    print('The move sampling has failed!')
-      })
+      })  # end of switch
+      ###################################
+      ###################################
     }
 	
   L1[[z]] <- incidence
   L2[[z]] <- currentDAGlogscore 
-  }
+  }  # end of z
+  
 return(list(L1,L2))
 }
 

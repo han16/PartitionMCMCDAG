@@ -323,12 +323,11 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-20</p>
+<p><strong>Last updated:</strong> 2018-11-28</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>R Markdown file:</strong> up-to-date </summary></p>
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p><details> <summary> <strong style="color:red;">✖</strong> <strong>R Markdown file:</strong> uncommitted changes </summary> The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </details>
 </li>
 <li>
@@ -347,11 +346,19 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/han16/PartitionMCMCDAG/tree/ff86df7be21fc63710cf432c50f941c570120fc9" target="_blank">ff86df7</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/han16/PartitionMCMCDAG/tree/5cc51f025438ddd9abaed5952be7b7308c70bef8" target="_blank">5cc51f0</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
     Ignored:    analysis/.Rhistory
+
+Untracked files:
+    Untracked:  analysis/ancestor.Rmd
+
+Unstaged changes:
+    Modified:   analysis/DAGnodescore.Rmd
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/structureMCMC.Rmd
 
 </code></pre>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
@@ -382,6 +389,23 @@ Message
 <tbody>
 <tr>
 <td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/han16/PartitionMCMCDAG/880538697663701bfa1f0ec714b634ea990d2d4d/docs/structureMCMC.html" target="_blank">8805386</a>
+</td>
+<td style="text-align:left;">
+Shengtong
+</td>
+<td style="text-align:left;">
+2018-11-26
+</td>
+<td style="text-align:left;">
+Nov262018
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 Rmd
 </td>
 <td style="text-align:left;">
@@ -402,6 +426,39 @@ Nov82018
 </ul>
 <p></details></p>
 <hr />
+<div id="neighbors-for-every-move-type-and-update-the-ancestors" class="section level2">
+<h2>Neighbors for every move type and update the ancestors</h2>
+<pre class="r"><code># randomly sample the node
+propersample=function(x)
+{if(length(x)==1) x else sample(x,1)}</code></pre>
+<pre class="r"><code># what is the purpose of this function??? 
+top_order=function(incidence){
+Order &lt;- numeric(n)
+fan_in &lt;- numeric(n)
+no_fan_in &lt;- numeric(0)
+m &lt;- 1
+for (p in 1:n){                                       # number of parent nodes at the beginning
+fan_in[p] &lt;- sum(incidence[,p])
+}
+no_fan_in &lt;- which(fan_in==0)
+while (length(which(Order==0))&gt;0){                    # as long as there is a node without an order
+fan_in[which(incidence[no_fan_in[1],]==1)] &lt;- fan_in[which(incidence[no_fan_in[1],]==1)] - 1
+no_fan_in &lt;- c(no_fan_in, c(which(incidence[no_fan_in[1],]==1),which(fan_in==0))[duplicated(c(which(incidence[no_fan_in[1],]==1),which(fan_in==0)))])
+Order[m] &lt;- no_fan_in[1]
+no_fan_in &lt;- no_fan_in[-1]
+m &lt;- m+1
+}
+return(Order)
+}</code></pre>
+<pre class="r"><code>des_top_order=function(incidence, ancest1,child){
+top &lt;- top_order(incidence)
+position_child &lt;- which(top==child)
+top_all_after &lt;- top[position_child:n]                # top. order without the &quot;first&quot; nodes
+desc &lt;- which(ancest1[,child]==1)                     # descendants of the child
+inter_step &lt;- c(child,desc,top_all_after)
+des_top &lt;- inter_step[which(duplicated(inter_step))]
+return(des_top)
+}</code></pre>
 <pre class="r"><code># this code is taken from the Dortmund course programmed by Miriam Lohr
 # I have only changed the scoring function to be correct
 # replaced sample by &#39;propersample&#39;
@@ -421,9 +478,9 @@ structureMCMC &lt;- function(n,incidence,iterations,stepsave,fan.in,parenttable,
     chosenmove&lt;-1 
   }
 
-  currentDAGlogscores&lt;-DAGnodescore(incidence, n, c(1:n)) # score directly DAGnodescore is in scoring/scorefns.R
+  currentDAGlogscores&lt;-DAGnodescore(incidence, n, c(1:n)) # count the number of parents 
   #currentDAGlogscores&lt;-DAGscorefromtable(incidence,n,c(1:n),parenttable,scoretable) # or from the table of scores
-  currentDAGlogscore&lt;-sum(currentDAGlogscores) # score of incidence matrix
+  currentDAGlogscore&lt;-sum(currentDAGlogscores) # total number of parents 
 
   L1 &lt;- list() #stores the adjecency matrices
   L2 &lt;- list() # stores the log BGe score of the DAGs
@@ -436,7 +493,7 @@ structureMCMC &lt;- function(n,incidence,iterations,stepsave,fan.in,parenttable,
   L2[[1]]&lt;-currentDAGlogscore #starting DAG score
 
 # first ancestor matrix
-  ancest1 &lt;- ancestor(incidence)    # ancestor is in structurefns.R
+  ancest1 &lt;- ancestor(incidence)    # find ancestors for every node  
 
 ####### ... the number of neighbour graphs/proposal probability for the FIRST graph
 ### 1.) number of neighbour graphs obtained by edge deletions
@@ -448,13 +505,13 @@ structureMCMC &lt;- function(n,incidence,iterations,stepsave,fan.in,parenttable,
 
 ### 2.) number of neighbour graphs obtained by edge additions    1- E(i,j) - I(i,j) - A(i,j)
   fan.in=maxparents
-  inter_add &lt;- which(fullmatrix - Ematrix - incidence - ancest1 &gt;0) # why need to -ancest1 ??
+  inter_add &lt;- which(fullmatrix - Ematrix - incidence - ancest1 &gt;0) # why need to -ancest1 ?????????????????
   add &lt;- emptymatrix
   add[inter_add] &lt;- 1
-  add[,which(colSums(incidence)&gt;fan.in-1)] &lt;- 0  ### what is here ?
+  add[,which(colSums(incidence)&gt;fan.in-1)] &lt;- 0  ### what is here ? subject to maxparents constraint 
   num_addition &lt;- sum(add)
 
-### 3.) number of neighbour graphs obtained by edge reversals    I - (I^t * A)^t
+### 3.) number of neighbour graphs obtained by edge reversals    I - (I^t * A)^t  why is it that? 
   inter_rev &lt;- which(incidence - t(t(incidence)%*% ancest1)==1)
   re &lt;- emptymatrix
   re[inter_rev] &lt;- 1
@@ -471,17 +528,23 @@ structureMCMC &lt;- function(n,incidence,iterations,stepsave,fan.in,parenttable,
       if(newedgerevallowed&gt;0){ # if we allow the new edge reversal move then sample the move type   
         chosenmove&lt;-sample.int(2,1,prob=moveprobs) # sample what type of move
       }
+      #############################
+      #############################
+      ## begin switch
       switch(as.character(chosenmove),
+###############################
+###############################
+## begin &quot;1&quot;
       &quot;1&quot;={ # standard structure MCMC
 
 ### sample one of the three single edge operations
     if(revallowed==1){
-      operation&lt;-sample.int(4,1,prob=c(num_reversal,num_deletion,num_addition,1)) # sample the type of move including staying still
+      operation&lt;-sample.int(4,1,prob=c(num_reversal,num_deletion,num_addition,1)) # sample the type of move including staying still; each type is sampled with the probability proportional to its number of neighbors
     } else {
       operation&lt;-sample.int(3,1,prob=c(num_deletion,num_addition,1))+1 # sample the type of move including staying still
     }
 
-# 1 is edge reversal, 2 is deletion and 3 is additon. 4 represents choosing the current DAG
+# 1 is edge reversal, 2 is deletion and 3 is additon. 4 represents choosing the current DAG !!!!!!!
 
   if(operation&lt;4){ # if we don&#39;t stay still
 
@@ -497,6 +560,7 @@ structureMCMC &lt;- function(n,incidence,iterations,stepsave,fan.in,parenttable,
       help_matrix[new_edge] &lt;- 1
     }
     if (operation==1){    # if edge reversal was sampled
+      ########### re and add are previously defined 
       new_edge &lt;- propersample(which(re==1))      # sample one of the existing edges where a reversal leads to a valid graph
       incidence_new[new_edge] &lt;- 0             # delete it
       help_matrix[new_edge] &lt;- 1               # an only a &quot;1&quot; at the entry of the new (reversed) edge
@@ -601,7 +665,9 @@ structureMCMC &lt;- function(n,incidence,iterations,stepsave,fan.in,parenttable,
       re &lt;- re.new
     }
   }  # end of staying still loop
-      },
+      },  # end of &quot;1&quot;
+#########################################
+#########################################
       &quot;2&quot;={ # new edge reversal move
     testy&lt;-newedgereversalmove(n,incidence,parenttable,scoretable)
     if(is.list(testy)){ # if move was accepted
@@ -638,16 +704,20 @@ structureMCMC &lt;- function(n,incidence,iterations,stepsave,fan.in,parenttable,
       },
       {# if neither is chosen, we have a problem
         print(&#39;The move sampling has failed!&#39;)
-      })
+      })  # end of switch
+      ###################################
+      ###################################
     }
     
   L1[[z]] &lt;- incidence
   L2[[z]] &lt;- currentDAGlogscore 
-  }
+  }  # end of z
+  
 return(list(L1,L2))
 }
 
 ################################################################################</code></pre>
+</div>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>

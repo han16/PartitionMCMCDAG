@@ -1,0 +1,32 @@
+---
+title: "ancestor"
+author: "Shengtong"
+date: "2018-11-06"
+output: workflowr::wflow_html
+---
+ancestor retuns the ancestors for every node 
+
+incidence: row is offspring and column are parents 
+ancestor: row are anecstors and column are nodes 
+
+```{r, echo=T}
+ancestor=function(incidence){
+incidence1 <- incidence
+incidence2 <- incidence
+k <- 1
+while (k < nrow(incidence)){
+incidence1 <- incidence1%*%incidence
+incidence2 <- incidence2 + incidence1
+k <-k+1
+}
+incidence2[which(incidence2[,]>0)] <- 1
+return(t(incidence2))}
+```
+
+```{r, echo=T}
+n=3
+incidence=matrix(rep(0, n*n), nrow=3)
+incidence[1,2]=1; incidence[2,3]=1
+incidence
+ancestor(incidence)
+```
