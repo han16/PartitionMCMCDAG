@@ -5,6 +5,8 @@ date: "2018-11-06"
 output: workflowr::wflow_html
 ---
 
+This function returns the incidence matrix and its corresponding edges 
+
 ## Neighbors for every move type and update the ancestors 
 
 

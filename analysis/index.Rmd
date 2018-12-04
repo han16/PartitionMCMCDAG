@@ -11,9 +11,12 @@ output:
 * [scorepossibleparents](scorepossibleparents.html)
 
 * [DAGnodescore](DAGnodescore.html)
+
 * [ancestor](ancestor.html)
 
 * [structureMCMC](structureMCMC.html)
+
+
 
 * [simpleexample](simpleexample.html)
 

@@ -6,6 +6,28 @@ output: workflowr::wflow_html
 ---
 
 ```{r, echo=T}
+samplescore=function(n, scores)
+{
+  incidence<-matrix(numeric(n*n),nrow=n) # store the adjacency matrix
+  sampledscore<-0
+  for (i in 1:n){
+    scorelength<-length(scores$allscores[[i]])
+    k<-sample.int(scorelength,1,prob=exp(scores$allscores[[i]]-scores$totscores[i])) # sample according to scores
+    parentrow<-parenttable[[i]][scores$allowedrows[[i]][k],] # the parent set
+    parentset<-parentrow[which(parentrow>0)] # removing NAs
+    incidence[parentset,i]<-1 # fill in elements of the adjacency matrix
+    sampledscore<-sampledscore+scores$allscores[[i]][k] # and add the score
+  }
+  DAG<-list()
+  DAG$incidence<-incidence
+  DAG$logscore<-sampledscore
+  return(DAG)
+  
+}
+```
+
+
+```{r, echo=T}
 # parenttable a list of which every element is a matrix listing all possible parents in the row 
 orderscore=function(n,scorenodes,parenttable,scoretable,permy){
   orderscores<-rep(0,n)
@@ -19,7 +41,9 @@ orderscore=function(n,scorenodes,parenttable,scoretable,permy){
   ###### begin i
   # scorenodes=1:n
   # permy=currentpermy=startorder=c(1:n)
-  for (i in scorenodes){
+  for (i in scorenodes)
+  {
+ #   i=1
     position<-which(permy==i)
     if(position==n){ # no parents are allowed
 	orderscores[i]<-scoretable[[i]][1,1]
@@ -29,7 +53,7 @@ orderscore=function(n,scorenodes,parenttable,scoretable,permy){
     ###############################
     else {
       if(position>1){
-	bannednodes<-permy[c(1:(position-1))]
+	bannednodes<-permy[c(1:(position-1))]   # what is bannednodes?????? 
         allowedrows<-c(2:tablesize[1])
         for (j in 1:tablesize[2]){ # working columnwise allows R to speed up 
           bannedrows<-which(parenttable[[i]][allowedrows,j]%in%bannednodes)
@@ -47,7 +71,7 @@ orderscore=function(n,scorenodes,parenttable,scoretable,permy){
 	allowedscorerows[[i]]<-c(1:tablesize[1])
       }
       maxallowed<-max(allscores[[i]])
-      orderscores[i]<-maxallowed+log(sum(exp(allscores[[i]]-maxallowed)))
+      orderscores[i]<-maxallowed+log(sum(exp(allscores[[i]]-maxallowed)))  # why order score is calculated this way?????? 
     }
     ##########################
   } # end of i
