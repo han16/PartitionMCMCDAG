@@ -17,7 +17,6 @@ output:
 * [structureMCMC](structureMCMC.html)
 
 
-
 * [simpleexample](simpleexample.html)
 
 
