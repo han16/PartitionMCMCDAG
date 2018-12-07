@@ -323,7 +323,7 @@ div.section {
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-11-27</p>
+<p><strong>Last updated:</strong> 2018-12-07</p>
 <strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
 <ul>
 <li>
@@ -346,7 +346,7 @@ div.section {
 </details>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/han16/PartitionMCMCDAG/tree/5cc51f025438ddd9abaed5952be7b7308c70bef8" target="_blank">5cc51f0</a> </summary></p>
+<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/han16/PartitionMCMCDAG/tree/2c8d6e28edb7ff5b92ac4e4ebccb9ca4bd4a4b15" target="_blank">2c8d6e2</a> </summary></p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
 <pre><code>
 Ignored files:
@@ -382,6 +382,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align:left;">
+Rmd
+</td>
+<td style="text-align:left;">
+<a href="https://github.com/han16/PartitionMCMCDAG/blob/99d475c349e53a11032178faf1db53b390dda596/analysis/DAGnodescore.Rmd" target="_blank">99d475c</a>
+</td>
+<td style="text-align:left;">
+Shengtong
+</td>
+<td style="text-align:left;">
+2018-11-28
+</td>
+<td style="text-align:left;">
+Nov282018
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+html
+</td>
+<td style="text-align:left;">
+<a href="https://cdn.rawgit.com/han16/PartitionMCMCDAG/99d475c349e53a11032178faf1db53b390dda596/docs/DAGnodescore.html" target="_blank">99d475c</a>
+</td>
+<td style="text-align:left;">
+Shengtong
+</td>
+<td style="text-align:left;">
+2018-11-28
+</td>
+<td style="text-align:left;">
+Nov282018
+</td>
+</tr>
 <tr>
 <td style="text-align:left;">
 Rmd
@@ -456,26 +490,71 @@ Nov262018
 <p></details></p>
 <hr />
 <p>DAGnodescore counts the number of parents</p>
-<pre class="r"><code>DAGcorescore=function(j,parentnodes,n){
-  
-  lp&lt;-length(parentnodes) #number of parents
-  return(lp)
+<pre class="r"><code>DAGcorescore=function(j,parentnodes,n){    # this function doesn&#39;t have return function
 
+  lp&lt;-length(parentnodes) #number of parents
+  awpNd2&lt;-(awpN-n+lp+1)/2
+  
+  A&lt;-TN[j,j]
+  
+  switch(as.character(lp),
+         &quot;0&quot;={# just a single term if no parents
+           corescore &lt;- scoreconstvec[lp+1] -awpNd2*log(A)   # why is that?????????? 
+         },
+         
+         &quot;1&quot;={# no need for matrices
+           D&lt;-TN[parentnodes,parentnodes]
+           logdetD&lt;-log(D)
+           B&lt;-TN[j,parentnodes]
+           logdetpart2&lt;-log(A-B^2/D)
+           corescore &lt;- scoreconstvec[lp+1]-awpNd2*logdetpart2 - logdetD/2
+         },
+         
+         &quot;2&quot;={# can do matrix determinant and inverse explicitly
+           # but this is numerically unstable for large matrices!
+        D&lt;-TN[parentnodes,parentnodes]
+        detD&lt;-D[1,1]*D[2,2]-D[1,2]^2 #using symmetry of D
+        logdetD&lt;-log(detD)
+        B&lt;-TN[j,parentnodes]
+        logdetpart2&lt;-log(A-(D[2,2]*B[1]^2+D[1,1]*B[2]^2-2*D[1,2]*B[1]*B[2])/detD) #also using symmetry of D
+        corescore &lt;- scoreconstvec[lp+1]-awpNd2*logdetpart2 - logdetD/2
+         },
+         
+         &quot;3&quot;={# can still do matrix determinants efficiently so we use other approach
+           # but the explicit formula is numerically unstable for large matrices!
+           D&lt;-TN[parentnodes,parentnodes]
+           detD&lt;-detthreebythree(D)
+           logdetD&lt;-log(detD)
+           B&lt;-TN[j,parentnodes]
+           logdetpart2&lt;-log(detthreebythree(D-(B)%*%t(B)/A))+log(A)-logdetD
+           corescore &lt;- scoreconstvec[lp+1]-awpNd2*logdetpart2 - logdetD/2
+         },
+         
+  {# otherwise we use cholesky decomposition to perform both
+    D&lt;-as.matrix(TN[parentnodes,parentnodes])
+    choltemp&lt;-chol(D)
+    logdetD&lt;-2*log(prod(choltemp[(lp+1)*c(0:(lp-1))+1]))
+    B&lt;-TN[j,parentnodes]
+    logdetpart2&lt;-log(A-sum(backsolve(choltemp,B,transpose=TRUE)^2))
+    corescore &lt;- scoreconstvec[lp+1]-awpNd2*logdetpart2 - logdetD/2
+  })
+  
 }</code></pre>
 <pre class="r"><code># score just certain nodes
 DAGnodescore &lt;- function(incidence, n, rescorenodes){
     P_local &lt;- numeric(n)   
    
     for (j in rescorenodes)  {
-        parentnodes &lt;- which(incidence[,j]==1)
+        parentnodes &lt;- which(incidence[,j]==1)  # find parents for node j 
     P_local[j]&lt;-DAGcorescore(j,parentnodes,n)
     }
         
 return(P_local)
 }</code></pre>
-<pre class="r"><code>n=3
-startDAG&lt;-matrix(numeric(n*n),nrow=n)
-currentDAGlogscores=DAGnodescore(startDAG, n, c(1:n))</code></pre>
+<pre class="r"><code>#n=3
+#startDAG&lt;-matrix(numeric(n*n),nrow=n)
+#currentDAGlogscores=DAGnodescore(startDAG, n, c(1:n))</code></pre>
+<pre class="r"><code>realDAGlogscore&lt;-sum(DAGnodescore(incidence, n, c(1:n)))</code></pre>
 <div id="session-information" class="section level2">
 <h2>Session information</h2>
 <pre class="r"><code>sessionInfo()</code></pre>
