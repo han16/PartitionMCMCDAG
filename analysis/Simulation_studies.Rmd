@@ -16,6 +16,9 @@ X_2=2X_1+2X_3+2X_4+2X_5+\epsilon$$
 
 
 
+see this [example](smallsimmain.html)
+
+
 ```{r, eval=F}
 setwd("/Users/han24/Documents/Research/PartitionMCMCDAG/PartitionMCMCDAG/analysis/") # not working in chunk, but it does in console 
 
