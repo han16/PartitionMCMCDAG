@@ -18,6 +18,6 @@ output:
 * [Run simple example in the paper](simpleexample.html)
 
 
-* [Simulation studies](Simulation_studies.html)
+* [5 nodes example in Figure 1](Simulation_studies.html)
 
 
