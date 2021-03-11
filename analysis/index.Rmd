@@ -6,20 +6,18 @@ output:
 ---
 
 
-* [listpossibleparents](listpossibleparents.html)
 
-* [scorepossibleparents](scorepossibleparents.html)
+
 
 * [DAGnodescore](DAGnodescore.html)
 
 * [ancestor](ancestor.html)
 
-* [structureMCMC](structureMCMC.html)
 
 
-* [simpleexample](simpleexample.html)
+* [Run simple example in the paper](simpleexample.html)
 
 
-* Simulation is [here](Simulation_studies.html)
+* [Simulation studies](Simulation_studies.html)
 
 

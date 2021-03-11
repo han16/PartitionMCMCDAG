@@ -26,7 +26,16 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -74,9 +83,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -95,8 +102,14 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
+}
+summary {
+  display: list-item;
 }
 </style>
 
@@ -112,7 +125,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -132,6 +144,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -153,18 +202,75 @@ $(document).ready(function () {
 });
 </script>
 
-
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -242,8 +348,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -252,6 +356,16 @@ div.tocify {
 
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -299,160 +413,457 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<!-- Add a small amount of space between sections. -->
-<style type="text/css">
-div.section {
-  padding-top: 12px;
-}
-</style>
-
 <div class="fluid-row" id="header">
 
 
 
 <h1 class="title toc-ignore">Simulation studies</h1>
-<h4 class="author"><em>Shengtong Han</em></h4>
-<h4 class="date"><em>YYYY-MM-DD</em></h4>
+<h4 class="author">Shengtong Han</h4>
+<h4 class="date">YYYY-MM-DD</h4>
 
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-06-21</p>
-<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
-<ul>
-<li>
-<p><details> <summary> <strong style="color:red;">✖</strong> <strong>R Markdown file:</strong> uncommitted changes </summary> The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
-</details>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
-<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
-</details>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20180606)</code> </summary></p>
-<p>The command <code>set.seed(20180606)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
-<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/han16/PartitionMCMCDAG/tree/bb5819a29cdeeac66fe6ebc6829610b69e81385f" target="_blank">bb5819a</a> </summary></p>
-Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
-<pre><code>
-Ignored files:
-    Ignored:    .Rhistory
-
-Untracked files:
-    Untracked:  analysis/Simulation_studies.Rmd
-    Untracked:  docs/figure/Simulation_studies.Rmd/
-
-Unstaged changes:
-    Deleted:    analysis/Simulation studies.Rmd
-
-</code></pre>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
+<a data-toggle="tab" href="#versions">Past versions</a>
 </li>
 </ul>
-<details> <summary> <small><strong>Expand here to see past versions:</strong></small> </summary>
-<ul>
-<table style="border-collapse:separate; border-spacing:5px;">
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-02-24
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>PartitionMCMCDAG/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20180606code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20180606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20180606code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20180606)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtreeadb2e35d6c80035ae2a5fb3337f779e80f7d93datargetblankadb2e35a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/han16/PartitionMCMCDAG/tree/adb2e35d6c80035ae2a5fb3337f779e80f7d93da" target="_blank">adb2e35</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtreeadb2e35d6c80035ae2a5fb3337f779e80f7d93datargetblankadb2e35a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/han16/PartitionMCMCDAG/tree/adb2e35d6c80035ae2a5fb3337f779e80f7d93da" target="_blank">adb2e35</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    analysis/.Rhistory
+
+Unstaged changes:
+    Modified:   analysis/Simulation_studies.Rmd
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/listpossibleparents.Rmd
+    Modified:   analysis/orderMCMC.Rmd
+    Modified:   analysis/partitionMCMC.Rmd
+    Modified:   analysis/scorepossibleparents.Rmd
+    Modified:   analysis/simpleexample.Rmd
+    Modified:   analysis/structureMCMC.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/Simulation_studies.Rmd</code>) and HTML (<code>docs/Simulation_studies.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
 <thead>
 <tr>
-<th style="text-align:left;">
+<th>
 File
 </th>
-<th style="text-align:left;">
+<th>
 Version
 </th>
-<th style="text-align:left;">
+<th>
 Author
 </th>
-<th style="text-align:left;">
+<th>
 Date
 </th>
-<th style="text-align:left;">
+<th>
 Message
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;">
-html
+<td>
+Rmd
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/han16/PartitionMCMCDAG/bb5819a29cdeeac66fe6ebc6829610b69e81385f/docs/Simulation_studies.html" target="_blank">bb5819a</a>
+<td>
+<a href="https://github.com/han16/PartitionMCMCDAG/blob/c7650ae12bf8f1dae219b4081f8eab0a0d5c8b5b/analysis/Simulation_studies.Rmd" target="_blank">c7650ae</a>
 </td>
-<td style="text-align:left;">
+<td>
+han16
+</td>
+<td>
+2018-11-07
+</td>
+<td>
+Nov72018
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/han16/PartitionMCMCDAG/blob/b4defa4c73e761e8992c87531ae60f403a514ea0/analysis/Simulation_studies.Rmd" target="_blank">b4defa4</a>
+</td>
+<td>
 Shengtong Han
 </td>
-<td style="text-align:left;">
+<td>
+2018-10-30
+</td>
+<td>
+Oct102018
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/PartitionMCMCDAG/b4defa4c73e761e8992c87531ae60f403a514ea0/docs/Simulation_studies.html" target="_blank">b4defa4</a>
+</td>
+<td>
+Shengtong Han
+</td>
+<td>
+2018-10-30
+</td>
+<td>
+Oct102018
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/PartitionMCMCDAG/bb5819a29cdeeac66fe6ebc6829610b69e81385f/docs/Simulation_studies.html" target="_blank">bb5819a</a>
+</td>
+<td>
+Shengtong Han
+</td>
+<td>
 2018-06-14
 </td>
-<td style="text-align:left;">
+<td>
 Jun142018
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/han16/PartitionMCMCDAG/89107dd0c786e26d417fc9910f4428cc9b5b0ac0/docs/Simulation_studies.html" target="_blank">89107dd</a>
+<td>
+<a href="https://rawcdn.githack.com/han16/PartitionMCMCDAG/89107dd0c786e26d417fc9910f4428cc9b5b0ac0/docs/Simulation_studies.html" target="_blank">89107dd</a>
 </td>
-<td style="text-align:left;">
+<td>
 Shengtong Han
 </td>
-<td style="text-align:left;">
+<td>
 2018-06-14
 </td>
-<td style="text-align:left;">
+<td>
 Jun142018
 </td>
 </tr>
 <tr>
-<td style="text-align:left;">
+<td>
 html
 </td>
-<td style="text-align:left;">
-<a href="https://cdn.rawgit.com/han16/PartitionMCMCDAG/335f1367d2dd85469fa5f79b4f1729e8419e93a0/docs/Simulation_studies.html" target="_blank">335f136</a>
+<td>
+<a href="https://rawcdn.githack.com/han16/PartitionMCMCDAG/335f1367d2dd85469fa5f79b4f1729e8419e93a0/docs/Simulation_studies.html" target="_blank">335f136</a>
 </td>
-<td style="text-align:left;">
+<td>
 Shengtong Han
 </td>
-<td style="text-align:left;">
+<td>
 2018-06-14
 </td>
-<td style="text-align:left;">
+<td>
 Jun142018
 </td>
 </tr>
 </tbody>
 </table>
-</ul>
-<p></details></p>
-<hr />
-<!-- The file analysis/chunks.R contains chunks that define default settings
-shared across the workflowr files. -->
+</div>
+<hr>
+</div>
+</div>
+</div>
 <div id="simple-dag-in-partition-mcmc-paper." class="section level2">
 <h2>Simple DAG in partition MCMC paper.</h2>
-<p><img src="figure/Simulation_studies.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<div id="settings" class="section level3">
-<h3>Settings</h3>
-<p><span class="math display">\[X_2=2X_1+2X_3+2X_4+2X_5+\epsilon\\
-X_4=2X_3+2X_5+\epsilon\]</span></p>
-</div>
-</div>
-<div id="session-information" class="section level2">
-<h2>Session information</h2>
+<p><span class="math display">\[X_4=2X_3+2X_5+\epsilon \\
+X_2=2X_1+2X_3+2X_4+2X_5+\epsilon\]</span></p>
+<pre class="r"><code>setwd(&quot;/Users/han24/Documents/Research/PartitionMCMCDAG/PartitionMCMCDAG/analysis/&quot;) # not working in chunk, but it does in console </code></pre>
+<pre class="r"><code># Choose size of DAGs to consider
+
+n&lt;-3
+
+# Choose maximum number of parents
+
+maxparents&lt;-2 # Maximum number of parents to allow
+
+starttime&lt;-proc.time() # for timing the problem
+
+# Fill up a matrix with possible parents
+
+parenttable&lt;-listpossibleparents(maxparents,c(1:n)) # function listpossibleparents is from (&#39;./scoring/scoretables.R&#39;)  and it lists all possible parents for a node and it may induce cycles 
+tablelength&lt;-nrow(parenttable[[1]]) # size of the table
+# Now need to score them!
+
+scoretable&lt;-scorepossibleparents(parenttable,n) # from (&#39;./scoring/scoretables.R&#39;), count the number of parents for every node  
+
+endtime&lt;-proc.time()
+endtime&lt;-endtime-starttime
+print(&#39;Time to initialise the score table&#39;)</code></pre>
+<pre><code>[1] &quot;Time to initialise the score table&quot;</code></pre>
+<pre class="r"><code>print(endtime)</code></pre>
+<pre><code>   user  system elapsed 
+   0.05    0.00    0.05 </code></pre>
+<pre class="r"><code>switch(as.character(MCMCtype),
+  &quot;1&quot;={ # standard structure MCMC
+    iterations&lt;-100 #number of iterations in the chain
+    moveprobs&lt;-c(1) # having length 1 disallows the new edge reversal move
+    if(!(length(moveprobs)==1)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
+  },
+  &quot;2&quot;={ # with new edge reversal
+    iterations&lt;-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is standard structure MCMC (including the possibility to stay still [officially needed for convergence])
+# 2 is new edge reversal move
+    moveprobs&lt;-c(0.93,0.07)
+    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
+    if(!(length(moveprobs)==2)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
+  },
+  &quot;3&quot;={ # order MCMC
+    iterations&lt;-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap any two elements
+# 2 is to only swap adjacent elements
+# 3 is to stay still (officially needed for convergence)
+    prob1&lt;-99
+    if(n&gt;3){ prob1&lt;-round(6*99*n/(n^2+10*n-24)) }
+    prob1&lt;-prob1/100
+    moveprobs&lt;-c(prob1,0.99-prob1,0.01)
+    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
+    if(!(length(moveprobs)==3)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
+  },
+  &quot;4&quot;={ # partition MCMC
+    iterations&lt;-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap two nodes from different partition elements
+# 2 is to only swap nodes from adjacent elements
+# 3 is to split or join partition elements
+# 4 is to move a single node
+# 5 is to stay still (officially needed for convergence)
+    prob1start&lt;-40/100
+    prob1&lt;-prob1start*100
+    if(n&gt;3){ prob1&lt;-round(6*prob1*n/(n^2+10*n-24)) }
+    prob1&lt;-prob1/100
+    prob2start&lt;-99/100-prob1start
+    prob2&lt;-prob2start*100
+    if(n&gt;3){ prob2&lt;-round(6*prob2*n/(n^2+10*n-24)) }
+    prob2&lt;-prob2/100
+    moveprobs&lt;-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01)
+    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
+    if(!(length(moveprobs)==5)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
+  },
+  &quot;5&quot;={ # partition MCMC with edge reversal
+    iterations&lt;-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap two nodes from different partition elements
+# 2 is to only swap nodes from adjacent elements
+# 3 is to split or join partition elements
+# 4 is to move a single node
+# 5 is to stay still (officially needed for convergence)
+# 6 is the new edge reversal
+    prob1start&lt;-37/100
+    prob1&lt;-prob1start*100
+    if(n&gt;3){ prob1&lt;-round(6*prob1*n/(n^2+10*n-24)) }
+    prob1&lt;-prob1/100
+    prob2start&lt;-92/100-prob1start
+    prob2&lt;-prob2start*100
+    if(n&gt;3){ prob2&lt;-round(6*prob2*n/(n^2+10*n-24)) }
+    prob2&lt;-prob2/100
+    moveprobs&lt;-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01,0.07)
+    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
+    if(!(length(moveprobs)==6)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
+  },
+  {# if none is chosen, we have a problem
+    print(&#39;Not implemented&#39;)
+  })</code></pre>
+<pre class="r"><code>stepsave&lt;-1 #stepsave&lt;-iterations/1000 #how often to save the result
+
+  if(seedset&gt;0){
+    set.seed(seednumber) # choose one?
+  }</code></pre>
+<pre class="r"><code># Run the MCMC codes
+
+  starttime&lt;-proc.time() # for timing the problem
+
+  if(MCMCtype&lt;3){
+
+    startDAG&lt;-matrix(numeric(n*n),nrow=n) # starting DAG is empty say
+    revallowed&lt;-1 # allow standard edge reversals
+
+    example&lt;-structureMCMC(n,startDAG,iterations,stepsave,maxparents,parenttable,scoretable,revallowed,moveprobs) # structureMCMC function is from folder-edgerevandstructure
+
+  } else if (MCMCtype==3){
+
+    startorder&lt;-c(1:n) # starting order
+
+    example&lt;-orderMCMC(n,startorder,iterations,stepsave,parenttable,scoretable,moveprobs)
+
+  } else if (MCMCtype&gt;3){
+
+    startpermutation&lt;-c(1:n) # pick a starting permutation
+    startpartition&lt;-c(n) # and a starting partition - c(n) gives the empty DAG
+
+    example&lt;-partitionMCMC(n,startpermutation,startpartition,iterations,stepsave,parenttable,scoretable,moveprobs)
+
+  }
+
+  endtime&lt;-proc.time()
+  endtime&lt;-endtime-starttime
+  print(&#39;Time to run the&#39;)</code></pre>
+<pre><code>[1] &quot;Time to run the&quot;</code></pre>
+<pre class="r"><code>  print(iterations)</code></pre>
+<pre><code>[1] 100</code></pre>
+<pre class="r"><code>  print(&#39;iterations&#39;)</code></pre>
+<pre><code>[1] &quot;iterations&quot;</code></pre>
+<pre class="r"><code>  print(endtime)</code></pre>
+<pre><code>   user  system elapsed 
+   0.13    0.00    0.13 </code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.5.0 (2018-04-23)
+<pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 7 x64 (build 7601) Service Pack 1
+Running under: Windows 10 x64 (build 18363)
 
 Matrix products: default
 
@@ -466,30 +877,16 @@ locale:
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
-other attached packages:
- [1] igraph_1.2.1         intergraph_2.0-2     RColorBrewer_1.1-2  
- [4] sna_2.4              statnet.common_4.1.2 network_1.13.0.1    
- [7] GGally_1.4.0         ggplot2_2.2.1        gplots_3.0.1        
-[10] kableExtra_0.8.0     knitr_1.20          
-
 loaded via a namespace (and not attached):
- [1] Rcpp_0.12.16       pillar_1.2.2       compiler_3.5.0    
- [4] git2r_0.21.0       plyr_1.8.4         workflowr_1.0.1   
- [7] R.methodsS3_1.7.1  R.utils_2.6.0      bitops_1.0-6      
-[10] tools_3.5.0        digest_0.6.15      lattice_0.20-35   
-[13] gtable_0.2.0       evaluate_0.10.1    tibble_1.4.2      
-[16] viridisLite_0.3.0  pkgconfig_2.0.1    rlang_0.2.0       
-[19] rstudioapi_0.7     yaml_2.1.19        coda_0.19-1       
-[22] stringr_1.3.0      httr_1.3.1         xml2_1.2.0        
-[25] gtools_3.5.0       caTools_1.17.1     hms_0.4.2         
-[28] grid_3.5.0         rprojroot_1.3-2    reshape_0.8.7     
-[31] R6_2.2.2           rmarkdown_1.9      gdata_2.18.0      
-[34] readr_1.1.1        magrittr_1.5       whisker_0.3-2     
-[37] backports_1.1.2    scales_0.5.0       htmltools_0.3.6   
-[40] rvest_0.3.2        colorspace_1.3-2   KernSmooth_2.23-15
-[43] stringi_1.1.7      lazyeval_0.2.1     munsell_0.4.3     
-[46] R.oo_1.22.0       </code></pre>
+ [1] workflowr_1.6.2 Rcpp_1.0.1      rprojroot_1.3-2 digest_0.6.19  
+ [5] later_0.8.0     R6_2.4.1        backports_1.1.4 git2r_0.26.1   
+ [9] magrittr_1.5    evaluate_0.13   stringi_1.4.3   fs_1.3.1       
+[13] promises_1.0.1  whisker_0.3-2   rmarkdown_1.13  tools_3.6.0    
+[17] stringr_1.4.0   glue_1.4.1      httpuv_1.5.1    xfun_0.20      
+[21] yaml_2.2.0      compiler_3.6.0  htmltools_0.3.6 knitr_1.23     </code></pre>
 </div>
+</div>
+
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
@@ -502,14 +899,6 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
-
-<hr>
-<p>
-  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-  analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.0.1
-</p>
-<hr>
 
 
 </div>

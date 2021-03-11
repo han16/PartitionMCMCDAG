@@ -5,6 +5,167 @@ date: "2018-11-06"
 output: workflowr::wflow_html
 ---
 
+## listpossibleparents
+
+```{r, echo=T}
+combinations=function(n, r, v = 1:n, set = TRUE, repeats.allowed=FALSE)
+{
+  # n: number if remaining nodes 
+  # r: number of parents 
+  
+  ###### this ensures n is a numeric, scale (length=1), greater than 1 and integer value 
+  if(mode(n) != "numeric" || length(n) != 1 
+     || n < 1 || (n %% 1) != 0) stop("bad value of n")   # %%: modulus (x mod y) 5%%2 is 1
+  ##### same thing for r 
+  if(mode(r) != "numeric" || length(r) != 1 
+     || r < 1 || (r %% 1) != 0) stop("bad value of r") 
+  #print(v)
+  
+  if(!is.atomic(v) || length(v) < n)  # ensure v is atomic and of the same length as n 
+    stop("v is either non-atomic or too short")
+  
+  if( (r > n) & repeats.allowed==FALSE)  # number of maxparents MUST NOT exceed the remaining elements 
+    stop("r > n and repeats.allowed=FALSE")
+  
+  if(set) {                               # always run this by the initial settings 
+    v <- unique(sort(v))
+    if (length(v) < n) stop("too few different elements") # again ensure length(v) is equal to n 
+  }   # end of set 
+  v0 <- vector(mode(v), 0)
+  ## Inner workhorse
+  if(repeats.allowed)
+    sub <- function(n, r, v)
+      { 
+        if(r == 0) v0 else
+        if(r == 1) matrix(v, n, 1) else
+        if(n == 1) matrix(v, 1, r) else
+        rbind( cbind(v[1], Recall(n, r-1, v)),
+              Recall(n-1, r, v[-1]))
+      }
+  else
+    ######################  ????? 
+    sub <- function(n, r, v)  
+      { 
+        if(r == 0) v0 else  # no parents 
+        if(r == 1) matrix(v, n, 1) else  # one parent 
+        if(r == n) matrix(v, 1, n) else  # maximum number of parents 
+        rbind(cbind(v[1], Recall(n-1, r-1, v[-1])),
+              Recall(n-1, r, v[-1]))
+    }
+  
+  sub(n, r, v[1:n])
+}
+
+listpossibleparents=function(maxparents,elements){
+
+  listy<-vector("list",length(elements)) # generare a list with length of length(elements)
+
+  for (i in elements){
+    remainingelements<-elements[-i]
+
+    matrixofparents<-rep(NA,maxparents)  
+    for (r in 1:maxparents){
+      possparents<-combinations(length(remainingelements),r,remainingelements)
+      if(r<maxparents){
+        for (j in 1:(maxparents-r)){
+	  possparents <- cbind(possparents, NA)
+        }
+      }
+    matrixofparents<-rbind(matrixofparents,possparents,deparse.level=0)
+    } # end of r 
+    
+  listy[[i]] <- matrixofparents
+  }   # end of i 
+
+return(listy)
+}
+```
+
+## DAGcorescore
+
+```{r, echo=T}
+DAGcorescore=function(j,parentnodes,n){
+  
+  lp<-length(parentnodes) #number of parents
+  return(lp)
+}
+
+TableDAGscore=function(parentrows, j, n){
+	nrows<-nrow(parentrows)
+	P_local <- numeric(nrows)   
+   
+	for (i in 1:nrows)  {
+		parentnodes <- parentrows[i,which(parentrows[i,]>0)] # for every row, extract numeric values as parents 
+		P_local[i]<-DAGcorescore(j,parentnodes,n)  # DAGcorescore is in numedgescore.R 
+	}
+
+return(P_local)
+}
+
+scorepossibleparents=function(parenttable,n){
+
+  listy<-vector("list",n)
+
+  for (j in 1:n){
+    scoretemp<-TableDAGscore(parenttable[[j]], j, n)      # TableDAGscore is in scorefns.R 
+    listy[[j]] <- as.matrix(scoretemp)
+  }  
+
+return(listy)
+
+}
+```
+
+
+
+## samplescore 
+
+```{r, echo=T}
+samplescore=function(n, scores)
+{
+ # scores=currentorderscores
+  incidence<-matrix(numeric(n*n),nrow=n) # store the adjacency matrix
+  sampledscore<-0
+  for (i in 1:n){
+   # i=1  # for every node i 
+    scorelength<-length(scores$allscores[[i]])
+    k<-sample.int(scorelength,1,prob=exp(scores$allscores[[i]]-scores$totscores[i])) # sample according to scores
+    parentrow<-parenttable[[i]][scores$allowedrows[[i]][k],] # the parent set
+    parentset<-parentrow[which(parentrow>0)] # removing NAs
+    incidence[parentset,i]<-1 # fill in elements of the adjacency matrix
+    sampledscore<-sampledscore+scores$allscores[[i]][k] # and add the score
+  }
+  DAG<-list()
+  DAG$incidence<-incidence
+  DAG$logscore<-sampledscore
+  return(DAG)
+  
+}
+```
+
+```{r, echo=T}
+
+n=3  # n nodes 
+seedset=1
+seednumber=101
+stepsave=1
+
+maxparents=2
+
+parenttable<-listpossibleparents(maxparents,c(1:n))
+tablelength<-nrow(parenttable[[1]]) # size of the table
+
+# Now need to score them!
+
+scoretable<-scorepossibleparents(parenttable,n) 
+
+
+startpermutation<-c(1:n) # pick a starting permutation
+    startpartition<-c(n) # and a starting partition - c(n) gives the empty DAG
+```
+
+## parttolist
+
 ```{r, echo=T}
 parttolist=function(n,party){
 	posy<-rep(0,n)
@@ -20,27 +181,45 @@ parttolist=function(n,party){
 ```
 
 
+### example 
+```{r,echo=T}
+currentparty<-startpartition #starting partition
+currentparty
+  currentposy<-parttolist(n,currentparty) #create a list of which nodes are in which partition element
+  currentposy
+  parttolist(4,c(1,2,1)) # partition 4 nodes into 3 sets [k1,k2,k3] where k1=1; k2=2, k3=1
+  parttolist(5, c(2,2,1)) # partition 5 nodes into 3 sets [k1,k2,k3] where k1=2; k2=2, k3=1, n=k1+k2+..+km, m is the number of sets. 
+```
+
+## partitionscore 
 
 ```{r, echo=T}
+#partitionscore(n,c(1:n),parenttable,scoretable,currentpermy,currentparty,currentposy)
 partitionscore=function(n,scorenodes,parenttable,scoretable,permy,party,posy){
-
+ ############
+  #scorenodes=c(1:n)
+  #permy=currentpermy
+  #party=currentparty
+  #posy=currentposy
+ ############
   partitionscores<-rep(0,n)
   allscores<-vector("list",n)
   allowedscorerows<-vector("list",n)
-  m<-length(party)
+  m<-length(party)   # m is the number of sets in the partition
 
   tablesize<-dim(parenttable[[1]]) # just to remove some arguments
 #############################################
   for (i in scorenodes){
+  #  i=2
     position<-which(permy==i)
     partyelement<-posy[position]
-    if(partyelement==m){# no parents are allowed   this is the definition of the node, i.e., the rightmost node doesn't have parents 
-	partitionscores[i]<-scoretable[[i]][1,1]
+    if(partyelement==m){# no parents are allowed   this is the definition of the node, i.e., the rightmost node doesn't have parents #### this is the rightmost sets 
+	partitionscores[i]<-scoretable[[i]][1,1] # the first rows corresponds to root nodes 
 	allscores[[i]]<-partitionscores[i] # there is only one score
 	allowedscorerows[[i]]<-c(1) # there is only one score
-    } else {
-	bannednodes<-permy[which(posy<=partyelement)]
-	requirednodes<-permy[which(posy==(partyelement+1))]
+    } else {    # this is the sets after root nodes 
+	bannednodes<-permy[which(posy<=partyelement)]  # nodes left to i are banned from being offspring of i 
+	requirednodes<-permy[which(posy==(partyelement+1))] # nodes next right to i 
         allowedrows<-c(2:tablesize[1]) # first we remove the banned rows   ### what are banned rows 
         for (j in 1:tablesize[2]){ # working columnwise allows R to speed up 
           bannedrows<-which(parenttable[[i]][allowedrows,j]%in%bannednodes)
@@ -59,7 +238,7 @@ partitionscore=function(n,scorenodes,parenttable,scoretable,permy,party,posy){
 	allscores[[i]]<-scoretable[[i]][allowedrows,1]
 	allowedscorerows[[i]]<-allowedrows
 	maxallowed<-max(allscores[[i]])
-	partitionscores[i]<-maxallowed+log(sum(exp(allscores[[i]]-maxallowed)))  # why the score is calculated this way ??????????
+	partitionscores[i]<-maxallowed+log(sum(exp(allscores[[i]]-maxallowed)))  # why the score is calculated this way ?????????? used to normalize the probability when sampling parents 
     }  # end of else 
   }  # end of i 
 ############################
@@ -73,9 +252,674 @@ return(scores)
 ```
 
 
+### example 
+
+```{r, echo=T}
+ currentpermy<-startpermutation #starting permutation
+  currentparty<-startpartition #starting partition
+  currentposy<-parttolist(n,currentparty) #create a list of which nodes are in which partition element
+
+  currentpartitionscores<-partitionscore(n,c(1:n),parenttable,scoretable,currentpermy,currentparty,currentposy) #starting score of all DAGs compatible with the starting permutation and partition
+  currentpartitionscores
+```
+
+
+## partyjoin
+
+
+```{r, echo=T}
+partyjoin=function(n,party,posy){
+	m<-length(party)
+	joinpossibs<-rep(0,n)
+	for(k in 1:n){
+		joinpossibs[k]<-m-1
+		nodeselement<-posy[k]
+		if(party[nodeselement]==1){ #nodes in a partition element of size 1
+			if(nodeselement<m){
+				if(party[nodeselement+1]==1){ #and if the next partition element is also size 1
+					joinpossibs[k]<-m-2 #we only allow them to jump to the left to count the swap only once
+				}
+			}
+		}
+	}
+	return(joinpossibs)
+}
+```
+
+### example 
+
+```{r, echo=T}
+partyjoin(3,3,c(1,1,1))  # one partition 
+sum(partyjoin(3,3,c(1,1,1))) # no choice of joining other partition
+
+partyjoin(3,c(1,2), c(1,2,2))
+sum(partyjoin(3,c(1,2), c(1,2,2)))
+
+partyjoin(3,c(1,1,1), c(1,2,3))  # why the leftmost node has one choice of joining another partition and all choices are already counted at the partition right to leftmost? 
+sum(partyjoin(3,c(1,1,1), c(1,2,3)))
+```
+
+
+## partyhole
+
+```{r, echo=T}
+partyhole=function(n,party,posy){
+	m<-length(party)
+	holepossibs<-rep(0,n)
+	for(k in 1:n){
+		nodeselement<-posy[k]
+		if(party[nodeselement]==1){ #nodes in a partition element of size 1 cannot move to the neighbouring holes
+			holepossibs[k]<-m-1
+			if(nodeselement<m){
+				if(party[nodeselement+1]==1){ #and if the next partition element is also size 1
+					holepossibs[k]<-m-2 #we only allow them to jump to the left to count the swap only once
+				}
+			}
+		} else if(party[nodeselement]==2){ #nodes in a partition element of size 2 cannot move to the hole on the left
+			holepossibs[k]<-m #since this would count the same splitting twice 
+		} else {
+			holepossibs[k]<-m+1
+		}
+	}
+	return(holepossibs)
+}
+```
+
+
+## holenode 
+
+```{r, echo=T}
+holenode=function(n,currentparty,currentposy,currentpermy,holepossibs){
+  m<-length(currentparty)
+
+  scorelength<-length(holepossibs) 
+  nodetomove<-sample.int(scorelength,1,prob=holepossibs) # sample an element
+
+  nodeselement<-currentposy[nodetomove]
+  holetomoveto<-sample.int(holepossibs[nodetomove],1) # sample where to go to
+
+  if(currentparty[nodeselement]==1){
+    if(holetomoveto>=nodeselement){
+	holetomoveto<-holetomoveto+1 #counts hole when partition element removed
+	if(nodeselement<m){
+	  if(currentparty[nodeselement+1]==1){ #if next partition element is also size one
+	    holetomoveto<-holetomoveto+1 #shift one hole further along
+	  }
+	}
+    }
+    proposedparty<-currentparty[-nodeselement]
+    proposedparty<-append(proposedparty,1,holetomoveto-1)
+    proposedposy<-parttolist(n,proposedparty) #should be updated for efficiency
+
+    if(holetomoveto<nodeselement){
+	leftnodes<-which(proposedposy==holetomoveto) # this should be the node which is moved
+	maxleftnodes<-max(leftnodes)
+	rightnodes<-which(proposedposy==nodeselement) # these were to the left of the moved node
+	minrightnodes<-min(rightnodes)
+	proposedpermy<-currentpermy[-nodetomove]
+	proposedpermy<-append(proposedpermy,currentpermy[nodetomove],leftnodes-1)
+
+	centralnodes<-c()
+	if((maxleftnodes+1)<minrightnodes){
+	  centralnodes<-c((maxleftnodes+1):(minrightnodes-1))
+	}
+	rescorenodes<-c(leftnodes,centralnodes,rightnodes) #all these need to be rescored
+	if(holetomoveto>1){ #as well as the partition element further left, if it exists
+	  rescorenodes<-c(which(currentposy==(holetomoveto-1)),rescorenodes)
+	}
+    } else {
+	leftnodes<-which(proposedposy==nodeselement) # these were to the right of the moved node
+	maxleftnodes<-max(leftnodes)
+	rightnodes<-which(proposedposy==holetomoveto) # this should be the node that is moved
+	minrightnodes<-min(rightnodes)
+	proposedpermy<-currentpermy[-nodetomove]
+	proposedpermy<-append(proposedpermy,currentpermy[nodetomove],rightnodes-1)
+
+	centralnodes<-c()
+	if((maxleftnodes+1)<minrightnodes){
+	  centralnodes<-c((maxleftnodes+1):(minrightnodes-1))
+	}
+	rescorenodes<-c(leftnodes,centralnodes,rightnodes) #all these need to be rescored
+	if(nodeselement>1){ #as well as the partition element further left, if it exists
+	  rescorenodes<-c(which(currentposy==(nodeselement-1)),rescorenodes)
+	}
+    }
+  }  else {
+    if(currentparty[nodeselement]==2){
+	if(holetomoveto==nodeselement){
+	  holetomoveto<-m+1
+	}
+    }
+    proposedparty<-currentparty
+    proposedparty[nodeselement]<-currentparty[nodeselement]-1
+    proposedparty<-append(proposedparty,1,holetomoveto-1)
+    proposedposy<-parttolist(n,proposedparty) #should be updated for efficiency
+
+    if(holetomoveto<=nodeselement){
+	leftnodes<-which(proposedposy==holetomoveto) # this is the node which is moved
+	maxleftnodes<-max(leftnodes)
+	rightnodes<-which(proposedposy==(nodeselement+1)) # these are the nodes left over
+	minrightnodes<-min(rightnodes)
+	proposedpermy<-currentpermy[-nodetomove]
+	proposedpermy<-append(proposedpermy,currentpermy[nodetomove],leftnodes-1)
+
+	centralnodes<-c()
+	if((maxleftnodes+1)<minrightnodes){
+	  centralnodes<-c((maxleftnodes+1):(minrightnodes-1))
+	}
+	rescorenodes<-c(leftnodes,centralnodes) #all these need to be rescored
+	if(holetomoveto>1){ #as well as the partition element further left, if it exists
+	  rescorenodes<-c(which(currentposy==(holetomoveto-1)),rescorenodes)
+	}
+    } else {
+	leftnodes<-which(proposedposy==nodeselement) # these are the nodes left over
+	maxleftnodes<-max(leftnodes)
+	rightnodes<-which(proposedposy==holetomoveto) # this is the node which is moved
+	minrightnodes<-min(rightnodes)
+	proposedpermy<-currentpermy[-nodetomove]
+	proposedpermy<-append(proposedpermy,currentpermy[nodetomove],rightnodes-1)
+
+	centralnodes<-c()
+	if((maxleftnodes+1)<minrightnodes){
+	  centralnodes<-c((maxleftnodes+1):(minrightnodes-1))
+	}
+	rescorenodes<-c(leftnodes,centralnodes,rightnodes) #all these need to be rescored
+	if(nodeselement>1){ #as well as the partition element further left, if it exists
+	  rescorenodes<-c(which(currentposy==(nodeselement-1)),rescorenodes)
+	}
+    }
+
+  }
+
+  rescorenodes<-proposedpermy[rescorenodes] #map to the correct labels
+
+return(list(proposedparty,proposedposy,proposedpermy,rescorenodes))
+}
+```
+
+
+## parttopermdiffelemposs
+
+
+```{r, echo=T}
+parttopermdiffelemposs=function(n,party){
+	m<-length(party)
+	possibs<-rep(0,m-1)
+	if(m>1){
+		remainder<-n
+		for (i in 1:(m-1)){
+			remainder<-remainder-party[i]
+			possibs[i]<-party[i]*remainder
+		}	
+	}
+	return(possibs)
+}
+
+parttopermdiffelemposs(4, c(1,2,1))
+
+```
+
+
+## swapdiffelementnodes
+
+```{r, echo=T}
+swapdiffelementnodes=function(n,currentparty,currentposy,currentpermy,permpossibs){
+
+  scorelength<-length(permpossibs) 
+  selectedelement<-sample.int(scorelength,1,prob=permpossibs) # sample an element
+
+  leftnodes<-which(currentposy==selectedelement) #nodes in the left partition element
+  maxleftnodes<-max(leftnodes)
+  sampledleftnode<-propersample(leftnodes)
+  sampledrightnode<-propersample(c((maxleftnodes+1):n)) #chose the right node from the remaining ones
+  sampledelements<-c(sampledleftnode,sampledrightnode) #the sampled pair
+  rightnodes<-which(currentposy==currentposy[sampledrightnode]) #the remaining nodes on the right
+  minrightnodes<-min(rightnodes)
+
+  centralnodes<-c()
+  if((maxleftnodes+1)<minrightnodes){ #the nodes inbetween
+    centralnodes<-c((maxleftnodes+1):(minrightnodes-1))
+  }
+  rescorenodes<-c(leftnodes,centralnodes,sampledrightnode) #all these need to be rescored
+  if(selectedelement>1){ #as well as the partition element further left, if it exists
+    rescorenodes<-c(which(currentposy==(selectedelement-1)),rescorenodes)
+  }
+
+  proposedpermy<-currentpermy #create the new permutation
+  proposedpermy[sampledelements]<-currentpermy[rev(sampledelements)] #by swapping the elements
+
+  rescorenodes<-proposedpermy[rescorenodes] #map to the correct labels
+
+return(list(proposedpermy,rescorenodes))
+
+}
+```
+
+
+
+## propersample
+
+```{r, echo=T}
+propersample=function(x){if(length(x)==1) x else sample(x,1)}
+```
+
+
+## joinnode
+
+```{r, echo=T}
+joinnode=function(n,currentparty,currentposy,currentpermy,joinpossibs){
+  m<-length(currentparty)
+  scorelength<-length(joinpossibs) 
+  nodetomove<-sample.int(scorelength,1,prob=joinpossibs) # sample an element
+
+  nodeselement<-currentposy[nodetomove]
+  elementtomoveto<-sample.int(joinpossibs[nodetomove],1) # sample where to go to
+
+  if(elementtomoveto==nodeselement){ #if element selected is the same, replace by m which is not otherwise sampled
+    elementtomoveto<-m
+  } else if (elementtomoveto==(nodeselement+1)){
+    if(currentparty[nodeselement]==1){ #if partition element has size one
+	if(currentparty[nodeselement+1]==1){ #if next partition element is also size one
+	  elementtomoveto<-m-1 #replace not allowed sample by 'm-1' which also not be otherwise sampled
+	}
+    }
+  }
+
+  proposedparty<-currentparty # update the partition
+  proposedparty[elementtomoveto]<-currentparty[elementtomoveto]+1
+  if(currentparty[nodeselement]>1){
+    proposedparty[nodeselement]<-currentparty[nodeselement]-1
+  } else {
+    proposedparty<-proposedparty[-nodeselement]
+  }
+  proposedposy<-parttolist(n,proposedparty) #should be updated for efficiency
+
+  if(elementtomoveto<nodeselement){
+    leftnodes<-which(currentposy==elementtomoveto)
+    maxleftnodes<-max(leftnodes)
+    rightnodes<-which(currentposy==nodeselement) # this includes the node which is moved
+    minrightnodes<-min(rightnodes)
+    proposedpermy<-currentpermy[-nodetomove]
+    proposedpermy<-append(proposedpermy,currentpermy[nodetomove],maxleftnodes)
+
+    centralnodes<-c()
+    if((maxleftnodes+1)<minrightnodes){
+	centralnodes<-c((maxleftnodes+1):(minrightnodes-1))
+    }
+    rescorenodes<-c(leftnodes,centralnodes,nodetomove) #all these need to be rescored
+    if(elementtomoveto>1){ #as well as the partition element further left, if it exists
+      rescorenodes<-c(which(currentposy==(elementtomoveto-1)),rescorenodes)
+    }
+  } else {
+    leftnodes<-which(currentposy==nodeselement) # this includes the node which is moved
+    maxleftnodes<-max(leftnodes)
+    rightnodes<-which(currentposy==elementtomoveto)
+    minrightnodes<-min(rightnodes)
+    proposedpermy<-currentpermy[-nodetomove]
+    proposedpermy<-append(proposedpermy,currentpermy[nodetomove],min(rightnodes)-2)
+
+    centralnodes<-c()
+    if((maxleftnodes+1)<minrightnodes){
+	centralnodes<-c((maxleftnodes+1):(minrightnodes-1))
+    }
+    rescorenodes<-c(leftnodes,centralnodes) #all these need to be rescored - the moved node is included in leftnodes
+    if(nodeselement>1){ #as well as the partition element further left, if it exists
+      rescorenodes<-c(which(currentposy==(nodeselement-1)),rescorenodes)
+    }
+  }
+
+  rescorenodes<-currentpermy[rescorenodes] #map to the correct labels
+
+return(list(proposedparty,proposedposy,proposedpermy,rescorenodes))
+
+}
+```
+
+### example 
+
+
+
+
+## newedgereversalmove
+
+```{r, echo=T}
+newedgereversalmove=function(n,incidence,parenttable,scoretable){
+
+  tobereturned<-NA
+  edges<-which(incidence==1)
+
+  Ndagger<-length(edges) # store the number of edges
+
+  if(Ndagger>0){ # if there is at least one edge to reverse!
+     samplededge<-propersample(edges)
+
+# creating a matrix with dimensions of the incidence matrix and all entries zero except for the entry of the chosen edge
+    helpmatrix <- matrix(0,n,n)
+    helpmatrix[samplededge] <- 1
+
+# labels of the node that belong to the selected egde
+    edgeparent <- which(rowSums(helpmatrix)==1)
+    edgechild <- which(colSums(helpmatrix)==1)
+
+# First we need to orphan the selected edge nodes
+
+    orphan<-incidence
+    orphan[,edgechild]<-0 # we orphan the child
+    orphan[,edgeparent]<-0 # and the parent
+
+# Here we calculate the descendents in a naive way - could be performed more efficiently
+
+    descendorph<-descendents(orphan)
+
+# Then from the orphan we need to make two steps
+# First we find new parents for the old parent node
+# It cannot include its descendents and must include the edge's child
+
+    edgeparentbannednodes<-which(descendorph[edgeparent,]>0) 
+
+# The rows of the parent table which satisfy the conditions
+
+    possibleparentrows<-possibleparentsedgerev(n,parenttable[[edgeparent]],edgeparentbannednodes,edgechild)
+
+# and their scores
+
+    possibleparentscores<-scoretable[[edgeparent]][possibleparentrows]
+    scorelength<-length(possibleparentscores)
+
+# to sample and sum exponentials properly
+    maxscore<-max(possibleparentscores)
+    expparentscores<-exp(possibleparentscores-maxscore)
+
+# sample a row accordingly
+
+    sampledelement<-sample.int(scorelength,1,prob=expparentscores)
+
+# Store the partition function
+
+    Zstarparent<-sum(expparentscores)
+    Zstarparentlogscale<-maxscore
+
+# and find the parents
+
+    newparents<-parenttable[[edgeparent]][possibleparentrows[sampledelement],]
+    newparents<-newparents[which(newparents>0)]#remove the NAs
+
+# Fill up the new adjacency matrix
+
+    incidence1<-orphan
+    incidence1[newparents,edgeparent]<-1 # add the new parents to the old parent
+
+# update the descendent matrix
+
+    descend1<-descendorph
+    descend1[newparents,edgeparent]<-1 # add the new edges to the descendent matrix
+    oldparentdesc<-which(descend1[edgeparent,]>0) # the descendents of the old parent
+    descend1[newparents,oldparentdesc]<-1 # and edges to the parents descendents
+    if(length(newparents)>1){ # find the ancestors of the parents 
+      newancestors<-which(rowSums(descend1[,newparents])>0) 
+    } else {
+      newancestors<-which(descend1[,newparents]>0) 
+    }
+    descend1[newancestors,c(edgeparent,oldparentdesc)]<-1 # and edges from the new parents' ancestors to the old parent and its descendents
+
+#descend12<-descendents(incidence1) # This was to check the update works
+#print(sum((descend1-descend12)^2))
+
+# Now we need to sample new parents for the previous child
+# none of the current descendents are permissible
+
+    edgechildbannednodes<-which(descend1[edgechild,]>0)
+
+# The rows of the parent table which satisfy the conditions
+
+    possibleparentrows<-possibleparentsedgerevnext(n,parenttable[[edgechild]],edgechildbannednodes)
+
+# and their scores
+
+    possibleparentscores<-scoretable[[edgechild]][possibleparentrows]
+    scorelength<-length(possibleparentscores)
+
+# to sample and sum exponentials properly
+    maxscore<-max(possibleparentscores)
+    expparentscores<-exp(possibleparentscores-maxscore)
+
+# sample a row accordingly
+
+    sampledelement<-sample.int(scorelength,1,prob=expparentscores)
+
+# Store the partition function
+
+    Zpluschild<-sum(expparentscores)
+    Zpluschildlogscale<-maxscore
+
+# and find the parents
+
+    newparents<-parenttable[[edgechild]][possibleparentrows[sampledelement],]
+    newparents<-newparents[which(newparents>0)]#remove the NAs
+
+    if(length(newparents)>0){
+# Update the new adjacency matrix
+
+      incidence1[newparents,edgechild]<-1 # add the new parents to the old child
+
+# Update the descendent matrix too
+      descend1[newparents,edgechild]<-1 # add the new edges to the descendent matrix
+      oldchilddesc<-which(descend1[edgechild,]>0) # the descendents of the old child
+      descend1[newparents,oldchilddesc]<-1 # and edges to the childs descendents
+
+      if(length(newparents)>1){ # find the ancestors of the parents 
+        newancestors<-which(rowSums(descend1[,newparents])>0) 
+      } else {
+        newancestors<-which(descend1[,newparents]>0) 
+      }
+      descend1[newancestors,c(edgechild,oldchilddesc)]<-1 # and edges from the new parents' ancestors to the old child and its descendents
+    }
+
+#descend12<-descendents(incidence1) # This was to check the update works
+#print(sum((descend1-descend12)^2))
+
+    Ndaggertilde<-length(which(incidence1==1)) # store the new number of edges
+
+# Next we need to make the same steps from the orphan but keeping the child and parent relation as before!
+# This is solely needed for the acceptance ratio.
+
+# First we find different parents for the child node
+# It cannot include its descendents and must include its previous edge parent
+
+    edgechildbannednodes<-which(descendorph[edgechild,]>0) 
+
+# The rows of the parent table which satisfy the conditions
+
+    possibleparentrows<-possibleparentsedgerev(n,parenttable[[edgechild]],edgechildbannednodes,edgeparent)
+
+# and their scores
+
+    possibleparentscores<-scoretable[[edgechild]][possibleparentrows]
+    scorelength<-length(possibleparentscores)
+
+# to sample and sum exponentials properly
+    maxscore<-max(possibleparentscores)
+    expparentscores<-exp(possibleparentscores-maxscore)
+
+# sample a row accordingly
+
+    sampledelement<-sample.int(scorelength,1,prob=expparentscores)
+
+# Store the partition function
+
+    Zstarchild<-sum(expparentscores)
+    Zstarchildlogscale<-maxscore
+
+# and find the parents
+
+    newparents<-parenttable[[edgechild]][possibleparentrows[sampledelement],]
+    newparents<-newparents[which(newparents>0)]#remove the NAs
+
+# Now we don't actually need to fill up the new adjacency matrix
+
+#incidence2<-orphan
+#incidence2[newparents,edgechild]<-1 # add the new parents to the old parent
+
+# update the descendent matrix
+
+    descend2<-descendorph
+    descend2[newparents,edgechild]<-1 # add the new edges to the descendent matrix
+    childdesc<-which(descend2[edgechild,]>0) # descendendents of the child
+    descend2[newparents,childdesc]<-1 # and their descendents
+    if(length(newparents)>1){ # find the ancestors of the parents 
+      newancestors<-which(rowSums(descend2[,newparents])>0) 
+    } else {
+      newancestors<-which(descend2[,newparents]>0) 
+    }
+    descend2[newancestors,c(edgechild,childdesc)]<-1 # and edges from the new parents' ancestors to the old parent and its descendents
+
+#descend22<-descendents(incidence2) # This was to check the update works
+#print(sum((descend2-descend22)^2))
+
+# Now we need to sample new parents for the previous parent
+# none of the current descendents are permissible
+
+    edgeparentbannednodes<-which(descend2[edgeparent,]>0)
+
+# The rows of the parent table which satisfy the conditions
+
+    possibleparentrows<-possibleparentsedgerevnext(n,parenttable[[edgeparent]],edgeparentbannednodes)
+
+# and their scores
+
+    possibleparentscores<-scoretable[[edgeparent]][possibleparentrows]
+
+# to sum exponentials properly
+    maxscore<-max(possibleparentscores)
+    expparentscores<-exp(possibleparentscores-maxscore)
+
+# Store the partition function
+
+    Zplusparent<-sum(expparentscores)
+    Zplusparentlogscale<-maxscore
+
+# Now we can finally calculate the accepance ratio
+
+    scoreratio<-(Ndagger/Ndaggertilde)*(Zstarparent/Zstarchild)*(Zpluschild/Zplusparent)*exp(Zstarparentlogscale-Zstarchildlogscale+Zpluschildlogscale-Zplusparentlogscale)
+
+# MH move
+
+    if(runif(1)<scoreratio){ # if move accepted return the new DAG
+	tobereturned<-list("incidence"=incidence1,"ancestor"=t(descend1),"rescore"=c(edgechild,edgeparent))
+    }
+  } else{ # if no edges to be sampled we need to stay still
+  #print('no edges to sample - stay still')
+  }
+
+return(tobereturned)
+
+}
+
+```
+
+
+## descendents
+
+```{r, echo=T}
+descendents=function(incidence){
+  incidence1 <- t(incidence)
+  incidence2 <- t(incidence)
+  k <- 1
+  while (k < nrow(incidence)){
+    incidence1 <- incidence1%*%t(incidence)
+    incidence2 <- incidence2 + incidence1
+    k <-k+1
+  }
+  incidence2[which(incidence2[,]>0)] <- 1
+  return(t(incidence2))
+}
+```
+
+
+## possibleparentsedgerev
+
+
+```{r, echo=T}
+possibleparentsedgerev=function(n,parenttableentry,bannednodes,child){
+
+  tablesize<-dim(parenttableentry) # just to remove some arguments
+
+  allowedrows<-c(2:tablesize[1])
+  for (j in 1:tablesize[2]){ # working columnwise allows R to speed up 
+    bannedrows<-which(parenttableentry[allowedrows,j]%in%bannednodes)
+    if(length(bannedrows)>0){
+      allowedrows<-allowedrows[-bannedrows]
+    }
+  }
+  notrequiredrows<-allowedrows
+  for (j in 1:tablesize[2]){ # now we remove the allowable rows instead
+    requiredrows<-which(parenttableentry[notrequiredrows,j]%in%child)
+    if(length(requiredrows)>0){
+	notrequiredrows<-notrequiredrows[-requiredrows]
+    }
+  }
+  allowedrows<-setdiff(allowedrows,notrequiredrows) # and keep just the difference!
+
+return(allowedrows)
+}
+```
+
+
+## possibleparentsedgerevnext
+
+
+```{r, echo=T}
+possibleparentsedgerevnext=function(n,parenttableentry,bannednodes){
+
+  tablesize<-dim(parenttableentry) # just to remove some arguments
+
+  allowedrows<-c(2:tablesize[1])
+  for (j in 1:tablesize[2]){ # working columnwise allows R to speed up 
+    bannedrows<-which(parenttableentry[allowedrows,j]%in%bannednodes)
+    if(length(bannedrows)>0){
+      allowedrows<-allowedrows[-bannedrows]
+    }
+  }
+  allowedrows<-c(1,allowedrows) # this row is always allowed
+
+return(allowedrows)
+}
+```
+
+
+## DAGtopartition
+
+```{r, echo=T}
+DAGtopartition=function(n,incidence){
+  party<-c() # to store the partition
+  permy <- numeric(n) # to store the permutation
+  m <- n # counter
+  while(m>0){
+    topnodes<-which(colSums(incidence)==0) # find the outpoints
+incidence[topnodes,]<-0 # remove their edges
+incidence[cbind(topnodes,topnodes)]<-1 # add a one to their columns so they are no longer counted
+    l<-length(topnodes) # the number of outpoints
+    m<-m-l
+    permy[(m+1):(m+l)]<-topnodes
+    party<-c(l,party)
+  }
+
+  partypermy<-list()
+  partypermy$party<-party
+  partypermy$permy<-permy
+return(partypermy)
+}
+```
+
+## partitionMCMC
+
 ```{r, echo=T}
 partitionMCMC=function(n,startpermy,startparty,iterations,stepsave,parenttable,scoretable,moveprobs){
-
+########
+#  startpermy=startpermutation
+#  startparty=startpartition
+  
+########  
   newedgerevallowed<-1 # allow the new edge reversal moves
   if(length(moveprobs)==5){
     newedgerevallowed<-0 # or don't allow them 
@@ -129,7 +973,7 @@ partjoinholeflag<-1
 
 	if(length(currentparty)>1){ # if the partition only has one element then we cannot move
 	  switch(as.character(chosenmove),
-	  "1"={ # swap any two elements from diffent partition elements
+	  "1"={ # swap any two elements from different partition elements
 	    if(permdiffelemflag>0){ # do we need to recalculate the neighbourhood?
 		permdiffelemposs<-parttopermdiffelemposs(n,currentparty)
 		permdiffelemflag<-0
@@ -291,7 +1135,45 @@ partjoinholeflag<-1
     L3[[z]]<-currenttotallogscore #store the current total partition score
     L4[[z]]<-currentpermy #store current permutation each 'stepsave'
     L5[[z]]<-currentparty #store current partition each 'stepsave'
-  }
+  }   #end of for (z in 2:zlimit) 
   return(list(L1,L2,L3,L4,L5))
 }
 ```
+
+
+
+## example 
+
+```{r, echo=T}
+
+
+     # partition MCMC with edge reversal
+	iterations<-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap two nodes from different partition elements
+# 2 is to only swap nodes from adjacent elements
+# 3 is to split or join partition elements
+# 4 is to move a single node
+# 5 is to stay still (officially needed for convergence)
+# 6 is the new edge reversal
+	prob1start<-37/100
+	prob1<-prob1start*100
+	if(n>3){ prob1<-round(6*prob1*n/(n^2+10*n-24)) }
+	prob1<-prob1/100
+	prob2start<-92/100-prob1start
+	prob2<-prob2start*100
+	if(n>3){ prob2<-round(6*prob2*n/(n^2+10*n-24)) }
+	prob2<-prob2/100
+	moveprobs<-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01,0.07)
+	moveprobs<-moveprobs/sum(moveprobs) # normalisation
+    
+    example<-partitionMCMC(n,startpermutation,startpartition,iterations,stepsave,parenttable,scoretable,moveprobs)
+length(example)
+iter=50
+example[[1]][[iter]]
+example[[2]][[iter]]
+example[[3]][[iter]]
+example[[4]][[iter]]
+example[[5]][[iter]]
+```
+

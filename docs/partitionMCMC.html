@@ -27,9 +27,16 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.0.13/css/fa-svg-with-js.css" rel="stylesheet" />
-<script src="site_libs/font-awesome-5.0.13/js/fontawesome-all.min.js"></script>
-<script src="site_libs/font-awesome-5.0.13/js/fa-v4-shims.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -77,9 +84,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type = "text/css">
 .main-container {
@@ -104,6 +109,9 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
@@ -118,7 +126,6 @@ body {
   padding-top: 56px;
   margin-top: -56px;
 }
-
 .section h2 {
   padding-top: 56px;
   margin-top: -56px;
@@ -138,6 +145,43 @@ body {
 .section h6 {
   padding-top: 56px;
   margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
 }
 </style>
 
@@ -159,18 +203,75 @@ $(document).ready(function () {
 });
 </script>
 
-
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -248,8 +349,6 @@ div.tocify {
 
 .tocify-subheader .tocify-item {
   font-size: 0.90em;
-  padding-left: 25px;
-  text-indent: 0;
 }
 
 .tocify .list-group-item {
@@ -258,6 +357,16 @@ div.tocify {
 
 
 </style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
 <div class="row-fluid">
@@ -305,66 +414,382 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<!-- Add a small amount of space between sections. -->
-<style type="text/css">
-div.section {
-  padding-top: 12px;
-}
-</style>
-
 <div class="fluid-row" id="header">
 
 
 
 <h1 class="title toc-ignore">partitionMCMC</h1>
-<h4 class="author"><em>Shengtong</em></h4>
-<h4 class="date"><em>2018-11-06</em></h4>
+<h4 class="author">Shengtong</h4>
+<h4 class="date">2018-11-06</h4>
 
 </div>
 
 
-<p><strong>Last updated:</strong> 2018-12-04</p>
-<strong>workflowr checks:</strong> <small>(Click a bullet for more information)</small>
-<ul>
-<li>
-<p><details> <summary> <strong style="color:red;">✖</strong> <strong>R Markdown file:</strong> uncommitted changes </summary> The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
-</details>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Environment:</strong> empty </summary></p>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-02-24
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>PartitionMCMCDAG/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Seed:</strong> <code>set.seed(20180606)</code> </summary></p>
-<p>The command <code>set.seed(20180606)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Session information:</strong> recorded </summary></p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20180606code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20180606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20180606code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20180606)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
 <p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
-</details>
-</li>
-<li>
-<p><details> <summary> <strong style="color:blue;">✔</strong> <strong>Repository version:</strong> <a href="https://github.com/han16/PartitionMCMCDAG/tree/1e0f47e790a3bc126d7355c8a56228f1f18c420d" target="_blank">1e0f47e</a> </summary></p>
-Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtreeadb2e35d6c80035ae2a5fb3337f779e80f7d93datargetblankadb2e35a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/han16/PartitionMCMCDAG/tree/adb2e35d6c80035ae2a5fb3337f779e80f7d93da" target="_blank">adb2e35</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtreeadb2e35d6c80035ae2a5fb3337f779e80f7d93datargetblankadb2e35a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/han16/PartitionMCMCDAG/tree/adb2e35d6c80035ae2a5fb3337f779e80f7d93da" target="_blank">adb2e35</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
 <pre><code>
 Ignored files:
     Ignored:    analysis/.Rhistory
 
-Untracked files:
-    Untracked:  analysis/partitionMCMC.Rmd
-
 Unstaged changes:
     Modified:   analysis/index.Rmd
+    Modified:   analysis/listpossibleparents.Rmd
     Modified:   analysis/orderMCMC.Rmd
+    Modified:   analysis/partitionMCMC.Rmd
+    Modified:   analysis/scorepossibleparents.Rmd
+    Modified:   analysis/simpleexample.Rmd
     Modified:   analysis/structureMCMC.Rmd
 
 </code></pre>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes. </details>
-</li>
-</ul>
-<hr />
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/partitionMCMC.Rmd</code>) and HTML (<code>docs/partitionMCMC.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/han16/PartitionMCMCDAG/blob/daeaf0150637be5b93202a1bb090641d0b1ccf20/analysis/partitionMCMC.Rmd" target="_blank">daeaf01</a>
+</td>
+<td>
+Shengtong
+</td>
+<td>
+2018-12-04
+</td>
+<td>
+Dec42018
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/PartitionMCMCDAG/daeaf0150637be5b93202a1bb090641d0b1ccf20/docs/partitionMCMC.html" target="_blank">daeaf01</a>
+</td>
+<td>
+Shengtong
+</td>
+<td>
+2018-12-04
+</td>
+<td>
+Dec42018
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="listpossibleparents" class="section level2">
+<h2>listpossibleparents</h2>
+<pre class="r"><code>combinations=function(n, r, v = 1:n, set = TRUE, repeats.allowed=FALSE)
+{
+  # n: number if remaining nodes 
+  # r: number of parents 
+  
+  ###### this ensures n is a numeric, scale (length=1), greater than 1 and integer value 
+  if(mode(n) != &quot;numeric&quot; || length(n) != 1 
+     || n &lt; 1 || (n %% 1) != 0) stop(&quot;bad value of n&quot;)   # %%: modulus (x mod y) 5%%2 is 1
+  ##### same thing for r 
+  if(mode(r) != &quot;numeric&quot; || length(r) != 1 
+     || r &lt; 1 || (r %% 1) != 0) stop(&quot;bad value of r&quot;) 
+  #print(v)
+  
+  if(!is.atomic(v) || length(v) &lt; n)  # ensure v is atomic and of the same length as n 
+    stop(&quot;v is either non-atomic or too short&quot;)
+  
+  if( (r &gt; n) &amp; repeats.allowed==FALSE)  # number of maxparents MUST NOT exceed the remaining elements 
+    stop(&quot;r &gt; n and repeats.allowed=FALSE&quot;)
+  
+  if(set) {                               # always run this by the initial settings 
+    v &lt;- unique(sort(v))
+    if (length(v) &lt; n) stop(&quot;too few different elements&quot;) # again ensure length(v) is equal to n 
+  }   # end of set 
+  v0 &lt;- vector(mode(v), 0)
+  ## Inner workhorse
+  if(repeats.allowed)
+    sub &lt;- function(n, r, v)
+      { 
+        if(r == 0) v0 else
+        if(r == 1) matrix(v, n, 1) else
+        if(n == 1) matrix(v, 1, r) else
+        rbind( cbind(v[1], Recall(n, r-1, v)),
+              Recall(n-1, r, v[-1]))
+      }
+  else
+    ######################  ????? 
+    sub &lt;- function(n, r, v)  
+      { 
+        if(r == 0) v0 else  # no parents 
+        if(r == 1) matrix(v, n, 1) else  # one parent 
+        if(r == n) matrix(v, 1, n) else  # maximum number of parents 
+        rbind(cbind(v[1], Recall(n-1, r-1, v[-1])),
+              Recall(n-1, r, v[-1]))
+    }
+  
+  sub(n, r, v[1:n])
+}
+
+listpossibleparents=function(maxparents,elements){
+
+  listy&lt;-vector(&quot;list&quot;,length(elements)) # generare a list with length of length(elements)
+
+  for (i in elements){
+    remainingelements&lt;-elements[-i]
+
+    matrixofparents&lt;-rep(NA,maxparents)  
+    for (r in 1:maxparents){
+      possparents&lt;-combinations(length(remainingelements),r,remainingelements)
+      if(r&lt;maxparents){
+        for (j in 1:(maxparents-r)){
+      possparents &lt;- cbind(possparents, NA)
+        }
+      }
+    matrixofparents&lt;-rbind(matrixofparents,possparents,deparse.level=0)
+    } # end of r 
+    
+  listy[[i]] &lt;- matrixofparents
+  }   # end of i 
+
+return(listy)
+}</code></pre>
+</div>
+<div id="dagcorescore" class="section level2">
+<h2>DAGcorescore</h2>
+<pre class="r"><code>DAGcorescore=function(j,parentnodes,n){
+  
+  lp&lt;-length(parentnodes) #number of parents
+  return(lp)
+}
+
+TableDAGscore=function(parentrows, j, n){
+    nrows&lt;-nrow(parentrows)
+    P_local &lt;- numeric(nrows)   
+   
+    for (i in 1:nrows)  {
+        parentnodes &lt;- parentrows[i,which(parentrows[i,]&gt;0)] # for every row, extract numeric values as parents 
+        P_local[i]&lt;-DAGcorescore(j,parentnodes,n)  # DAGcorescore is in numedgescore.R 
+    }
+
+return(P_local)
+}
+
+scorepossibleparents=function(parenttable,n){
+
+  listy&lt;-vector(&quot;list&quot;,n)
+
+  for (j in 1:n){
+    scoretemp&lt;-TableDAGscore(parenttable[[j]], j, n)      # TableDAGscore is in scorefns.R 
+    listy[[j]] &lt;- as.matrix(scoretemp)
+  }  
+
+return(listy)
+
+}</code></pre>
+</div>
+<div id="samplescore" class="section level2">
+<h2>samplescore</h2>
+<pre class="r"><code>samplescore=function(n, scores)
+{
+ # scores=currentorderscores
+  incidence&lt;-matrix(numeric(n*n),nrow=n) # store the adjacency matrix
+  sampledscore&lt;-0
+  for (i in 1:n){
+   # i=1  # for every node i 
+    scorelength&lt;-length(scores$allscores[[i]])
+    k&lt;-sample.int(scorelength,1,prob=exp(scores$allscores[[i]]-scores$totscores[i])) # sample according to scores
+    parentrow&lt;-parenttable[[i]][scores$allowedrows[[i]][k],] # the parent set
+    parentset&lt;-parentrow[which(parentrow&gt;0)] # removing NAs
+    incidence[parentset,i]&lt;-1 # fill in elements of the adjacency matrix
+    sampledscore&lt;-sampledscore+scores$allscores[[i]][k] # and add the score
+  }
+  DAG&lt;-list()
+  DAG$incidence&lt;-incidence
+  DAG$logscore&lt;-sampledscore
+  return(DAG)
+  
+}</code></pre>
+<pre class="r"><code>n=3  # n nodes 
+seedset=1
+seednumber=101
+stepsave=1
+
+maxparents=2
+
+parenttable&lt;-listpossibleparents(maxparents,c(1:n))
+tablelength&lt;-nrow(parenttable[[1]]) # size of the table
+
+# Now need to score them!
+
+scoretable&lt;-scorepossibleparents(parenttable,n) 
+
+
+startpermutation&lt;-c(1:n) # pick a starting permutation
+    startpartition&lt;-c(n) # and a starting partition - c(n) gives the empty DAG</code></pre>
+</div>
+<div id="parttolist" class="section level2">
+<h2>parttolist</h2>
 <pre class="r"><code>parttolist=function(n,party){
     posy&lt;-rep(0,n)
     kbot&lt;-1
@@ -376,25 +801,48 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
     }
     return(posy)
 }</code></pre>
-<pre class="r"><code>partitionscore=function(n,scorenodes,parenttable,scoretable,permy,party,posy){
-
+<div id="example" class="section level3">
+<h3>example</h3>
+<pre class="r"><code>currentparty&lt;-startpartition #starting partition
+currentparty</code></pre>
+<pre><code>[1] 3</code></pre>
+<pre class="r"><code>  currentposy&lt;-parttolist(n,currentparty) #create a list of which nodes are in which partition element
+  currentposy</code></pre>
+<pre><code>[1] 1 1 1</code></pre>
+<pre class="r"><code>  parttolist(4,c(1,2,1)) # partition 4 nodes into 3 sets [k1,k2,k3] where k1=1; k2=2, k3=1</code></pre>
+<pre><code>[1] 1 2 2 3</code></pre>
+<pre class="r"><code>  parttolist(5, c(2,2,1)) # partition 5 nodes into 3 sets [k1,k2,k3] where k1=2; k2=2, k3=1, n=k1+k2+..+km, m is the number of sets. </code></pre>
+<pre><code>[1] 1 1 2 2 3</code></pre>
+</div>
+</div>
+<div id="partitionscore" class="section level2">
+<h2>partitionscore</h2>
+<pre class="r"><code>#partitionscore(n,c(1:n),parenttable,scoretable,currentpermy,currentparty,currentposy)
+partitionscore=function(n,scorenodes,parenttable,scoretable,permy,party,posy){
+ ############
+  #scorenodes=c(1:n)
+  #permy=currentpermy
+  #party=currentparty
+  #posy=currentposy
+ ############
   partitionscores&lt;-rep(0,n)
   allscores&lt;-vector(&quot;list&quot;,n)
   allowedscorerows&lt;-vector(&quot;list&quot;,n)
-  m&lt;-length(party)
+  m&lt;-length(party)   # m is the number of sets in the partition
 
   tablesize&lt;-dim(parenttable[[1]]) # just to remove some arguments
 #############################################
   for (i in scorenodes){
+  #  i=2
     position&lt;-which(permy==i)
     partyelement&lt;-posy[position]
-    if(partyelement==m){# no parents are allowed   this is the definition of the node, i.e., the rightmost node doesn&#39;t have parents 
-    partitionscores[i]&lt;-scoretable[[i]][1,1]
+    if(partyelement==m){# no parents are allowed   this is the definition of the node, i.e., the rightmost node doesn&#39;t have parents #### this is the rightmost sets 
+    partitionscores[i]&lt;-scoretable[[i]][1,1] # the first rows corresponds to root nodes 
     allscores[[i]]&lt;-partitionscores[i] # there is only one score
     allowedscorerows[[i]]&lt;-c(1) # there is only one score
-    } else {
-    bannednodes&lt;-permy[which(posy&lt;=partyelement)]
-    requirednodes&lt;-permy[which(posy==(partyelement+1))]
+    } else {    # this is the sets after root nodes 
+    bannednodes&lt;-permy[which(posy&lt;=partyelement)]  # nodes left to i are banned from being offspring of i 
+    requirednodes&lt;-permy[which(posy==(partyelement+1))] # nodes next right to i 
         allowedrows&lt;-c(2:tablesize[1]) # first we remove the banned rows   ### what are banned rows 
         for (j in 1:tablesize[2]){ # working columnwise allows R to speed up 
           bannedrows&lt;-which(parenttable[[i]][allowedrows,j]%in%bannednodes)
@@ -413,7 +861,7 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
     allscores[[i]]&lt;-scoretable[[i]][allowedrows,1]
     allowedscorerows[[i]]&lt;-allowedrows
     maxallowed&lt;-max(allscores[[i]])
-    partitionscores[i]&lt;-maxallowed+log(sum(exp(allscores[[i]]-maxallowed)))  # why the score is calculated this way ??????????
+    partitionscores[i]&lt;-maxallowed+log(sum(exp(allscores[[i]]-maxallowed)))  # why the score is calculated this way ?????????? used to normalize the probability when sampling parents 
     }  # end of else 
   }  # end of i 
 ############################
@@ -424,8 +872,655 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
   scores$totscores&lt;-partitionscores
 return(scores)
 }</code></pre>
-<pre class="r"><code>partitionMCMC=function(n,startpermy,startparty,iterations,stepsave,parenttable,scoretable,moveprobs){
+<div id="example-1" class="section level3">
+<h3>example</h3>
+<pre class="r"><code> currentpermy&lt;-startpermutation #starting permutation
+  currentparty&lt;-startpartition #starting partition
+  currentposy&lt;-parttolist(n,currentparty) #create a list of which nodes are in which partition element
 
+  currentpartitionscores&lt;-partitionscore(n,c(1:n),parenttable,scoretable,currentpermy,currentparty,currentposy) #starting score of all DAGs compatible with the starting permutation and partition
+  currentpartitionscores</code></pre>
+<pre><code>$allscores
+$allscores[[1]]
+[1] 0
+
+$allscores[[2]]
+[1] 0
+
+$allscores[[3]]
+[1] 0
+
+
+$allowedrows
+$allowedrows[[1]]
+[1] 1
+
+$allowedrows[[2]]
+[1] 1
+
+$allowedrows[[3]]
+[1] 1
+
+
+$totscores
+[1] 0 0 0</code></pre>
+</div>
+</div>
+<div id="partyjoin" class="section level2">
+<h2>partyjoin</h2>
+<pre class="r"><code>partyjoin=function(n,party,posy){
+    m&lt;-length(party)
+    joinpossibs&lt;-rep(0,n)
+    for(k in 1:n){
+        joinpossibs[k]&lt;-m-1
+        nodeselement&lt;-posy[k]
+        if(party[nodeselement]==1){ #nodes in a partition element of size 1
+            if(nodeselement&lt;m){
+                if(party[nodeselement+1]==1){ #and if the next partition element is also size 1
+                    joinpossibs[k]&lt;-m-2 #we only allow them to jump to the left to count the swap only once
+                }
+            }
+        }
+    }
+    return(joinpossibs)
+}</code></pre>
+<div id="example-2" class="section level3">
+<h3>example</h3>
+<pre class="r"><code>partyjoin(3,3,c(1,1,1))  # one partition </code></pre>
+<pre><code>[1] 0 0 0</code></pre>
+<pre class="r"><code>sum(partyjoin(3,3,c(1,1,1))) # no choice of joining other partition</code></pre>
+<pre><code>[1] 0</code></pre>
+<pre class="r"><code>partyjoin(3,c(1,2), c(1,2,2))</code></pre>
+<pre><code>[1] 1 1 1</code></pre>
+<pre class="r"><code>sum(partyjoin(3,c(1,2), c(1,2,2)))</code></pre>
+<pre><code>[1] 3</code></pre>
+<pre class="r"><code>partyjoin(3,c(1,1,1), c(1,2,3))  # why the leftmost node has one choice of joining another partition and all choices are already counted at the partition right to leftmost? </code></pre>
+<pre><code>[1] 1 1 2</code></pre>
+<pre class="r"><code>sum(partyjoin(3,c(1,1,1), c(1,2,3)))</code></pre>
+<pre><code>[1] 4</code></pre>
+</div>
+</div>
+<div id="partyhole" class="section level2">
+<h2>partyhole</h2>
+<pre class="r"><code>partyhole=function(n,party,posy){
+    m&lt;-length(party)
+    holepossibs&lt;-rep(0,n)
+    for(k in 1:n){
+        nodeselement&lt;-posy[k]
+        if(party[nodeselement]==1){ #nodes in a partition element of size 1 cannot move to the neighbouring holes
+            holepossibs[k]&lt;-m-1
+            if(nodeselement&lt;m){
+                if(party[nodeselement+1]==1){ #and if the next partition element is also size 1
+                    holepossibs[k]&lt;-m-2 #we only allow them to jump to the left to count the swap only once
+                }
+            }
+        } else if(party[nodeselement]==2){ #nodes in a partition element of size 2 cannot move to the hole on the left
+            holepossibs[k]&lt;-m #since this would count the same splitting twice 
+        } else {
+            holepossibs[k]&lt;-m+1
+        }
+    }
+    return(holepossibs)
+}</code></pre>
+</div>
+<div id="holenode" class="section level2">
+<h2>holenode</h2>
+<pre class="r"><code>holenode=function(n,currentparty,currentposy,currentpermy,holepossibs){
+  m&lt;-length(currentparty)
+
+  scorelength&lt;-length(holepossibs) 
+  nodetomove&lt;-sample.int(scorelength,1,prob=holepossibs) # sample an element
+
+  nodeselement&lt;-currentposy[nodetomove]
+  holetomoveto&lt;-sample.int(holepossibs[nodetomove],1) # sample where to go to
+
+  if(currentparty[nodeselement]==1){
+    if(holetomoveto&gt;=nodeselement){
+    holetomoveto&lt;-holetomoveto+1 #counts hole when partition element removed
+    if(nodeselement&lt;m){
+      if(currentparty[nodeselement+1]==1){ #if next partition element is also size one
+        holetomoveto&lt;-holetomoveto+1 #shift one hole further along
+      }
+    }
+    }
+    proposedparty&lt;-currentparty[-nodeselement]
+    proposedparty&lt;-append(proposedparty,1,holetomoveto-1)
+    proposedposy&lt;-parttolist(n,proposedparty) #should be updated for efficiency
+
+    if(holetomoveto&lt;nodeselement){
+    leftnodes&lt;-which(proposedposy==holetomoveto) # this should be the node which is moved
+    maxleftnodes&lt;-max(leftnodes)
+    rightnodes&lt;-which(proposedposy==nodeselement) # these were to the left of the moved node
+    minrightnodes&lt;-min(rightnodes)
+    proposedpermy&lt;-currentpermy[-nodetomove]
+    proposedpermy&lt;-append(proposedpermy,currentpermy[nodetomove],leftnodes-1)
+
+    centralnodes&lt;-c()
+    if((maxleftnodes+1)&lt;minrightnodes){
+      centralnodes&lt;-c((maxleftnodes+1):(minrightnodes-1))
+    }
+    rescorenodes&lt;-c(leftnodes,centralnodes,rightnodes) #all these need to be rescored
+    if(holetomoveto&gt;1){ #as well as the partition element further left, if it exists
+      rescorenodes&lt;-c(which(currentposy==(holetomoveto-1)),rescorenodes)
+    }
+    } else {
+    leftnodes&lt;-which(proposedposy==nodeselement) # these were to the right of the moved node
+    maxleftnodes&lt;-max(leftnodes)
+    rightnodes&lt;-which(proposedposy==holetomoveto) # this should be the node that is moved
+    minrightnodes&lt;-min(rightnodes)
+    proposedpermy&lt;-currentpermy[-nodetomove]
+    proposedpermy&lt;-append(proposedpermy,currentpermy[nodetomove],rightnodes-1)
+
+    centralnodes&lt;-c()
+    if((maxleftnodes+1)&lt;minrightnodes){
+      centralnodes&lt;-c((maxleftnodes+1):(minrightnodes-1))
+    }
+    rescorenodes&lt;-c(leftnodes,centralnodes,rightnodes) #all these need to be rescored
+    if(nodeselement&gt;1){ #as well as the partition element further left, if it exists
+      rescorenodes&lt;-c(which(currentposy==(nodeselement-1)),rescorenodes)
+    }
+    }
+  }  else {
+    if(currentparty[nodeselement]==2){
+    if(holetomoveto==nodeselement){
+      holetomoveto&lt;-m+1
+    }
+    }
+    proposedparty&lt;-currentparty
+    proposedparty[nodeselement]&lt;-currentparty[nodeselement]-1
+    proposedparty&lt;-append(proposedparty,1,holetomoveto-1)
+    proposedposy&lt;-parttolist(n,proposedparty) #should be updated for efficiency
+
+    if(holetomoveto&lt;=nodeselement){
+    leftnodes&lt;-which(proposedposy==holetomoveto) # this is the node which is moved
+    maxleftnodes&lt;-max(leftnodes)
+    rightnodes&lt;-which(proposedposy==(nodeselement+1)) # these are the nodes left over
+    minrightnodes&lt;-min(rightnodes)
+    proposedpermy&lt;-currentpermy[-nodetomove]
+    proposedpermy&lt;-append(proposedpermy,currentpermy[nodetomove],leftnodes-1)
+
+    centralnodes&lt;-c()
+    if((maxleftnodes+1)&lt;minrightnodes){
+      centralnodes&lt;-c((maxleftnodes+1):(minrightnodes-1))
+    }
+    rescorenodes&lt;-c(leftnodes,centralnodes) #all these need to be rescored
+    if(holetomoveto&gt;1){ #as well as the partition element further left, if it exists
+      rescorenodes&lt;-c(which(currentposy==(holetomoveto-1)),rescorenodes)
+    }
+    } else {
+    leftnodes&lt;-which(proposedposy==nodeselement) # these are the nodes left over
+    maxleftnodes&lt;-max(leftnodes)
+    rightnodes&lt;-which(proposedposy==holetomoveto) # this is the node which is moved
+    minrightnodes&lt;-min(rightnodes)
+    proposedpermy&lt;-currentpermy[-nodetomove]
+    proposedpermy&lt;-append(proposedpermy,currentpermy[nodetomove],rightnodes-1)
+
+    centralnodes&lt;-c()
+    if((maxleftnodes+1)&lt;minrightnodes){
+      centralnodes&lt;-c((maxleftnodes+1):(minrightnodes-1))
+    }
+    rescorenodes&lt;-c(leftnodes,centralnodes,rightnodes) #all these need to be rescored
+    if(nodeselement&gt;1){ #as well as the partition element further left, if it exists
+      rescorenodes&lt;-c(which(currentposy==(nodeselement-1)),rescorenodes)
+    }
+    }
+
+  }
+
+  rescorenodes&lt;-proposedpermy[rescorenodes] #map to the correct labels
+
+return(list(proposedparty,proposedposy,proposedpermy,rescorenodes))
+}</code></pre>
+</div>
+<div id="parttopermdiffelemposs" class="section level2">
+<h2>parttopermdiffelemposs</h2>
+<pre class="r"><code>parttopermdiffelemposs=function(n,party){
+    m&lt;-length(party)
+    possibs&lt;-rep(0,m-1)
+    if(m&gt;1){
+        remainder&lt;-n
+        for (i in 1:(m-1)){
+            remainder&lt;-remainder-party[i]
+            possibs[i]&lt;-party[i]*remainder
+        }   
+    }
+    return(possibs)
+}
+
+parttopermdiffelemposs(4, c(1,2,1))</code></pre>
+<pre><code>[1] 3 2</code></pre>
+</div>
+<div id="swapdiffelementnodes" class="section level2">
+<h2>swapdiffelementnodes</h2>
+<pre class="r"><code>swapdiffelementnodes=function(n,currentparty,currentposy,currentpermy,permpossibs){
+
+  scorelength&lt;-length(permpossibs) 
+  selectedelement&lt;-sample.int(scorelength,1,prob=permpossibs) # sample an element
+
+  leftnodes&lt;-which(currentposy==selectedelement) #nodes in the left partition element
+  maxleftnodes&lt;-max(leftnodes)
+  sampledleftnode&lt;-propersample(leftnodes)
+  sampledrightnode&lt;-propersample(c((maxleftnodes+1):n)) #chose the right node from the remaining ones
+  sampledelements&lt;-c(sampledleftnode,sampledrightnode) #the sampled pair
+  rightnodes&lt;-which(currentposy==currentposy[sampledrightnode]) #the remaining nodes on the right
+  minrightnodes&lt;-min(rightnodes)
+
+  centralnodes&lt;-c()
+  if((maxleftnodes+1)&lt;minrightnodes){ #the nodes inbetween
+    centralnodes&lt;-c((maxleftnodes+1):(minrightnodes-1))
+  }
+  rescorenodes&lt;-c(leftnodes,centralnodes,sampledrightnode) #all these need to be rescored
+  if(selectedelement&gt;1){ #as well as the partition element further left, if it exists
+    rescorenodes&lt;-c(which(currentposy==(selectedelement-1)),rescorenodes)
+  }
+
+  proposedpermy&lt;-currentpermy #create the new permutation
+  proposedpermy[sampledelements]&lt;-currentpermy[rev(sampledelements)] #by swapping the elements
+
+  rescorenodes&lt;-proposedpermy[rescorenodes] #map to the correct labels
+
+return(list(proposedpermy,rescorenodes))
+
+}</code></pre>
+</div>
+<div id="propersample" class="section level2">
+<h2>propersample</h2>
+<pre class="r"><code>propersample=function(x){if(length(x)==1) x else sample(x,1)}</code></pre>
+</div>
+<div id="joinnode" class="section level2">
+<h2>joinnode</h2>
+<pre class="r"><code>joinnode=function(n,currentparty,currentposy,currentpermy,joinpossibs){
+  m&lt;-length(currentparty)
+  scorelength&lt;-length(joinpossibs) 
+  nodetomove&lt;-sample.int(scorelength,1,prob=joinpossibs) # sample an element
+
+  nodeselement&lt;-currentposy[nodetomove]
+  elementtomoveto&lt;-sample.int(joinpossibs[nodetomove],1) # sample where to go to
+
+  if(elementtomoveto==nodeselement){ #if element selected is the same, replace by m which is not otherwise sampled
+    elementtomoveto&lt;-m
+  } else if (elementtomoveto==(nodeselement+1)){
+    if(currentparty[nodeselement]==1){ #if partition element has size one
+    if(currentparty[nodeselement+1]==1){ #if next partition element is also size one
+      elementtomoveto&lt;-m-1 #replace not allowed sample by &#39;m-1&#39; which also not be otherwise sampled
+    }
+    }
+  }
+
+  proposedparty&lt;-currentparty # update the partition
+  proposedparty[elementtomoveto]&lt;-currentparty[elementtomoveto]+1
+  if(currentparty[nodeselement]&gt;1){
+    proposedparty[nodeselement]&lt;-currentparty[nodeselement]-1
+  } else {
+    proposedparty&lt;-proposedparty[-nodeselement]
+  }
+  proposedposy&lt;-parttolist(n,proposedparty) #should be updated for efficiency
+
+  if(elementtomoveto&lt;nodeselement){
+    leftnodes&lt;-which(currentposy==elementtomoveto)
+    maxleftnodes&lt;-max(leftnodes)
+    rightnodes&lt;-which(currentposy==nodeselement) # this includes the node which is moved
+    minrightnodes&lt;-min(rightnodes)
+    proposedpermy&lt;-currentpermy[-nodetomove]
+    proposedpermy&lt;-append(proposedpermy,currentpermy[nodetomove],maxleftnodes)
+
+    centralnodes&lt;-c()
+    if((maxleftnodes+1)&lt;minrightnodes){
+    centralnodes&lt;-c((maxleftnodes+1):(minrightnodes-1))
+    }
+    rescorenodes&lt;-c(leftnodes,centralnodes,nodetomove) #all these need to be rescored
+    if(elementtomoveto&gt;1){ #as well as the partition element further left, if it exists
+      rescorenodes&lt;-c(which(currentposy==(elementtomoveto-1)),rescorenodes)
+    }
+  } else {
+    leftnodes&lt;-which(currentposy==nodeselement) # this includes the node which is moved
+    maxleftnodes&lt;-max(leftnodes)
+    rightnodes&lt;-which(currentposy==elementtomoveto)
+    minrightnodes&lt;-min(rightnodes)
+    proposedpermy&lt;-currentpermy[-nodetomove]
+    proposedpermy&lt;-append(proposedpermy,currentpermy[nodetomove],min(rightnodes)-2)
+
+    centralnodes&lt;-c()
+    if((maxleftnodes+1)&lt;minrightnodes){
+    centralnodes&lt;-c((maxleftnodes+1):(minrightnodes-1))
+    }
+    rescorenodes&lt;-c(leftnodes,centralnodes) #all these need to be rescored - the moved node is included in leftnodes
+    if(nodeselement&gt;1){ #as well as the partition element further left, if it exists
+      rescorenodes&lt;-c(which(currentposy==(nodeselement-1)),rescorenodes)
+    }
+  }
+
+  rescorenodes&lt;-currentpermy[rescorenodes] #map to the correct labels
+
+return(list(proposedparty,proposedposy,proposedpermy,rescorenodes))
+
+}</code></pre>
+<div id="example-3" class="section level3">
+<h3>example</h3>
+</div>
+</div>
+<div id="newedgereversalmove" class="section level2">
+<h2>newedgereversalmove</h2>
+<pre class="r"><code>newedgereversalmove=function(n,incidence,parenttable,scoretable){
+
+  tobereturned&lt;-NA
+  edges&lt;-which(incidence==1)
+
+  Ndagger&lt;-length(edges) # store the number of edges
+
+  if(Ndagger&gt;0){ # if there is at least one edge to reverse!
+     samplededge&lt;-propersample(edges)
+
+# creating a matrix with dimensions of the incidence matrix and all entries zero except for the entry of the chosen edge
+    helpmatrix &lt;- matrix(0,n,n)
+    helpmatrix[samplededge] &lt;- 1
+
+# labels of the node that belong to the selected egde
+    edgeparent &lt;- which(rowSums(helpmatrix)==1)
+    edgechild &lt;- which(colSums(helpmatrix)==1)
+
+# First we need to orphan the selected edge nodes
+
+    orphan&lt;-incidence
+    orphan[,edgechild]&lt;-0 # we orphan the child
+    orphan[,edgeparent]&lt;-0 # and the parent
+
+# Here we calculate the descendents in a naive way - could be performed more efficiently
+
+    descendorph&lt;-descendents(orphan)
+
+# Then from the orphan we need to make two steps
+# First we find new parents for the old parent node
+# It cannot include its descendents and must include the edge&#39;s child
+
+    edgeparentbannednodes&lt;-which(descendorph[edgeparent,]&gt;0) 
+
+# The rows of the parent table which satisfy the conditions
+
+    possibleparentrows&lt;-possibleparentsedgerev(n,parenttable[[edgeparent]],edgeparentbannednodes,edgechild)
+
+# and their scores
+
+    possibleparentscores&lt;-scoretable[[edgeparent]][possibleparentrows]
+    scorelength&lt;-length(possibleparentscores)
+
+# to sample and sum exponentials properly
+    maxscore&lt;-max(possibleparentscores)
+    expparentscores&lt;-exp(possibleparentscores-maxscore)
+
+# sample a row accordingly
+
+    sampledelement&lt;-sample.int(scorelength,1,prob=expparentscores)
+
+# Store the partition function
+
+    Zstarparent&lt;-sum(expparentscores)
+    Zstarparentlogscale&lt;-maxscore
+
+# and find the parents
+
+    newparents&lt;-parenttable[[edgeparent]][possibleparentrows[sampledelement],]
+    newparents&lt;-newparents[which(newparents&gt;0)]#remove the NAs
+
+# Fill up the new adjacency matrix
+
+    incidence1&lt;-orphan
+    incidence1[newparents,edgeparent]&lt;-1 # add the new parents to the old parent
+
+# update the descendent matrix
+
+    descend1&lt;-descendorph
+    descend1[newparents,edgeparent]&lt;-1 # add the new edges to the descendent matrix
+    oldparentdesc&lt;-which(descend1[edgeparent,]&gt;0) # the descendents of the old parent
+    descend1[newparents,oldparentdesc]&lt;-1 # and edges to the parents descendents
+    if(length(newparents)&gt;1){ # find the ancestors of the parents 
+      newancestors&lt;-which(rowSums(descend1[,newparents])&gt;0) 
+    } else {
+      newancestors&lt;-which(descend1[,newparents]&gt;0) 
+    }
+    descend1[newancestors,c(edgeparent,oldparentdesc)]&lt;-1 # and edges from the new parents&#39; ancestors to the old parent and its descendents
+
+#descend12&lt;-descendents(incidence1) # This was to check the update works
+#print(sum((descend1-descend12)^2))
+
+# Now we need to sample new parents for the previous child
+# none of the current descendents are permissible
+
+    edgechildbannednodes&lt;-which(descend1[edgechild,]&gt;0)
+
+# The rows of the parent table which satisfy the conditions
+
+    possibleparentrows&lt;-possibleparentsedgerevnext(n,parenttable[[edgechild]],edgechildbannednodes)
+
+# and their scores
+
+    possibleparentscores&lt;-scoretable[[edgechild]][possibleparentrows]
+    scorelength&lt;-length(possibleparentscores)
+
+# to sample and sum exponentials properly
+    maxscore&lt;-max(possibleparentscores)
+    expparentscores&lt;-exp(possibleparentscores-maxscore)
+
+# sample a row accordingly
+
+    sampledelement&lt;-sample.int(scorelength,1,prob=expparentscores)
+
+# Store the partition function
+
+    Zpluschild&lt;-sum(expparentscores)
+    Zpluschildlogscale&lt;-maxscore
+
+# and find the parents
+
+    newparents&lt;-parenttable[[edgechild]][possibleparentrows[sampledelement],]
+    newparents&lt;-newparents[which(newparents&gt;0)]#remove the NAs
+
+    if(length(newparents)&gt;0){
+# Update the new adjacency matrix
+
+      incidence1[newparents,edgechild]&lt;-1 # add the new parents to the old child
+
+# Update the descendent matrix too
+      descend1[newparents,edgechild]&lt;-1 # add the new edges to the descendent matrix
+      oldchilddesc&lt;-which(descend1[edgechild,]&gt;0) # the descendents of the old child
+      descend1[newparents,oldchilddesc]&lt;-1 # and edges to the childs descendents
+
+      if(length(newparents)&gt;1){ # find the ancestors of the parents 
+        newancestors&lt;-which(rowSums(descend1[,newparents])&gt;0) 
+      } else {
+        newancestors&lt;-which(descend1[,newparents]&gt;0) 
+      }
+      descend1[newancestors,c(edgechild,oldchilddesc)]&lt;-1 # and edges from the new parents&#39; ancestors to the old child and its descendents
+    }
+
+#descend12&lt;-descendents(incidence1) # This was to check the update works
+#print(sum((descend1-descend12)^2))
+
+    Ndaggertilde&lt;-length(which(incidence1==1)) # store the new number of edges
+
+# Next we need to make the same steps from the orphan but keeping the child and parent relation as before!
+# This is solely needed for the acceptance ratio.
+
+# First we find different parents for the child node
+# It cannot include its descendents and must include its previous edge parent
+
+    edgechildbannednodes&lt;-which(descendorph[edgechild,]&gt;0) 
+
+# The rows of the parent table which satisfy the conditions
+
+    possibleparentrows&lt;-possibleparentsedgerev(n,parenttable[[edgechild]],edgechildbannednodes,edgeparent)
+
+# and their scores
+
+    possibleparentscores&lt;-scoretable[[edgechild]][possibleparentrows]
+    scorelength&lt;-length(possibleparentscores)
+
+# to sample and sum exponentials properly
+    maxscore&lt;-max(possibleparentscores)
+    expparentscores&lt;-exp(possibleparentscores-maxscore)
+
+# sample a row accordingly
+
+    sampledelement&lt;-sample.int(scorelength,1,prob=expparentscores)
+
+# Store the partition function
+
+    Zstarchild&lt;-sum(expparentscores)
+    Zstarchildlogscale&lt;-maxscore
+
+# and find the parents
+
+    newparents&lt;-parenttable[[edgechild]][possibleparentrows[sampledelement],]
+    newparents&lt;-newparents[which(newparents&gt;0)]#remove the NAs
+
+# Now we don&#39;t actually need to fill up the new adjacency matrix
+
+#incidence2&lt;-orphan
+#incidence2[newparents,edgechild]&lt;-1 # add the new parents to the old parent
+
+# update the descendent matrix
+
+    descend2&lt;-descendorph
+    descend2[newparents,edgechild]&lt;-1 # add the new edges to the descendent matrix
+    childdesc&lt;-which(descend2[edgechild,]&gt;0) # descendendents of the child
+    descend2[newparents,childdesc]&lt;-1 # and their descendents
+    if(length(newparents)&gt;1){ # find the ancestors of the parents 
+      newancestors&lt;-which(rowSums(descend2[,newparents])&gt;0) 
+    } else {
+      newancestors&lt;-which(descend2[,newparents]&gt;0) 
+    }
+    descend2[newancestors,c(edgechild,childdesc)]&lt;-1 # and edges from the new parents&#39; ancestors to the old parent and its descendents
+
+#descend22&lt;-descendents(incidence2) # This was to check the update works
+#print(sum((descend2-descend22)^2))
+
+# Now we need to sample new parents for the previous parent
+# none of the current descendents are permissible
+
+    edgeparentbannednodes&lt;-which(descend2[edgeparent,]&gt;0)
+
+# The rows of the parent table which satisfy the conditions
+
+    possibleparentrows&lt;-possibleparentsedgerevnext(n,parenttable[[edgeparent]],edgeparentbannednodes)
+
+# and their scores
+
+    possibleparentscores&lt;-scoretable[[edgeparent]][possibleparentrows]
+
+# to sum exponentials properly
+    maxscore&lt;-max(possibleparentscores)
+    expparentscores&lt;-exp(possibleparentscores-maxscore)
+
+# Store the partition function
+
+    Zplusparent&lt;-sum(expparentscores)
+    Zplusparentlogscale&lt;-maxscore
+
+# Now we can finally calculate the accepance ratio
+
+    scoreratio&lt;-(Ndagger/Ndaggertilde)*(Zstarparent/Zstarchild)*(Zpluschild/Zplusparent)*exp(Zstarparentlogscale-Zstarchildlogscale+Zpluschildlogscale-Zplusparentlogscale)
+
+# MH move
+
+    if(runif(1)&lt;scoreratio){ # if move accepted return the new DAG
+    tobereturned&lt;-list(&quot;incidence&quot;=incidence1,&quot;ancestor&quot;=t(descend1),&quot;rescore&quot;=c(edgechild,edgeparent))
+    }
+  } else{ # if no edges to be sampled we need to stay still
+  #print(&#39;no edges to sample - stay still&#39;)
+  }
+
+return(tobereturned)
+
+}</code></pre>
+</div>
+<div id="descendents" class="section level2">
+<h2>descendents</h2>
+<pre class="r"><code>descendents=function(incidence){
+  incidence1 &lt;- t(incidence)
+  incidence2 &lt;- t(incidence)
+  k &lt;- 1
+  while (k &lt; nrow(incidence)){
+    incidence1 &lt;- incidence1%*%t(incidence)
+    incidence2 &lt;- incidence2 + incidence1
+    k &lt;-k+1
+  }
+  incidence2[which(incidence2[,]&gt;0)] &lt;- 1
+  return(t(incidence2))
+}</code></pre>
+</div>
+<div id="possibleparentsedgerev" class="section level2">
+<h2>possibleparentsedgerev</h2>
+<pre class="r"><code>possibleparentsedgerev=function(n,parenttableentry,bannednodes,child){
+
+  tablesize&lt;-dim(parenttableentry) # just to remove some arguments
+
+  allowedrows&lt;-c(2:tablesize[1])
+  for (j in 1:tablesize[2]){ # working columnwise allows R to speed up 
+    bannedrows&lt;-which(parenttableentry[allowedrows,j]%in%bannednodes)
+    if(length(bannedrows)&gt;0){
+      allowedrows&lt;-allowedrows[-bannedrows]
+    }
+  }
+  notrequiredrows&lt;-allowedrows
+  for (j in 1:tablesize[2]){ # now we remove the allowable rows instead
+    requiredrows&lt;-which(parenttableentry[notrequiredrows,j]%in%child)
+    if(length(requiredrows)&gt;0){
+    notrequiredrows&lt;-notrequiredrows[-requiredrows]
+    }
+  }
+  allowedrows&lt;-setdiff(allowedrows,notrequiredrows) # and keep just the difference!
+
+return(allowedrows)
+}</code></pre>
+</div>
+<div id="possibleparentsedgerevnext" class="section level2">
+<h2>possibleparentsedgerevnext</h2>
+<pre class="r"><code>possibleparentsedgerevnext=function(n,parenttableentry,bannednodes){
+
+  tablesize&lt;-dim(parenttableentry) # just to remove some arguments
+
+  allowedrows&lt;-c(2:tablesize[1])
+  for (j in 1:tablesize[2]){ # working columnwise allows R to speed up 
+    bannedrows&lt;-which(parenttableentry[allowedrows,j]%in%bannednodes)
+    if(length(bannedrows)&gt;0){
+      allowedrows&lt;-allowedrows[-bannedrows]
+    }
+  }
+  allowedrows&lt;-c(1,allowedrows) # this row is always allowed
+
+return(allowedrows)
+}</code></pre>
+</div>
+<div id="dagtopartition" class="section level2">
+<h2>DAGtopartition</h2>
+<pre class="r"><code>DAGtopartition=function(n,incidence){
+  party&lt;-c() # to store the partition
+  permy &lt;- numeric(n) # to store the permutation
+  m &lt;- n # counter
+  while(m&gt;0){
+    topnodes&lt;-which(colSums(incidence)==0) # find the outpoints
+incidence[topnodes,]&lt;-0 # remove their edges
+incidence[cbind(topnodes,topnodes)]&lt;-1 # add a one to their columns so they are no longer counted
+    l&lt;-length(topnodes) # the number of outpoints
+    m&lt;-m-l
+    permy[(m+1):(m+l)]&lt;-topnodes
+    party&lt;-c(l,party)
+  }
+
+  partypermy&lt;-list()
+  partypermy$party&lt;-party
+  partypermy$permy&lt;-permy
+return(partypermy)
+}</code></pre>
+</div>
+<div id="partitionmcmc" class="section level2">
+<h2>partitionMCMC</h2>
+<pre class="r"><code>partitionMCMC=function(n,startpermy,startparty,iterations,stepsave,parenttable,scoretable,moveprobs){
+########
+#  startpermy=startpermutation
+#  startparty=startpartition
+  
+########  
   newedgerevallowed&lt;-1 # allow the new edge reversal moves
   if(length(moveprobs)==5){
     newedgerevallowed&lt;-0 # or don&#39;t allow them 
@@ -479,7 +1574,7 @@ partjoinholeflag&lt;-1
 
     if(length(currentparty)&gt;1){ # if the partition only has one element then we cannot move
       switch(as.character(chosenmove),
-      &quot;1&quot;={ # swap any two elements from diffent partition elements
+      &quot;1&quot;={ # swap any two elements from different partition elements
         if(permdiffelemflag&gt;0){ # do we need to recalculate the neighbourhood?
         permdiffelemposs&lt;-parttopermdiffelemposs(n,currentparty)
         permdiffelemflag&lt;-0
@@ -641,15 +1736,60 @@ partjoinholeflag&lt;-1
     L3[[z]]&lt;-currenttotallogscore #store the current total partition score
     L4[[z]]&lt;-currentpermy #store current permutation each &#39;stepsave&#39;
     L5[[z]]&lt;-currentparty #store current partition each &#39;stepsave&#39;
-  }
+  }   #end of for (z in 2:zlimit) 
   return(list(L1,L2,L3,L4,L5))
 }</code></pre>
-<div id="session-information" class="section level2">
-<h2>Session information</h2>
+</div>
+<div id="example-4" class="section level2">
+<h2>example</h2>
+<pre class="r"><code>     # partition MCMC with edge reversal
+    iterations&lt;-100 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap two nodes from different partition elements
+# 2 is to only swap nodes from adjacent elements
+# 3 is to split or join partition elements
+# 4 is to move a single node
+# 5 is to stay still (officially needed for convergence)
+# 6 is the new edge reversal
+    prob1start&lt;-37/100
+    prob1&lt;-prob1start*100
+    if(n&gt;3){ prob1&lt;-round(6*prob1*n/(n^2+10*n-24)) }
+    prob1&lt;-prob1/100
+    prob2start&lt;-92/100-prob1start
+    prob2&lt;-prob2start*100
+    if(n&gt;3){ prob2&lt;-round(6*prob2*n/(n^2+10*n-24)) }
+    prob2&lt;-prob2/100
+    moveprobs&lt;-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01,0.07)
+    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
+    
+    example&lt;-partitionMCMC(n,startpermutation,startpartition,iterations,stepsave,parenttable,scoretable,moveprobs)
+length(example)</code></pre>
+<pre><code>[1] 5</code></pre>
+<pre class="r"><code>iter=50
+example[[1]][[iter]]</code></pre>
+<pre><code>     [,1] [,2] [,3]
+[1,]    0    0    0
+[2,]    1    0    0
+[3,]    1    0    0</code></pre>
+<pre class="r"><code>example[[2]][[iter]]</code></pre>
+<pre><code>[1] 2</code></pre>
+<pre class="r"><code>example[[3]][[iter]]</code></pre>
+<pre><code>[1] 2.551445</code></pre>
+<pre class="r"><code>example[[4]][[iter]]</code></pre>
+<pre><code>[1] 1 2 3</code></pre>
+<pre class="r"><code>example[[5]][[iter]]</code></pre>
+<pre><code>[1] 1 2</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.5.1 (2018-07-02)
+<pre><code>R version 3.6.0 (2019-04-26)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 17134)
+Running under: Windows 10 x64 (build 18363)
 
 Matrix products: default
 
@@ -664,14 +1804,15 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] workflowr_1.1.1   Rcpp_1.0.0        digest_0.6.18    
- [4] rprojroot_1.3-2   R.methodsS3_1.7.1 backports_1.1.2  
- [7] git2r_0.23.0      magrittr_1.5      evaluate_0.12    
-[10] stringi_1.2.4     whisker_0.3-2     R.oo_1.22.0      
-[13] R.utils_2.7.0     rmarkdown_1.10    tools_3.5.1      
-[16] stringr_1.3.1     yaml_2.2.0        compiler_3.5.1   
-[19] htmltools_0.3.6   knitr_1.20       </code></pre>
+ [1] workflowr_1.6.2 Rcpp_1.0.1      rprojroot_1.3-2 digest_0.6.19  
+ [5] later_0.8.0     R6_2.4.1        backports_1.1.4 git2r_0.26.1   
+ [9] magrittr_1.5    evaluate_0.13   stringi_1.4.3   fs_1.3.1       
+[13] promises_1.0.1  whisker_0.3-2   rmarkdown_1.13  tools_3.6.0    
+[17] stringr_1.4.0   glue_1.4.1      httpuv_1.5.1    xfun_0.20      
+[21] yaml_2.2.0      compiler_3.6.0  htmltools_0.3.6 knitr_1.23     </code></pre>
 </div>
+</div>
+
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
@@ -684,14 +1825,6 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
-
-<hr>
-<p>
-  This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-  analysis was created with
-  <a href="https://github.com/jdblischak/workflowr">workflowr</a> 1.1.1
-</p>
-<hr>
 
 
 </div>

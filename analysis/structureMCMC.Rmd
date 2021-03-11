@@ -1,22 +1,142 @@
 ---
-title: "structureMCMC"
+title: "Run function-structureMCMC"
 author: "Shengtong"
 date: "2018-11-06"
 output: workflowr::wflow_html
 ---
 
-This function returns the incidence matrix and its corresponding edges 
-
-## Neighbors for every move type and update the ancestors 
 
 
+This function-structureMCMC returns the incidence matrix and its corresponding unmber of edges  in MCMC. 
 
+
+
+## pre-req functions 
+
+
+### listpossibleparents
+
+
+```{r, echo=T}
+combinations=function(n, r, v = 1:n, set = TRUE, repeats.allowed=FALSE)
+{
+  # n: number if remaining nodes 
+  # r: number of parents 
+  
+  ###### this ensures n is a numeric, scale (length=1), greater than 1 and integer value 
+  if(mode(n) != "numeric" || length(n) != 1 
+     || n < 1 || (n %% 1) != 0) stop("bad value of n")   # %%: modulus (x mod y) 5%%2 is 1
+  ##### same thing for r 
+  if(mode(r) != "numeric" || length(r) != 1 
+     || r < 1 || (r %% 1) != 0) stop("bad value of r") 
+  #print(v)
+  
+  if(!is.atomic(v) || length(v) < n)  # ensure v is atomic and of the same length as n 
+    stop("v is either non-atomic or too short")
+  
+  if( (r > n) & repeats.allowed==FALSE)  # number of maxparents MUST NOT exceed the remaining elements 
+    stop("r > n and repeats.allowed=FALSE")
+  
+  if(set) {                               # always run this by the initial settings 
+    v <- unique(sort(v))
+    if (length(v) < n) stop("too few different elements") # again ensure length(v) is equal to n 
+  }   # end of set 
+  v0 <- vector(mode(v), 0)
+  ## Inner workhorse
+  if(repeats.allowed)
+    sub <- function(n, r, v)
+      { 
+        if(r == 0) v0 else
+        if(r == 1) matrix(v, n, 1) else
+        if(n == 1) matrix(v, 1, r) else
+        rbind( cbind(v[1], Recall(n, r-1, v)),
+              Recall(n-1, r, v[-1]))
+      }
+  else
+    ######################  ????? 
+    sub <- function(n, r, v)  
+      { 
+        if(r == 0) v0 else  # no parents 
+        if(r == 1) matrix(v, n, 1) else  # one parent 
+        if(r == n) matrix(v, 1, n) else  # maximum number of parents 
+        rbind(cbind(v[1], Recall(n-1, r-1, v[-1])),
+              Recall(n-1, r, v[-1]))
+    }
+  
+  sub(n, r, v[1:n])
+}
+
+listpossibleparents=function(maxparents,elements){
+
+  listy<-vector("list",length(elements)) # generare a list with length of length(elements)
+
+  for (i in elements){
+    remainingelements<-elements[-i]
+
+    matrixofparents<-rep(NA,maxparents)  
+    for (r in 1:maxparents){
+      possparents<-combinations(length(remainingelements),r,remainingelements)
+      if(r<maxparents){
+        for (j in 1:(maxparents-r)){
+	  possparents <- cbind(possparents, NA)
+        }
+      }
+    matrixofparents<-rbind(matrixofparents,possparents,deparse.level=0)
+    } # end of r 
+    
+  listy[[i]] <- matrixofparents
+  }   # end of i 
+
+return(listy)
+}
+```
+
+
+### scorepossibleparents
+
+
+```{r, echo=T}
+DAGcorescore=function(j,parentnodes,n){
+  
+  lp<-length(parentnodes) #number of parents
+  return(lp)
+}
+
+TableDAGscore=function(parentrows, j, n){
+	nrows<-nrow(parentrows)
+	P_local <- numeric(nrows)   
+   
+	for (i in 1:nrows)  {
+		parentnodes <- parentrows[i,which(parentrows[i,]>0)] # for every row, extract numeric values as parents 
+		P_local[i]<-DAGcorescore(j,parentnodes,n)  # DAGcorescore is in numedgescore.R 
+	}
+
+return(P_local)
+}
+
+scorepossibleparents=function(parenttable,n){
+
+  listy<-vector("list",n)
+
+  for (j in 1:n){
+    scoretemp<-TableDAGscore(parenttable[[j]], j, n)      # TableDAGscore is in scorefns.R 
+    listy[[j]] <- as.matrix(scoretemp)
+  }  
+
+return(listy)
+
+}
+```
+
+### propersample
 
 ```{r, echo=T}
 # randomly sample the node
 propersample=function(x)
 {if(length(x)==1) x else sample(x,1)}
 ```
+
+
 
 ```{r, echo=T}
 # what is the purpose of this function??? 
@@ -40,6 +160,8 @@ return(Order)
 }
 ```
 
+
+
 ```{r, echo=T}
 des_top_order=function(incidence, ancest1,child){
 top <- top_order(incidence)
@@ -52,6 +174,41 @@ return(des_top)
 }
 ```
 
+
+### DAGnodescore
+
+```{r,echo=T}
+DAGnodescore=function(incidence, n, rescorenodes){
+	P_local <- numeric(n)   
+   
+	for (j in rescorenodes)  {
+		parentnodes <- which(incidence[,j]==1)
+    P_local[j]<-DAGcorescore(j,parentnodes,n)
+	}
+		
+return(P_local)
+}
+```
+
+
+### ancestor
+
+```{r, echo=T}
+ancestor=function(incidence){
+incidence1 <- incidence
+incidence2 <- incidence
+k <- 1
+while (k < nrow(incidence)){
+incidence1 <- incidence1%*%incidence
+incidence2 <- incidence2 + incidence1
+k <-k+1
+}
+incidence2[which(incidence2[,]>0)] <- 1
+return(t(incidence2))}
+```
+
+
+## structureMCMC
 
 ```{r, echo=T}
 # this code is taken from the Dortmund course programmed by Miriam Lohr
@@ -67,13 +224,18 @@ return(des_top)
 
 structureMCMC <- function(n,incidence,iterations,stepsave,fan.in,parenttable,scoretable,revallowed,moveprobs){
 
+  ###############
+  incidence=startDAG
+  ###############
+  
   newedgerevallowed<-1 # allow the new edge reversal moves
   if(length(moveprobs)==1){
     newedgerevallowed<-0 # or don't allow them
     chosenmove<-1 
   }
 
-  currentDAGlogscores<-DAGnodescore(incidence, n, c(1:n)) # count the number of parents 
+  currentDAGlogscores<-DAGnodescore(incidence, n, c(1:n)) # count the number of parents; offspring nodes are in columns and parents in rows in incidence matrix 
+  
   #currentDAGlogscores<-DAGscorefromtable(incidence,n,c(1:n),parenttable,scoretable) # or from the table of scores
   currentDAGlogscore<-sum(currentDAGlogscores) # total number of parents 
 
@@ -100,10 +262,10 @@ structureMCMC <- function(n,incidence,iterations,stepsave,fan.in,parenttable,sco
 
 ### 2.) number of neighbour graphs obtained by edge additions    1- E(i,j) - I(i,j) - A(i,j)
   fan.in=maxparents
-  inter_add <- which(fullmatrix - Ematrix - incidence - ancest1 >0) # why need to -ancest1 ?????????????????
+  inter_add <- which(fullmatrix - Ematrix - incidence - ancest1 >0) # why need to -ancest1 ? because ancestor positions are occupied, not available for adding  edges 
   add <- emptymatrix
   add[inter_add] <- 1
-  add[,which(colSums(incidence)>fan.in-1)] <- 0  ### what is here ? subject to maxparents constraint 
+  add[,which(colSums(incidence)>fan.in-1)] <- 0  ### what is here ? subject to maxparents constraint, yes, if that node already has maximum number of parents, it is not allowed to add more edges  
   num_addition <- sum(add)
 
 ### 3.) number of neighbour graphs obtained by edge reversals    I - (I^t * A)^t  why is it that? 
@@ -315,3 +477,44 @@ return(list(L1,L2))
 
 
 ```
+
+
+## examples 
+
+### consider standard structure MCMC 
+
+```{r, echo=T,eval=T}
+n=3  # n nodes 
+seedset=1
+seednumber=101
+
+maxparents=2
+
+parenttable<-listpossibleparents(maxparents,c(1:n))
+tablelength<-nrow(parenttable[[1]]) # size of the table
+
+# Now need to score them!
+
+scoretable<-scorepossibleparents(parenttable,n) 
+
+#"1"={ # standard structure MCMC
+	iterations<-100 #number of iterations in the chain
+	moveprobs<-c(1) # having length 1 disallows the new edge reversal move
+#	if(!(length(moveprobs)==1)){print('Vector of move probabilities has the wrong length!')}
+#}
+	startDAG<-matrix(numeric(n*n),nrow=n) # starting DAG is empty say
+    revallowed<-1 # allow standard edge reversals
+    #############
+    stepsave<-1 #stepsave<-iterations/1000 #how often to save the result
+
+  if(seedset>0){
+    set.seed(seednumber) # choose one?
+  }
+  #################
+    
+
+  example<-structureMCMC(n,startDAG,iterations,stepsave,maxparents,parenttable,scoretable,revallowed,moveprobs)
+  
+```
+
+

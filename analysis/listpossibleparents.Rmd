@@ -7,6 +7,8 @@ output: workflowr::wflow_html
 listpossibleparents returns all possible parent cases. 
 
 
+## pre-req function 
+
 ```{r, echo=T}
 combinations=function(n, r, v = 1:n, set = TRUE, repeats.allowed=FALSE)
 {
@@ -57,6 +59,8 @@ combinations=function(n, r, v = 1:n, set = TRUE, repeats.allowed=FALSE)
 }
 ```
 
+
+
 ```{r, echo=T}
 #The Recall function is used to recursively call a function. That is, suppose we are writing a function called f and we #want to call f within itself. Then instead of calling on f within itself, we use the Recall function in its place
   myFactorial <- function(n){
@@ -69,6 +73,8 @@ combinations=function(n, r, v = 1:n, set = TRUE, repeats.allowed=FALSE)
  myFactorial(5)
 ```
 
+
+## listpossibleparents
 
 ```{r, echo=T}
 listpossibleparents=function(maxparents,elements){
@@ -96,8 +102,11 @@ return(listy)
 }
 ```
 
+## example 
+
+`listpossibleparents`  lists all possible parents for each node in a matrix, but this number is not the number of DAG's. For example, the first element in the list is a matrix listing possible parents for node `1`. Each row tells how many parents bounded by `maxparents`and which.  For instance, node `1` could have none parents (the first row), one parent-node `2`( second row), one parent-node `3` (thrid row), and so on. Note **it doesn't involve acyclicity checking**. 
 
 ```{r, echo=T}
-maxparents=2; n=3
+maxparents=2; n=4
 listpossibleparents(maxparents, c(1:n))
 ```

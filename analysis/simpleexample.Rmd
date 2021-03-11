@@ -1,16 +1,22 @@
 ---
-title: "simpleexample"
+title: "Run simpleexample.R"
 author: "Shengtong"
 date: "2018-11-06"
 output: workflowr::wflow_html
 ---
 
-```{r read-chunk, include=FALSE}
-source('../../partitionMCMCcode/edgerevandstructure/structurefns.R')
+"simpleexample.R" runs a small example on three nodes where the score is proportional to the number of edges in the DAG
+
+
+```{r read-chunk, include=FALSE,eval=T}
+path="C:/Shengtong/Research/PartitionMCMCDAG/"
+source(paste(path, "partitionMCMCcode/edgerevandstructure/structurefns.R", sep=""))
 ```
 
+## Call source code and set up parameters 
 
-```{r, echo=T, eval=F}
+```{r, echo=T, eval=T}
+path="C:/Shengtong/Research/PartitionMCMCDAG/"
 # First choose the MCMC scheme
 
 MCMCtype<-1 # 1 means standard structure, 2 with new edge reversal
@@ -27,27 +33,27 @@ filetypey<-1 # we use png here
 
 # load the necessary functions
 
-source('../../partitionMCMCcode/edgerevandstructure/structurefns.R')
-source('../../partitionMCMCcode/edgerevandstructure/structureMCMC.R')
-source('../../partitionMCMCcode/edgerevandstructure/newedgerevfns.R')
-source('../../partitionMCMCcode/edgerevandstructure/newedgerevmove.R')
-source('../../partitionMCMCcode/orderandpartition/orderMCMC.R')
-source('../../partitionMCMCcode/orderandpartition/orderfns.R')
-source('../../partitionMCMCcode/orderandpartition/partitionMCMC.R')
-source('../../partitionMCMCcode/orderandpartition/partitionmoves.R')
-source('../../partitionMCMCcode/orderandpartition/partitionfns.R')
-source('../../partitionMCMCcode/orderandpartition/samplefns.R')
-source('../../partitionMCMCcode/scoring/combinations.R')
-source('../../partitionMCMCcode/scoring/scorefns.R')
-source('../../partitionMCMCcode/scoring/scoretables.R')
+source(paste(path, "partitionMCMCcode/edgerevandstructure/structurefns.R", sep=""))
+source(paste(path, "partitionMCMCcode/edgerevandstructure/structureMCMC.R", sep=""))
+source(paste(path, "partitionMCMCcode/edgerevandstructure/newedgerevfns.R", sep=""))
+source(paste(path, "partitionMCMCcode/edgerevandstructure/newedgerevmove.R", sep=""))
+source(paste(path, "partitionMCMCcode/orderandpartition/orderMCMC.R", sep=""))
+source(paste(path, "partitionMCMCcode/orderandpartition/orderfns.R", sep=""))
+source(paste(path, "partitionMCMCcode/orderandpartition/partitionMCMC.R", sep=""))
+source(paste(path, "partitionMCMCcode/orderandpartition/partitionmoves.R", sep=""))
+source(paste(path, "partitionMCMCcode/orderandpartition/partitionfns.R", sep=""))
+source(paste(path, "partitionMCMCcode/orderandpartition/samplefns.R", sep=""))
+source(paste(path, "partitionMCMCcode/scoring/combinations.R", sep=""))
+source(paste(path, "partitionMCMCcode/scoring/scorefns.R", sep=""))
+source(paste(path, "partitionMCMCcode/scoring/scoretables.R", sep=""))
 
 # load a simple score proportional to the number of edges in the DAG
 
-source('../../partitionMCMCcode/scoring/numedgescore.R')
+source(paste(path, "partitionMCMCcode/scoring/numedgescore.R", sep=""))
 
 # where to save the data
 
-dirname<-"../../partitionMCMCcode/simpleexamplegraphs/"
+dirname<-paste(path, "partitionMCMCcode/simpleexamplegraphs/")
 
 # Choose size of DAGs to consider
 
@@ -58,8 +64,7 @@ n<-3
 maxparents<-2 # Maximum number of parents to allow
 
 starttime<-proc.time() # for timing the problem
-```
-```{r, echo=T}
+
 # Fill up a matrix with possible parents
 
 parenttable<-listpossibleparents(maxparents,c(1:n))
@@ -69,13 +74,24 @@ tablelength<-nrow(parenttable[[1]]) # size of the table
 
 scoretable<-scorepossibleparents(parenttable,n) 
 
-endtime<-proc.time()
-endtime<-endtime-starttime
-print('Time to initialise the score table')
-print(endtime)
+#endtime<-proc.time()
+#endtime<-endtime-starttime
+#print('Time to initialise the score table')
+#print(endtime)
 ```
 
-```{r, echo=T, cap="switch function", eval=F}
+### sub-functions 
+
+* [listpossibleparents](listpossibleparents.html) list all possible parents
+
+* [scorepossibleparents](scorepossibleparents.html)
+
+
+
+
+## Define different move types 
+
+```{r, echo=T, cap="switch function", eval=T}
 switch(as.character(MCMCtype),
   "1"={ # standard structure MCMC
 	iterations<-100 #number of iterations in the chain
@@ -151,7 +167,8 @@ switch(as.character(MCMCtype),
 
 ```
 
-```{r, echo=T, eval=F}
+
+```{r, echo=T, eval=T}
 stepsave<-1 #stepsave<-iterations/1000 #how often to save the result
 
   if(seedset>0){
@@ -160,7 +177,10 @@ stepsave<-1 #stepsave<-iterations/1000 #how often to save the result
 
 ```
 
-```{r, echo=T, eval=F}
+
+## Run MCMC 
+
+```{r, echo=T, eval=T}
 # Run the MCMC codes
 
   starttime<-proc.time() # for timing the problem
@@ -187,13 +207,24 @@ stepsave<-1 #stepsave<-iterations/1000 #how often to save the result
 
   }
 
-  endtime<-proc.time()
-  endtime<-endtime-starttime
-  print('Time to run the')
-  print(iterations)
-  print('iterations')
-  print(endtime)
+#  endtime<-proc.time()
+#  endtime<-endtime-starttime
+#  print('Time to run the')
+#  print(iterations)
+#  print('iterations')
+#  print(endtime)
 ```
+
+### sub-functions 
+
+* [structure MCMC](structureMCMC.html)
+
+* [order MCMC](orderMCMC.html)
+
+* [partition MCMC](partitionMCMC.html)
+
+
+## Plot the results 
 
 
 ```{r, echo=T, eval=F}
