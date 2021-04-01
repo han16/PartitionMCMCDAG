@@ -5,7 +5,7 @@ date: "2018-11-06"
 output: workflowr::wflow_html
 ---
 
-"simpleexample.R" runs a small example on three nodes where the score is proportional to the number of edges in the DAG
+"simpleexample.R" runs a small example on three nodes where the score is proportional to the number of edges in the DAG, different from BGe score for 5-node network example in Figure 1. 
 
 
 ```{r read-chunk, include=FALSE,eval=T}

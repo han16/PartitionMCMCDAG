@@ -7,7 +7,7 @@ output: workflowr::wflow_html
 
 
 
-This function-structureMCMC returns the incidence matrix and its corresponding unmber of edges  in MCMC. 
+This function-structureMCMC returns the incidence matrix and its corresponding number of edges  in MCMC. 
 
 
 

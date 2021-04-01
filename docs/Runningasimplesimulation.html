@@ -9,11 +9,9 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Shengtong" />
 
-<meta name="date" content="2018-11-06" />
 
-<title>Run simpleexample.R</title>
+<title>Running a simple simulation</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -418,9 +416,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Run simpleexample.R</h1>
-<h4 class="author">Shengtong</h4>
-<h4 class="date">2018-11-06</h4>
+<h1 class="title toc-ignore">Running a simple simulation</h1>
 
 </div>
 
@@ -445,7 +441,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-03-18
+<strong>Last updated:</strong> 2021-04-01
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
@@ -469,7 +465,7 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 </div>
 <div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -555,7 +551,12 @@ Ignored files:
     Ignored:    analysis/.Rhistory
     Ignored:    analysis/figure/
 
+Untracked files:
+    Untracked:  analysis/Runningasimplesimulation.Rmd
+    Untracked:  analysis/runningasimpleexample.Rmd
+
 Unstaged changes:
+    Modified:   analysis/index.Rmd
     Modified:   analysis/simpleexample.Rmd
     Modified:   analysis/structureMCMC.Rmd
 
@@ -570,126 +571,17 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
-These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/simpleexample.Rmd</code>) and HTML (<code>docs/simpleexample.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
 </p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-File
-</th>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-<th>
-Message
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/PartitionMCMCDAG/blob/148ddc00c9adf5ea5a43948bfcb9dc6613eacc74/analysis/simpleexample.Rmd" target="_blank">148ddc0</a>
-</td>
-<td>
-Shengtong
-</td>
-<td>
-2021-03-11
-</td>
-<td>
-3/11/2021
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/PartitionMCMCDAG/148ddc00c9adf5ea5a43948bfcb9dc6613eacc74/docs/simpleexample.html" target="_blank">148ddc0</a>
-</td>
-<td>
-Shengtong
-</td>
-<td>
-2021-03-11
-</td>
-<td>
-3/11/2021
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/han16/PartitionMCMCDAG/blob/cfbd9a8cff3230117584260057a83eab9125ed6c/analysis/simpleexample.Rmd" target="_blank">cfbd9a8</a>
-</td>
-<td>
-Shengtong
-</td>
-<td>
-2018-11-07
-</td>
-<td>
-Nov72018
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/han16/PartitionMCMCDAG/cfbd9a8cff3230117584260057a83eab9125ed6c/docs/simpleexample.html" target="_blank">cfbd9a8</a>
-</td>
-<td>
-Shengtong
-</td>
-<td>
-2018-11-07
-</td>
-<td>
-Nov72018
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 </div>
 </div>
 </div>
-<p>“simpleexample.R” runs a small example on three nodes where the score is proportional to the number of edges in the DAG, different from BGe score for 5-node network example in Figure 1.</p>
-<div id="call-source-code-and-set-up-parameters" class="section level2">
-<h2>Call source code and set up parameters</h2>
+<p>For this example we simulate data from a DAG with n = 5 nodes and score with the BGe score. This code creates the graphs in the main paper.</p>
+<pre class="r"><code>n &lt;- 5</code></pre>
+<p>First we load the R files needed to run the MCMC codes</p>
 <pre class="r"><code>path=&quot;C:/Shengtong/Research/PartitionMCMCDAG/&quot;
-# First choose the MCMC scheme
-
-MCMCtype&lt;-1 # 1 means standard structure, 2 with new edge reversal
-# 3 means order MCMC, 4 means partition MCMC
-# 5 means partition MCMC with new edge reversal
-
-seedset&lt;-1 # set a seed?
-seednumber&lt;-101 # an example used
-
-# Choose whether to save the plots to png or pdf
-saveoutput&lt;-1 # 1 means save
-filetypes&lt;-c(&quot;.png&quot;,&quot;.pdf&quot;) # choose png or pdf for the figures
-filetypey&lt;-1 # we use png here  
-
-# load the necessary functions
 
 source(paste(path, &quot;partitionMCMCcode/edgerevandstructure/structurefns.R&quot;, sep=&quot;&quot;))
 source(paste(path, &quot;partitionMCMCcode/edgerevandstructure/structureMCMC.R&quot;, sep=&quot;&quot;))
@@ -704,282 +596,247 @@ source(paste(path, &quot;partitionMCMCcode/orderandpartition/samplefns.R&quot;, 
 source(paste(path, &quot;partitionMCMCcode/scoring/combinations.R&quot;, sep=&quot;&quot;))
 source(paste(path, &quot;partitionMCMCcode/scoring/scorefns.R&quot;, sep=&quot;&quot;))
 source(paste(path, &quot;partitionMCMCcode/scoring/scoretables.R&quot;, sep=&quot;&quot;))
-
-# load a simple score proportional to the number of edges in the DAG
-
-source(paste(path, &quot;partitionMCMCcode/scoring/numedgescore.R&quot;, sep=&quot;&quot;))
-
-# where to save the data
-
-dirname&lt;-paste(path, &quot;partitionMCMCcode/simpleexamplegraphs/&quot;)
-
-# Choose size of DAGs to consider
-
-n&lt;-3
-
-# Choose maximum number of parents
-
-maxparents&lt;-2 # Maximum number of parents to allow
-
-starttime&lt;-proc.time() # for timing the problem
-
+# load the BGe score
+source(paste(path, &quot;partitionMCMCcode/scoring/bgescorestable.R&quot;, sep=&quot;&quot;))</code></pre>
+<p>And then generate the data and load the score parameters</p>
+<pre class="r"><code>source(paste(path, &quot;partitionMCMCcode/initialisation/data5nodes.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/initialisation/scoreparas.R&quot;, sep=&quot;&quot;))</code></pre>
+<p>We can also calculate the score of the DAG the data generated from</p>
+<pre class="r"><code>realDAGlogscore &lt;- sum(DAGnodescore(incidence, n, c(1:n)))</code></pre>
+<p>Then we build the score table of all parent sets</p>
+<pre class="r"><code>maxparents &lt;- n - 1 # Maximum number of parents to allow
 # Fill up a matrix with possible parents
-
-parenttable&lt;-listpossibleparents(maxparents,c(1:n))
-tablelength&lt;-nrow(parenttable[[1]]) # size of the table
-
+parenttable &lt;- listpossibleparents(maxparents, c(1:n))
+tablelength &lt;- nrow(parenttable[[1]]) # size of the table
 # Now need to score them!
-
-scoretable&lt;-scorepossibleparents(parenttable,n) 
-
-#endtime&lt;-proc.time()
-#endtime&lt;-endtime-starttime
-#print(&#39;Time to initialise the score table&#39;)
-#print(endtime)</code></pre>
-<div id="sub-functions" class="section level3">
-<h3>sub-functions</h3>
-<ul>
-<li><p><a href="listpossibleparents.html">listpossibleparents</a> list all possible parents</p></li>
-<li><p><a href="scorepossibleparents.html">scorepossibleparents</a></p></li>
-</ul>
-</div>
-</div>
-<div id="define-different-move-types" class="section level2">
-<h2>Define different move types</h2>
-<pre class="r"><code>switch(as.character(MCMCtype),
-  &quot;1&quot;={ # standard structure MCMC
-    iterations&lt;-100 #number of iterations in the chain
-    moveprobs&lt;-c(1) # having length 1 disallows the new edge reversal move
-    if(!(length(moveprobs)==1)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
-  },
-  &quot;2&quot;={ # with new edge reversal
-    iterations&lt;-100 #number of iterations in the chain
-# Choose the probability of the different moves
-# 1 is standard structure MCMC (including the possibility to stay still [officially needed for convergence])
-# 2 is new edge reversal move
-    moveprobs&lt;-c(0.93,0.07)
-    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
-    if(!(length(moveprobs)==2)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
-  },
-  &quot;3&quot;={ # order MCMC
-    iterations&lt;-100 #number of iterations in the chain
-# Choose the probability of the different moves
-# 1 is swap any two elements
-# 2 is to only swap adjacent elements
-# 3 is to stay still (officially needed for convergence)
-    prob1&lt;-99
-    if(n&gt;3){ prob1&lt;-round(6*99*n/(n^2+10*n-24)) }
-    prob1&lt;-prob1/100
-    moveprobs&lt;-c(prob1,0.99-prob1,0.01)
-    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
-    if(!(length(moveprobs)==3)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
-  },
-  &quot;4&quot;={ # partition MCMC
-    iterations&lt;-100 #number of iterations in the chain
-# Choose the probability of the different moves
-# 1 is swap two nodes from different partition elements
-# 2 is to only swap nodes from adjacent elements
-# 3 is to split or join partition elements
-# 4 is to move a single node
-# 5 is to stay still (officially needed for convergence)
-    prob1start&lt;-40/100
-    prob1&lt;-prob1start*100
-    if(n&gt;3){ prob1&lt;-round(6*prob1*n/(n^2+10*n-24)) }
-    prob1&lt;-prob1/100
-    prob2start&lt;-99/100-prob1start
-    prob2&lt;-prob2start*100
-    if(n&gt;3){ prob2&lt;-round(6*prob2*n/(n^2+10*n-24)) }
-    prob2&lt;-prob2/100
-    moveprobs&lt;-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01)
-    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
-    if(!(length(moveprobs)==5)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
-  },
-  &quot;5&quot;={ # partition MCMC with edge reversal
-    iterations&lt;-100 #number of iterations in the chain
-# Choose the probability of the different moves
-# 1 is swap two nodes from different partition elements
-# 2 is to only swap nodes from adjacent elements
-# 3 is to split or join partition elements
-# 4 is to move a single node
-# 5 is to stay still (officially needed for convergence)
-# 6 is the new edge reversal
-    prob1start&lt;-37/100
-    prob1&lt;-prob1start*100
-    if(n&gt;3){ prob1&lt;-round(6*prob1*n/(n^2+10*n-24)) }
-    prob1&lt;-prob1/100
-    prob2start&lt;-92/100-prob1start
-    prob2&lt;-prob2start*100
-    if(n&gt;3){ prob2&lt;-round(6*prob2*n/(n^2+10*n-24)) }
-    prob2&lt;-prob2/100
-    moveprobs&lt;-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01,0.07)
-    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
-    if(!(length(moveprobs)==6)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
-  },
-  {# if none is chosen, we have a problem
-    print(&#39;Not implemented&#39;)
-  }) # end of switch</code></pre>
-<pre class="r"><code>stepsave&lt;-1 #stepsave&lt;-iterations/1000 #how often to save the result
-
-  if(seedset&gt;0){
-    set.seed(seednumber) # choose one?
-  }</code></pre>
-</div>
-<div id="run-mcmc" class="section level2">
-<h2>Run MCMC</h2>
-<pre class="r"><code># Run the MCMC codes
-
-  starttime&lt;-proc.time() # for timing the problem
-
-  if(MCMCtype&lt;3){
-
-    startDAG&lt;-matrix(numeric(n*n),nrow=n) # starting DAG is empty say
-    revallowed&lt;-1 # allow standard edge reversals
-
-    example&lt;-structureMCMC(n,startDAG,iterations,stepsave,maxparents,parenttable,scoretable,revallowed,moveprobs)
-
-  } else if (MCMCtype==3){
-
-    startorder&lt;-c(1:n) # starting order
-
-    example&lt;-orderMCMC(n,startorder,iterations,stepsave,parenttable,scoretable,moveprobs)
-
-  } else if (MCMCtype&gt;3){
-
-    startpermutation&lt;-c(1:n) # pick a starting permutation
-    startpartition&lt;-c(n) # and a starting partition - c(n) gives the empty DAG
-
-    example&lt;-partitionMCMC(n,startpermutation,startpartition,iterations,stepsave,parenttable,scoretable,moveprobs)
-
-  }
-
-#  endtime&lt;-proc.time()
-#  endtime&lt;-endtime-starttime
-#  print(&#39;Time to run the&#39;)
-#  print(iterations)
-#  print(&#39;iterations&#39;)
-#  print(endtime)</code></pre>
-<div id="sub-functions-1" class="section level3">
-<h3>sub-functions</h3>
-<ul>
-<li><p><a href="structureMCMC.html">structure MCMC</a></p></li>
-<li><p><a href="orderMCMC.html">order MCMC</a></p></li>
-<li><p><a href="partitionMCMC.html">partition MCMC</a></p></li>
-</ul>
-</div>
-</div>
-<div id="plot-the-results" class="section level2">
-<h2>Plot the results</h2>
-<pre class="r"><code># Plot the results
-
-  nparts&lt;-length(example[[2]])
-  DAGscores&lt;-unlist(example[[2]])
-  shiftedscores&lt;-DAGscores
-  maxscore&lt;-max(shiftedscores)
-
-  maxDAG&lt;-example[[1]][which(DAGscores==max(DAGscores))][[1]]
-
-# plotting parameters
-
-  par(mar=c(2.25,4.75,1.25,0.5))
-  par(mgp=c(3,1,0))
-  par(cex.axis=1.25)
-  par(cex.lab=1.5)
-
-  plot(1:nparts,shiftedscores,type=&quot;l&quot;, ylab=&quot;DAG score&quot;, xlab=&quot;&quot;,#xlab=&quot;iteration step&quot;, 
-main=&quot;&quot;, col=&quot;blue&quot;,ylim=c(maxscore-3.2,maxscore+0.2))
-  abline(h=maxscore,col=&#39;springgreen4&#39;, lwd=3)
- # abline(h=0,col=&#39;red&#39;,lty=3,lwd=3)
-  lines(1:nparts,shiftedscores,type=&quot;l&quot;, col=&quot;blue&quot;)
-
-  if((saveoutput==1)&amp;&amp;(seedset==1)){
-    switch(as.character(MCMCtype),
-    &quot;1&quot;={ # standard structure MCMC
-      typename&lt;-&quot;structurer&quot;
-      filetemp&lt;-paste(dirname,typename,n,&quot;nodesits&quot;,iterations/1000,&quot;seed&quot;,seednumber,filetypes[filetypey],sep=&quot;&quot;)
-    save(DAGscores,file=paste(dirname,&quot;structure&quot;,n,&quot;nodesscoresits&quot;,iterations/1000,&quot;seed&quot;,seednumber,&quot;.RData&quot;,sep=&quot;&quot;))
-    },
-    &quot;2&quot;={ # with new edge reversal
-      typename&lt;-&quot;edgerev&quot;
-      filetemp&lt;-paste(dirname,typename,n,&quot;nodesone&quot;,100*moveprobs[1],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,filetypes[filetypey],sep=&quot;&quot;)
-    save(DAGscores,file=paste(dirname,&quot;edgerev&quot;,n,&quot;nodesscoresone&quot;,100*moveprobs[1],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,&quot;.RData&quot;,sep=&quot;&quot;))
-    },
-    &quot;3&quot;={ # order MCMC
-  typename&lt;-&quot;order&quot;
-  filetemp&lt;-paste(dirname,typename,n,&quot;nodesone&quot;,100*moveprobs[1],&quot;two&quot;,100*moveprobs[2],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,filetypes[filetypey],sep=&quot;&quot;)  
-    save(DAGscores,file=paste(dirname,&quot;order&quot;,n,&quot;nodesscoresone&quot;,100*moveprobs[1],&quot;two&quot;,100*moveprobs[2],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,&quot;.RData&quot;,sep=&quot;&quot;))
-    },
-    &quot;4&quot;={ # partition MCMC
-      typename&lt;-&quot;partition&quot;
-      filetemp&lt;-paste(dirname,typename,n,&quot;nodesone&quot;,100*moveprobs[1],&quot;two&quot;,100*moveprobs[2],&quot;three&quot;,100*moveprobs[3],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,filetypes[filetypey],sep=&quot;&quot;)
-    save(DAGscores,file=paste(dirname,&quot;partition&quot;,n,&quot;nodesscoresone&quot;,100*moveprobs[1],&quot;two&quot;,100*moveprobs[2],&quot;three&quot;,100*moveprobs[3],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,&quot;.RData&quot;,sep=&quot;&quot;))
-    },
-    &quot;5&quot;={ # partition MCMC with edge reversal
-      typename&lt;-&quot;partedgerev&quot;
-      filetemp&lt;-paste(dirname,typename,n,&quot;nodesone&quot;,100*moveprobs[1],&quot;two&quot;,100*moveprobs[2],&quot;three&quot;,100*moveprobs[3],&quot;six&quot;,100*moveprobs[6],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,filetypes[filetypey],sep=&quot;&quot;)
-    save(DAGscores,file=paste(dirname,&quot;partition&quot;,n,&quot;nodesedgerevscoresone&quot;,100*moveprobs[1],&quot;two&quot;,100*moveprobs[2],&quot;three&quot;,100*moveprobs[3],&quot;six&quot;,100*moveprobs[6],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,&quot;.RData&quot;,sep=&quot;&quot;))
-    },
-    {# if none is chosen, we have a problem
-    print(&#39;Not implemented!&#39;)
-    })
-
-  switch(as.character(filetypey),
-   &quot;1&quot;={# png format
-     png(filetemp, width=7.5, height=3.75, unit=&quot;in&quot;,res=100,bg=&quot;transparent&quot;)
-   },
-   &quot;2&quot;={# pdf format
-     pdf(filetemp, width=7.5, height=3.75, onefile=F, pointsize=10,  paper=&quot;special&quot;)
-   })
-    
-  par(mar=c(2.25,4.75,1.25,0.5))
-  par(mgp=c(3,1,0))
-  par(cex.axis=1.25)
-  par(cex.lab=1.5)
-    plot(1:nparts,shiftedscores,type=&quot;l&quot;, ylab=&quot;DAG score&quot;, xlab=&quot;&quot;,#xlab=&quot;iteration step&quot;, 
-         main=&quot;&quot;, col=&quot;blue&quot;,ylim=c(maxscore-3.2,maxscore+0.2))
-    abline(h=maxscore,col=&#39;springgreen4&#39;, lwd=3)
-    # abline(h=0,col=&#39;red&#39;,lty=3,lwd=3)
-    lines(1:nparts,shiftedscores,type=&quot;l&quot;, col=&quot;blue&quot;)
-    dev.off()
-  
-  } # end of if 
- 
-createmovie&lt;-0 # build a movie for presentations?
-
-if(createmovie&gt;0){
-
-  imagemagickcommand&lt;-&quot;DAGmovie:\n\tconvert -delay 15 -dispose Background&quot;
-  for(i in 1:(iterations+1)){
-    incidence&lt;-example[[1]][i][[1]]
-    filetemp&lt;-&quot;dag3nodes&quot;
-    for(j in 1:n){
-      childnodes &lt;- which(incidence[j,]==1)
-      numchildren&lt;-length(childnodes)
-      filetemp&lt;-paste(filetemp,paste(as.vector(rbind(rep(j,numchildren),childnodes)),collapse=&quot;&quot;),sep=&quot;&quot;)
-    }
-    imagemagickcommand&lt;-paste(imagemagickcommand,&quot; &quot;,filetemp,&quot;.gif&quot;,sep=&quot;&quot;)
-  }
-  imagemagickcommand&lt;-paste(imagemagickcommand,&quot; -loop 0 &quot;,typename,&quot;3nodemovie.gif&quot;,sep=&quot;&quot;)
-
-  anothercommand&lt;-&quot;\n\ngraphmovie:\n\tconvert -delay 15 -dispose Background&quot;
-  for(i in 1:(iterations+1)){
-    filetemp&lt;-paste(dirname,typename,i,&quot;.png&quot;,sep=&quot;&quot;)  
-    anothercommand&lt;-paste(anothercommand,&quot; &quot;,filetemp,sep=&quot;&quot;) 
-    png(filetemp, width=7.5, height=3.75, unit=&quot;in&quot;,res=100,bg=&quot;transparent&quot;)
-    par(mar=c(2.25,4.75,1.25,0.5))
-    par(mgp=c(3,1,0))
-    par(cex.axis=1.25)
-    par(cex.lab=1.5)
-    plot(1:nparts,shiftedscores,type=&quot;l&quot;, ylab=&quot;DAG score&quot;, xlab=&quot;&quot;,#xlab=&quot;iteration step&quot;, 
-     main=&quot;&quot;, col=&quot;blue&quot;,ylim=c(maxscore-3.2,maxscore+0.2))
-    abline(h=maxscore,col=&#39;springgreen4&#39;, lwd=3)
-# abline(h=0,col=&#39;red&#39;,lty=3,lwd=3)
-    lines(1:nparts,shiftedscores,type=&quot;l&quot;, col=&quot;blue&quot;)
-    points(i,shiftedscores[i],col=&quot;red&quot;,pch=19,cex=2)
-    dev.off()
-  }
-  anothercommand&lt;-paste(anothercommand,&quot; -loop 0 &quot;,typename,&quot;graphmovie.gif&quot;,sep=&quot;&quot;)
-  writeLines(paste(imagemagickcommand,anothercommand,sep=&quot;&quot;),&quot;makefile&quot;)
+scoretable &lt;- scorepossibleparents(parenttable, n)</code></pre>
+<p>so we can also calculate the scores of all orders that DAG is compatible with</p>
+<pre class="r"><code># calculate score of orders compatible with the DAG that the
+# data is generated from
+realorderlogscores &lt;- rep(0, length(realorderpermys))
+for (j in 1:length(realorderpermys)) {
+realorderscores &lt;- orderscore(n, c(1:n), parenttable, scoretable,
+realorderpermys[[j]])
+# log total score of all DAGs in the order
+realorderlogscores[j] &lt;- sum(realorderscores$totscores)
 }</code></pre>
+<p>and the partition it belongs to</p>
+<pre class="r"><code>realposy &lt;- parttolist(n, realparty)
+realpartitionscores &lt;- partitionscore(n, c(1:n), parenttable, scoretable,
+realpermy, realparty, realposy)
+# log total score of all DAGs in the partition
+realpartitionlogscore &lt;- sum(realpartitionscores$totscores)</code></pre>
+<p>We will also perform all the runs with the same seed</p>
+<pre class="r"><code>seednumber &lt;- 101 # seed number</code></pre>
+<div id="structure-mcmc" class="section level2">
+<h2>1 Structure MCMC</h2>
+<p>For structure MCMC we run for 5000 iterations</p>
+<pre class="r"><code>iterations &lt;- 50000 #number of iterations in the chain
+stepsave &lt;- iterations/1000 #how often to save the result</code></pre>
+<p>and first we allow standard edge reversal by setting</p>
+<pre class="r"><code>revallowed &lt;- 1 # allow standard edge reversals</code></pre>
+<p>and exclude the new edge reversal move by giving the moveprobs vector a single element</p>
+<pre class="r"><code>moveprobs &lt;- c(1) # having length 1 disallows the new edge reversal move</code></pre>
+<p>Starting with a DAG with no edges</p>
+<pre class="r"><code>startDAG &lt;- matrix(numeric(n * n), nrow = n) # starting DAG is empty say</code></pre>
+<p>we can then run structure MCMC as follows</p>
+<pre class="r"><code>set.seed(seednumber) # set the seed
+example &lt;- structureMCMC(n, startDAG, iterations, stepsave, maxparents,
+parenttable, scoretable, revallowed, moveprobs) # run the MCMC code</code></pre>
+<p>The result of the function is a list containing the sampled DAGs (stored as incidence matrices) as the first element and their scores as the second. We also perform a run with the standard edge reversal moves excluded</p>
+<pre class="r"><code>revallowed &lt;- 0 # disable standard edge reversals
+set.seed(seednumber)
+example2 &lt;- structureMCMC(n, startDAG, iterations, stepsave, maxparents,
+parenttable, scoretable, revallowed, moveprobs)</code></pre>
+<p>We can extract the scores and plot them as the runs progress</p>
+<pre class="r"><code>par(mfrow = c(2, 1)) # plotting parameters
+par(mar = c(2.5, 5.75, 0.5, 0.75))
+nparts &lt;- length(example[[2]])
+maxDAGscore &lt;- max(unlist(example[[2]]))
+plot(1:nparts, example[[2]], type = &quot;l&quot;, ylab = &quot;DAG score&quot;, xlab = &quot;&quot;,
+main = &quot;&quot;, col = &quot;blue&quot;, ylim = c(maxDAGscore - 6.8, maxDAGscore +
+0.2))
+abline(h = maxDAGscore, col = &quot;springgreen4&quot;, lwd = 3)
+abline(h = realDAGlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
+lines(1:nparts, example[[2]], type = &quot;l&quot;, col = &quot;blue&quot;)
+maxDAGscore2 &lt;- max(unlist(example2[[2]]))
+plot(1:nparts, example2[[2]], type = &quot;l&quot;, ylab = &quot;DAG score&quot;, xlab = &quot;&quot;,
+main = &quot;&quot;, col = &quot;blue&quot;, ylim = c(maxDAGscore2 - 6.8, maxDAGscore2 +
+0.2))
+abline(h = maxDAGscore2, col = &quot;springgreen4&quot;, lwd = 3)
+abline(h = realDAGlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
+lines(1:nparts, example2[[2]], type = &quot;l&quot;, col = &quot;blue&quot;)</code></pre>
+<p><img src="figure/Runningasimplesimulation.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="new-edge-reversal-move" class="section level2">
+<h2>2 New edge reversal move</h2>
+<p>We can include the new edge reversal move, by simply making the vector moveprobs have two elements, with the second corresponding to the probability of picking the new edge reversal move.</p>
+<pre class="r"><code>moveprobs &lt;- c(0.93, 0.07) # having length 1 disallows the new edge reversal move</code></pre>
+<p>Now we run the chains for 40000 iterations, once with the standard edge reversal and once without</p>
+<pre class="r"><code>iterations &lt;- 40000 #number of iterations in the chain
+stepsave &lt;- iterations/1000 #how often to save the result
+revallowed &lt;- 1 # allow standard edge reversals
+set.seed(seednumber) # set the seed
+example &lt;- structureMCMC(n, startDAG, iterations, stepsave, maxparents,
+parenttable, scoretable, revallowed, moveprobs) # run the MCMC code
+revallowed &lt;- 0 # dont allow standard edge reversals
+set.seed(seednumber)
+example2 &lt;- structureMCMC(n, startDAG, iterations, stepsave, maxparents,
+parenttable, scoretable, revallowed, moveprobs)</code></pre>
+<p>The trace plot is now</p>
+<pre class="r"><code>par(mfrow = c(2, 1)) # plotting parameters
+par(mar = c(2.5, 5.75, 0.5, 0.75))
+nparts &lt;- length(example[[2]])
+maxDAGscore &lt;- max(unlist(example[[2]]))
+plot(1:nparts, example[[2]], type = &quot;l&quot;, ylab = &quot;DAG score&quot;, xlab = &quot;&quot;,
+main = &quot;&quot;, col = &quot;blue&quot;, ylim = c(maxDAGscore - 6.8, maxDAGscore +
+0.2))
+abline(h = maxDAGscore, col = &quot;springgreen4&quot;, lwd = 3)
+abline(h = realDAGlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
+lines(1:nparts, example[[2]], type = &quot;l&quot;, col = &quot;blue&quot;)
+maxDAGscore2 &lt;- max(unlist(example2[[2]]))
+plot(1:nparts, example2[[2]], type = &quot;l&quot;, ylab = &quot;DAG score&quot;, xlab = &quot;&quot;,
+main = &quot;&quot;, col = &quot;blue&quot;, ylim = c(maxDAGscore2 - 6.8, maxDAGscore2 +
+0.2))
+abline(h = maxDAGscore2, col = &quot;springgreen4&quot;, lwd = 3)
+abline(h = realDAGlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
+lines(1:nparts, example2[[2]], type = &quot;l&quot;, col = &quot;blue&quot;)</code></pre>
+<p><img src="figure/Runningasimplesimulation.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="order-mcmc" class="section level2">
+<h2>3 Order MCMC</h2>
+<p>For Order MCMC we now have three elements in the moveprobs vector. The first is the probability of swapping any two elements in the order, the second the probability of only swapping adjacent nodes and the last the probability to stay still (to enforce aperiodicity of the chain)</p>
+<pre class="r"><code>prob1 &lt;- 99
+if (n &gt; 3) {
+prob1 &lt;- round(6 * 99 * n/(n^2 + 10 * n - 24))
+}
+prob1 &lt;- prob1/100
+moveprobs &lt;- c(prob1, 0.99 - prob1, 0.01)
+moveprobs &lt;- moveprobs/sum(moveprobs) # normalisation
+moveprobs</code></pre>
+<pre><code>[1] 0.58 0.41 0.01</code></pre>
+<p>We also need to choose a starting order, for example the identity permutation</p>
+<pre class="r"><code>startorder &lt;- c(1:n) # starting order</code></pre>
+<p>and then we can run the MCMC code for 20000 iterations</p>
+<pre class="r"><code>iterations &lt;- 20000 #number of iterations in the chain
+stepsave &lt;- iterations/1000 #how often to save the result
+set.seed(seednumber) # set the seed
+example &lt;- orderMCMC(n, startorder, iterations, stepsave, parenttable,
+scoretable, moveprobs)</code></pre>
+<p>The output now contains four components, a sampled DAG and its score along with the score of the entire order and the sampled order itself (stored as a permutation vector). We can plot the outcome for both the orders and for the DAGs</p>
+<pre class="r"><code>par(mfrow = c(2, 1)) # plotting parameters
+par(mar = c(2.5, 5.75, 0.5, 0.75))
+nparts &lt;- length(example[[2]])
+maxorderscore &lt;- max(unlist(example[[3]]))
+maxDAGscore &lt;- max(unlist(example[[2]]))
+plot(1:nparts, example[[3]], type = &quot;l&quot;, ylab = &quot;Order score&quot;,
+xlab = &quot;&quot;, main = &quot;&quot;, col = &quot;blue&quot;, ylim = c(maxorderscore -
+6.8, maxorderscore + 0.2))
+abline(h = maxorderscore, col = &quot;springgreen4&quot;, lwd = 3)
+abline(h = realorderlogscores, col = &quot;red&quot;, lty = 3, lwd = 3)
+lines(1:nparts, example[[3]], type = &quot;l&quot;, col = &quot;blue&quot;)
+plot(1:nparts, example[[2]], type = &quot;l&quot;, ylab = &quot;DAG score&quot;, xlab = &quot;&quot;,
+main = &quot;&quot;, col = &quot;blue&quot;, ylim = c(maxDAGscore - 6.8, maxDAGscore +
+0.2))
+abline(h = maxDAGscore, col = &quot;springgreen4&quot;, lwd = 3)
+abline(h = realDAGlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
+lines(1:nparts, example[[2]], type = &quot;l&quot;, col = &quot;blue&quot;)</code></pre>
+<p><img src="figure/Runningasimplesimulation.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="partition-mcmc" class="section level2">
+<h2>4 Partition MCMC</h2>
+<p>For Partiton MCMC we have five elements in the moveprobs vector. The first is the probability of swapping two nodes from different partititon elements, while the second for swapping nodes from adjacent partition elements. The third corresponds to joining and splitting partition elements with the fourth being the probability of moving a node from one element to another. The last is again the probability of not moving</p>
+<pre class="r"><code>prob1start &lt;- 40/100
+prob1 &lt;- prob1start * 100
+if (n &gt; 3) {
+prob1 &lt;- round(6 * prob1 * n/(n^2 + 10 * n - 24))
+}
+prob1 &lt;- prob1/100
+prob2start &lt;- 99/100 - prob1start
+prob2 &lt;- prob2start * 100
+if (n &gt; 3) {
+prob2 &lt;- round(6 * prob2 * n/(n^2 + 10 * n - 24))
+}
+prob2 &lt;- prob2/100
+moveprobs &lt;- c(prob1, prob1start - prob1, prob2start - prob2, prob2,
+0.01)
+moveprobs &lt;- moveprobs/sum(moveprobs) # normalisation
+moveprobs</code></pre>
+<pre><code>[1] 0.24 0.16 0.24 0.35 0.01</code></pre>
+<p>For the starting partition we can choose the DAG with no edges</p>
+<pre class="r"><code>startpermutation &lt;- c(1:n) # pick a starting permutation
+startpartition &lt;- c(n) # and a starting partition - c(n) gives the empty DAG</code></pre>
+<p>and then run the MCMC code for 10000 iterations</p>
+<pre class="r"><code>iterations &lt;- 10000 #number of iterations in the chain
+stepsave &lt;- iterations/1000 #how often to save the result
+set.seed(seednumber) # set the seed
+example &lt;- partitionMCMC(n, startpermutation, startpartition, iterations,
+stepsave, parenttable, scoretable, moveprobs)</code></pre>
+<p>The output now contains a five components: a sampled DAG and its score, the score of the entire partition and the sampled permutation and partition. The trace plot is</p>
+<pre class="r"><code>par(mfrow = c(2, 1)) # plotting parameters
+par(mar = c(2.5, 5.75, 0.5, 0.75))
+nparts &lt;- length(example[[2]])
+maxpartitionscore &lt;- max(unlist(example[[3]]))
+maxDAGscore &lt;- max(unlist(example[[2]]))
+plot(1:nparts, example[[3]], type = &quot;l&quot;, ylab = &quot;Partition score&quot;,
+xlab = &quot;&quot;, main = &quot;&quot;, col = &quot;blue&quot;, ylim = c(maxpartitionscore -
+6.8, maxpartitionscore + 0.2))
+abline(h = maxpartitionscore, col = &quot;springgreen4&quot;, lwd = 3)
+abline(h = realpartitionlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
+lines(1:nparts, example[[3]], type = &quot;l&quot;, col = &quot;blue&quot;)
+plot(1:nparts, example[[2]], type = &quot;l&quot;, ylab = &quot;DAG score&quot;, xlab = &quot;&quot;,
+main = &quot;&quot;, col = &quot;blue&quot;, ylim = c(maxDAGscore - 6.8, maxDAGscore +
+0.2))
+abline(h = maxDAGscore, col = &quot;springgreen4&quot;, lwd = 3)
+abline(h = realDAGlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
+lines(1:nparts, example[[2]], type = &quot;l&quot;, col = &quot;blue&quot;)</code></pre>
+<p><img src="figure/Runningasimplesimulation.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="partition-mcmc-with-edge-reversal" class="section level2">
+<h2>5 Partition MCMC with edge reversal</h2>
+<p>Finally we can include the new edge reversal move on an underlying Partition MCMC chain by including a sixth element in the moveprobs vector, corresponding to the probability of picking the edge reversal move</p>
+<pre class="r"><code>prob1start &lt;- 37/100
+prob1 &lt;- prob1start * 100
+if (n &gt; 3) {
+prob1 &lt;- round(6 * prob1 * n/(n^2 + 10 * n - 24))
+}
+prob1 &lt;- prob1/100
+prob2start &lt;- 92/100 - prob1start
+prob2 &lt;- prob2start * 100
+if (n &gt; 3) {
+prob2 &lt;- round(6 * prob2 * n/(n^2 + 10 * n - 24))
+}
+prob2 &lt;- prob2/100
+moveprobs &lt;- c(prob1, prob1start - prob1, prob2start - prob2, prob2,
+0.01, 0.07)
+moveprobs &lt;- moveprobs/sum(moveprobs) # normalisation
+moveprobs</code></pre>
+<pre><code>[1] 0.22 0.15 0.23 0.32 0.01 0.07</code></pre>
+<p>This we run for 9000 iterations</p>
+<pre class="r"><code>iterations &lt;- 9000 #number of iterations in the chain
+stepsave &lt;- iterations/1000 #how often to save the result
+set.seed(seednumber) # set the seed
+example &lt;- partitionMCMC(n, startpermutation, startpartition, iterations,
+stepsave, parenttable, scoretable, moveprobs)</code></pre>
+<p>and plot the results</p>
+<pre class="r"><code>par(mfrow = c(2, 1)) # plotting parameters
+par(mar = c(2.5, 5.75, 0.5, 0.75))
+nparts &lt;- length(example[[2]])
+maxpartitionscore &lt;- max(unlist(example[[3]]))
+maxDAGscore &lt;- max(unlist(example[[2]]))
+plot(1:nparts, example[[3]], type = &quot;l&quot;, ylab = &quot;Partition score&quot;,
+xlab = &quot;&quot;, main = &quot;&quot;, col = &quot;blue&quot;, ylim = c(maxpartitionscore -
+6.8, maxpartitionscore + 0.2))
+abline(h = maxpartitionscore, col = &quot;springgreen4&quot;, lwd = 3)
+abline(h = realpartitionlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
+lines(1:nparts, example[[3]], type = &quot;l&quot;, col = &quot;blue&quot;)
+plot(1:nparts, example[[2]], type = &quot;l&quot;, ylab = &quot;DAG score&quot;, xlab = &quot;&quot;,
+main = &quot;&quot;, col = &quot;blue&quot;, ylim = c(maxDAGscore - 6.8, maxDAGscore +
+0.2))
+abline(h = maxDAGscore, col = &quot;springgreen4&quot;, lwd = 3)
+abline(h = realDAGlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
+lines(1:nparts, example[[2]], type = &quot;l&quot;, col = &quot;blue&quot;)</code></pre>
+<p><img src="figure/Runningasimplesimulation.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1008,9 +865,9 @@ loaded via a namespace (and not attached):
  [1] workflowr_1.6.2 Rcpp_1.0.1      rprojroot_1.3-2 digest_0.6.19  
  [5] later_0.8.0     R6_2.4.1        backports_1.1.4 git2r_0.26.1   
  [9] magrittr_1.5    evaluate_0.13   stringi_1.4.3   fs_1.3.1       
-[13] promises_1.0.1  whisker_0.3-2   rmarkdown_1.13  tools_3.6.0    
-[17] stringr_1.4.0   glue_1.4.1      httpuv_1.5.1    xfun_0.20      
-[21] yaml_2.2.0      compiler_3.6.0  htmltools_0.3.6 knitr_1.23     </code></pre>
+[13] promises_1.0.1  rmarkdown_1.13  tools_3.6.0     stringr_1.4.0  
+[17] glue_1.4.1      httpuv_1.5.1    xfun_0.20       yaml_2.2.0     
+[21] compiler_3.6.0  htmltools_0.3.6 knitr_1.23     </code></pre>
 </div>
 </div>
 

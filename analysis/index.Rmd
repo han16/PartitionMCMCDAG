@@ -6,18 +6,18 @@ output:
 ---
 
 
+## replicate the result with the code provided 
 
 
+* [runningasimpleexample.R](runningasimpleexample.html)
+* [Running a simple simulation](Runningasimplesimulation.html)
 
-* [DAGnodescore](DAGnodescore.html)
-
-* [ancestor](ancestor.html)
-
-
-
-* [Run simple example in the paper](simpleexample.html)
+## look into the functions 
 
 
-* [5 nodes example in Figure 1](Simulation_studies.html)
+* [simpleexample.R](simpleexample.html)
+
+
+* [smallsimmain.R](Simulation_studies.html)
 
 
