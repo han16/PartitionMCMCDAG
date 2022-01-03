@@ -11,6 +11,7 @@ output:
 
 * [runningasimpleexample.R](runningasimpleexample.html)
 * [Running a simple simulation](Runningasimplesimulation.html)
+* [BHmain.R](BHmain.html) an example with the Boston Housing data with 14 nodes and the BGe score.
 
 ## look into the functions 
 

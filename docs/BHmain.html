@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>BHmain</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PartitionMCMCDAG</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://han16.github.io/PartitionMCMCDAG/">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">BHmain</h1>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2021-04-05
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>PartitionMCMCDAG/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20180606code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20180606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20180606code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20180606)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtree4e9ec1bb8a28c7b6aec92b0b62c97f8780ade126targetblank4e9ec1ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/han16/PartitionMCMCDAG/tree/4e9ec1bb8a28c7b6aec92b0b62c97f8780ade126" target="_blank">4e9ec1b</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtree4e9ec1bb8a28c7b6aec92b0b62c97f8780ade126targetblank4e9ec1ba" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/han16/PartitionMCMCDAG/tree/4e9ec1bb8a28c7b6aec92b0b62c97f8780ade126" target="_blank">4e9ec1b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    analysis/.Rhistory
+    Ignored:    analysis/figure/
+
+Untracked files:
+    Untracked:  analysis/BHmain.Rmd
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code># Choose the MCMC scheme
+MCMCtype&lt;-3 # 1 means standard structure, 2 with new edge reversal
+# 3 means order MCMC, 4 means partition MCMC
+# 5 means partition MCMC with new edge reversal</code></pre>
+<pre class="r"><code># Choose whether to plot individual runs or find the maximum over lots of runs
+indormany&lt;-1 # 1 means individual
+
+seedset&lt;-1 # set a seed?
+seednumbers&lt;-100+c(1:4) # 101 to 104 are the values in the plots
+seednumber&lt;-seednumbers[1]
+
+iimin&lt;-101 # start seed for many runs
+iimax&lt;-200 # end seed for many runs
+
+# Choose whether to save the plots to png or pdf
+saveoutput&lt;-1 # 1 means save
+filetypes&lt;-c(&quot;.png&quot;,&quot;.pdf&quot;) # choose png or pdf for the figures
+filetypey&lt;-2 # we use pdf here  </code></pre>
+<pre class="r"><code>path=&quot;C:/Shengtong/Research/PartitionMCMCDAG/&quot;
+# Load the necessary functions
+
+source(paste(path, &quot;partitionMCMCcode/edgerevandstructure/structurefns.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/edgerevandstructure/structureMCMC.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/edgerevandstructure/newedgerevfns.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/edgerevandstructure/newedgerevmove.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/orderandpartition/orderMCMC.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/orderandpartition/orderfns.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/orderandpartition/partitionMCMC.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/orderandpartition/partitionmoves.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/orderandpartition/partitionfns.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/orderandpartition/samplefns.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/scoring/combinations.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/scoring/scorefns.R&quot;, sep=&quot;&quot;))
+source(paste(path, &quot;partitionMCMCcode/scoring/scoretables.R&quot;, sep=&quot;&quot;))
+# load the BGe score
+source(paste(path, &quot;partitionMCMCcode/scoring/bgescorestable.R&quot;, sep=&quot;&quot;))
+
+# Generate data and load score parameters
+
+source(paste(path, &quot;partitionMCMCcode/initialisation/BHinit.R&quot;, sep=&quot;&quot;)) 
+source(paste(path, &quot;partitionMCMCcode/initialisation/scoreparas.R&quot;, sep=&quot;&quot;))</code></pre>
+<pre class="r"><code># Score of the best DAG known
+
+realDAGlogscore&lt;-sum(DAGnodescore(incidence, n, c(1:n)))
+
+# Choose maximum number of parents
+
+maxparents&lt;-3 # Maximum number of parents to allow
+
+starttime&lt;-proc.time() # for timing the problem
+
+# Fill up a matrix with possible parents
+
+parenttable&lt;-listpossibleparents(maxparents,c(1:n))
+tablelength&lt;-nrow(parenttable[[1]]) # size of the table
+
+# Now need to score them!
+
+scoretable&lt;-scorepossibleparents(parenttable,n) 
+
+endtime&lt;-proc.time()
+endtime&lt;-endtime-starttime
+print(&#39;Time to initialise the score table&#39;)</code></pre>
+<pre><code>[1] &quot;Time to initialise the score table&quot;</code></pre>
+<pre class="r"><code>print(endtime)</code></pre>
+<pre><code>   user  system elapsed 
+   0.18    0.00    0.19 </code></pre>
+<pre class="r"><code># Start the main part
+
+switch(as.character(MCMCtype),
+  &quot;1&quot;={ # standard structure MCMC
+    iterations&lt;-1000000 #number of iterations in the chain
+    moveprobs&lt;-c(1) # having length 1 disallows the new edge reversal move
+    if(!(length(moveprobs)==1)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
+  },
+  &quot;2&quot;={ # with new edge reversal
+    iterations&lt;-500000 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is standard structure MCMC (including the possibility to stay still [officially needed for convergence])
+# 2 is new edge reversal move
+    moveprobs&lt;-c(0.93,0.07)
+    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
+    if(!(length(moveprobs)==2)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
+  },
+  &quot;3&quot;={ # order MCMC
+    iterations&lt;-150000 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap any two elements
+# 2 is to only swap adjacent elements
+# 3 is to stay still (officially needed for convergence)
+    prob1&lt;-99
+    if(n&gt;3){ prob1&lt;-round(6*99*n/(n^2+10*n-24)) }
+    prob1&lt;-prob1/100
+    moveprobs&lt;-c(prob1,0.99-prob1,0.01)
+    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
+    if(!(length(moveprobs)==3)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
+  },
+  &quot;4&quot;={ # partition MCMC
+    iterations&lt;-60000 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap two nodes from different partition elements
+# 2 is to only swap nodes from adjacent elements
+# 3 is to split or join partition elements
+# 4 is to move a single node
+# 5 is to stay still (officially needed for convergence)
+    prob1start&lt;-40/100
+    prob1&lt;-prob1start*100
+    if(n&gt;3){ prob1&lt;-round(6*prob1*n/(n^2+10*n-24)) }
+    prob1&lt;-prob1/100
+    prob2start&lt;-99/100-prob1start
+    prob2&lt;-prob2start*100
+    if(n&gt;3){ prob2&lt;-round(6*prob2*n/(n^2+10*n-24)) }
+    prob2&lt;-prob2/100
+    moveprobs&lt;-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01)
+    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
+    if(!(length(moveprobs)==5)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
+  },
+  &quot;5&quot;={ # partition MCMC with edge reversal
+    iterations&lt;-56000 #number of iterations in the chain
+# Choose the probability of the different moves
+# 1 is swap two nodes from different partition elements
+# 2 is to only swap nodes from adjacent elements
+# 3 is to split or join partition elements
+# 4 is to move a single node
+# 5 is to stay still (officially needed for convergence)
+# 6 is the new edge reversal
+    prob1start&lt;-37/100
+    prob1&lt;-prob1start*100
+    if(n&gt;3){ prob1&lt;-round(6*prob1*n/(n^2+10*n-24)) }
+    prob1&lt;-prob1/100
+    prob2start&lt;-92/100-prob1start
+    prob2&lt;-prob2start*100
+    if(n&gt;3){ prob2&lt;-round(6*prob2*n/(n^2+10*n-24)) }
+    prob2&lt;-prob2/100
+    moveprobs&lt;-c(prob1,prob1start-prob1,prob2start-prob2,prob2,0.01,0.07)
+    moveprobs&lt;-moveprobs/sum(moveprobs) # normalisation
+    if(!(length(moveprobs)==6)){print(&#39;Vector of move probabilities has the wrong length!&#39;)}
+  },
+  {# if none is chosen, we have a problem
+    print(&#39;Not implemented&#39;)
+  })</code></pre>
+<pre class="r"><code>stepsave&lt;-iterations/1000 #how often to save the result
+
+if(indormany&gt;0){ # for individual runs
+
+  if(seedset&gt;0){
+    set.seed(seednumber) # choose one?
+  }
+
+# Run the MCMC codes
+
+  starttime&lt;-proc.time() # for timing the problem
+
+  if(MCMCtype&lt;3){
+
+    startDAG&lt;-matrix(numeric(n*n),nrow=n) # starting DAG is empty say
+    revallowed&lt;-1 # allow standard edge reversals
+
+    example&lt;-structureMCMC(n,startDAG,iterations,stepsave,maxparents,parenttable,scoretable,revallowed,moveprobs)
+
+  } else if (MCMCtype==3){
+
+    startorder&lt;-c(1:n) # starting order
+
+    example&lt;-orderMCMC(n,startorder,iterations,stepsave,parenttable,scoretable,moveprobs)
+
+  } else if (MCMCtype&gt;3){
+
+    startpermutation&lt;-c(1:n) # pick a starting permutation
+    startpartition&lt;-c(n) # and a starting partition - c(n) gives the empty DAG
+
+    example&lt;-partitionMCMC(n,startpermutation,startpartition,iterations,stepsave,parenttable,scoretable,moveprobs)
+
+  }
+
+  endtime&lt;-proc.time()
+  endtime&lt;-endtime-starttime
+  print(&#39;Time to run the&#39;)
+  print(iterations)
+  print(&#39;iterations&#39;)
+  print(endtime)
+
+# Plot the results
+
+  nparts&lt;-length(example[[2]])
+  DAGscores&lt;-unlist(example[[2]])
+  shiftedscores&lt;-DAGscores-realDAGlogscore # shift so 0 corresponds to best DAG known
+  maxscore&lt;-max(shiftedscores)
+
+# plotting parameters
+
+  par(mar=c(2.25,4.75,0.5,0.5))
+  par(mgp=c(3,1.25,0))
+  par(cex.axis=1.4)
+  par(cex.lab=1.6)
+
+  plot(1:nparts,shiftedscores,type=&quot;l&quot;, ylab=&quot;DAG score&quot;, xlab=&quot;&quot;,#xlab=&quot;iteration step&quot;, 
+main=&quot;&quot;, col=&quot;blue&quot;,ylim=c(maxscore-13.8,maxscore+0.2))
+  abline(h=maxscore,col=&#39;springgreen4&#39;, lwd=3)
+  abline(h=0,col=&#39;red&#39;,lty=3,lwd=3)
+  lines(1:nparts,shiftedscores,type=&quot;l&quot;, col=&quot;blue&quot;)
+
+  if((saveoutput==1)&amp;&amp;(seedset==1)){
+    switch(as.character(MCMCtype),
+    &quot;1&quot;={ # standard structure MCMC
+  filetemp&lt;-paste(&quot;./BHgraphs/structureBH&quot;,N,&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,filetypes[filetypey],sep=&quot;&quot;)
+    save(DAGscores,file=paste(&quot;./BHgraphs/structureBHscores&quot;,N,&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,&quot;.RData&quot;,sep=&quot;&quot;))
+    },
+    &quot;2&quot;={ # with new edge reversal
+  filetemp&lt;-paste(&quot;./BHgraphs/edgerevBH&quot;,N,&quot;one&quot;,100*moveprobs[1],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,filetypes[filetypey],sep=&quot;&quot;)
+    save(DAGscores,file=paste(&quot;./BHgraphs/edgerevBHscores&quot;,N,&quot;one&quot;,100*moveprobs[1],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,&quot;.RData&quot;,sep=&quot;&quot;))
+    },
+    &quot;3&quot;={ # order MCMC
+    save(DAGscores,file=paste(&quot;./BHgraphs/orderBHscores&quot;,N,&quot;one&quot;,100*moveprobs[1],&quot;two&quot;,100*moveprobs[2],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,&quot;.RData&quot;,sep=&quot;&quot;))
+  filetemp&lt;-paste(&quot;./BHgraphs/orderBH&quot;,N,&quot;one&quot;,100*moveprobs[1],&quot;two&quot;,100*moveprobs[2],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,filetypes[filetypey],sep=&quot;&quot;)
+    },
+    &quot;4&quot;={ # partition MCMC
+    save(DAGscores,file=paste(&quot;./BHgraphs/partitionBHscores&quot;,N,&quot;one&quot;,100*moveprobs[1],&quot;two&quot;,100*moveprobs[2],&quot;three&quot;,100*moveprobs[3],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,&quot;.RData&quot;,sep=&quot;&quot;))
+  filetemp&lt;-paste(&quot;./BHgraphs/partitionBH&quot;,N,&quot;one&quot;,100*moveprobs[1],&quot;two&quot;,100*moveprobs[2],&quot;three&quot;,100*moveprobs[3],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,filetypes[filetypey],sep=&quot;&quot;)
+    },
+    &quot;5&quot;={ # partition MCMC with edge reversal
+    save(DAGscores,file=paste(&quot;./BHgraphs/partitionBHedgerevscores&quot;,N,&quot;one&quot;,100*moveprobs[1],&quot;two&quot;,100*moveprobs[2],&quot;three&quot;,100*moveprobs[3],&quot;six&quot;,100*moveprobs[6],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,&quot;.RData&quot;,sep=&quot;&quot;))
+  filetemp&lt;-paste(&quot;./BHgraphs/partitionBHedgrev&quot;,N,&quot;one&quot;,100*moveprobs[1],&quot;two&quot;,100*moveprobs[2],&quot;three&quot;,100*moveprobs[3],&quot;six&quot;,100*moveprobs[6],&quot;its&quot;,iterations/1000,&quot;seed&quot;,seednumber,filetypes[filetypey],sep=&quot;&quot;)
+    },
+    {# if none is chosen, we have a problem
+    print(&#39;Not implemented!&#39;)
+    })
+
+  switch(as.character(filetypey),
+  &quot;1&quot;={# png format
+    png(filetemp, width=7.5, height=3.75, unit=&quot;in&quot;,res=100,bg=&quot;transparent&quot;)
+  },
+  &quot;2&quot;={# pdf format
+    pdf(filetemp,width=7.5, height=3.75, onefile=F, pointsize=10,  paper=&quot;special&quot;)
+  })
+
+  par(mar=c(2.25,4.75,0.5,0.5))
+  par(mgp=c(3,1.25,0))
+  par(cex.axis=1.75)
+  par(cex.lab=2)
+  
+    plot(1:nparts,shiftedscores,type=&quot;l&quot;, ylab=&quot;DAG score&quot;, xlab=&quot;&quot;,#xlab=&quot;iteration step&quot;, 
+         main=&quot;&quot;, col=&quot;blue&quot;,ylim=c(maxscore-13.8,maxscore+0.2))
+    abline(h=maxscore,col=&#39;springgreen4&#39;, lwd=3)
+    abline(h=0,col=&#39;red&#39;,lty=3,lwd=3)
+    lines(1:nparts,shiftedscores,type=&quot;l&quot;, col=&quot;blue&quot;)
+    dev.off()
+  
+  }
+
+} else { # run many times and just keep the maximum
+
+  maxyscores&lt;-numeric(iimax-iimin+1)
+
+  for (ii in iimin:iimax){ # loop over many runs
+
+    starttime&lt;-proc.time() # for timing the problem
+
+    set.seed(ii) # set seeds in sequence
+
+    if(MCMCtype&lt;3){
+    startDAG&lt;-matrix(numeric(n*n),nrow=n) # starting DAG is empty say
+    revallowed&lt;-1 # allow standard edge reversals
+    example&lt;-structureMCMC(n,startDAG,iterations,stepsave,maxparents,parenttable,scoretable,revallowed,moveprobs)
+    } else if (MCMCtype==3){
+    startorder&lt;-c(1:n) # starting order
+    example&lt;-orderMCMC(n,startorder,iterations,stepsave,parenttable,scoretable,moveprobs)
+    } else if (MCMCtype&gt;3){
+    startpermutation&lt;-c(1:n) # pick a starting permutation
+    startpartition&lt;-c(n) # and a starting partition - c(n) gives the empty DAG
+    example&lt;-partitionMCMC(n,startpermutation,startpartition,iterations,stepsave,parenttable,scoretable,moveprobs)
+    }
+
+    endtime&lt;-proc.time()
+    endtime&lt;-endtime-starttime
+    print(&#39;Time to run the&#39;)
+    print(iterations)
+    print(&#39;iterations&#39;)
+    print(endtime)
+
+    nparts&lt;-length(example[[2]])
+    maxDAGscore&lt;-max(unlist(example[[2]]))
+
+    maxDAGscore&lt;-maxDAGscore-realDAGlogscore
+
+    maxyscores[ii-iimin+1]&lt;-maxDAGscore
+
+    print(&quot;Round&quot;)
+    print(ii)
+    print(&quot;Score&quot;)
+    print(maxDAGscore)
+
+  }
+
+  if((saveoutput==1)&amp;&amp;(seedset==1)){
+    switch(as.character(MCMCtype),
+    &quot;1&quot;={ # standard structure MCMC
+    save(maxyscores,file=paste(&quot;./BHgraphs/structureBHmax&quot;,iimin,&quot;to&quot;,iimax,&quot;.RData&quot;,sep=&quot;&quot;))
+    },
+    &quot;2&quot;={ # with new edge reversal
+    save(maxyscores,file=paste(&quot;./BHgraphs/edgerevBHmax&quot;,iimin,&quot;to&quot;,iimax,&quot;.RData&quot;,sep=&quot;&quot;))
+    },
+    &quot;3&quot;={ # order MCMC
+    save(maxyscores,file=paste(&quot;./BHgraphs/orderBHmax&quot;,iimin,&quot;to&quot;,iimax,&quot;.RData&quot;,sep=&quot;&quot;))
+    },
+    &quot;4&quot;={ # partition MCMC
+    save(maxyscores,file=paste(&quot;./BHgraphs/partitionBHmax&quot;,iimin,&quot;to&quot;,iimax,&quot;.RData&quot;,sep=&quot;&quot;))
+    },
+    &quot;5&quot;={ # partition MCMC with edge reversal
+    save(maxyscores,file=paste(&quot;./BHgraphs/partitionBHedgerevmax&quot;,iimin,&quot;to&quot;,iimax,&quot;.RData&quot;,sep=&quot;&quot;))
+    },
+    {# if none is chosen, we have a problem
+    print(&#39;Not implemented!&#39;)
+    })
+
+  }
+
+}</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.0 (2019-04-26)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 18363)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] workflowr_1.6.2 Rcpp_1.0.1      rprojroot_1.3-2 digest_0.6.19  
+ [5] later_0.8.0     R6_2.4.1        backports_1.1.4 git2r_0.26.1   
+ [9] magrittr_1.5    evaluate_0.13   stringi_1.4.3   fs_1.3.1       
+[13] promises_1.0.1  rmarkdown_1.13  tools_3.6.0     stringr_1.4.0  
+[17] glue_1.4.1      httpuv_1.5.1    xfun_0.20       yaml_2.2.0     
+[21] compiler_3.6.0  htmltools_0.3.6 knitr_1.23     </code></pre>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
