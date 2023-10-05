@@ -22,3 +22,33 @@ output:
 * [smallsimmain.R](Simulation_studies.html)
 
 
+## R packages BiDAG
+
+
+```{r, echo=F, message=F, warning=F, eval=F}
+########## install pre-req package graph 
+#if (!require("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+#
+#BiocManager::install("graph")
+############## install pre-req package RBGL 
+#if (!require("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+#
+#BiocManager::install("RBGL")
+
+#if (!require("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+#
+#BiocManager::install("Rgraphviz")
+
+library(graph)
+library(RBGL)
+library(Rgraphviz)
+library(BiDAG)
+
+myScore<-scoreparameters("bge", Boston)
+partfit<-partitionMCMC(myScore, moveprobs = c(0.2, 0.2, 0.2, 0.2, 0.2))
+plot(partfit)
+```
+

@@ -107,6 +107,6 @@ return(listy)
 `listpossibleparents`  lists all possible parents for each node in a matrix, but this number is not the number of DAG's. For example, the first element in the list is a matrix listing possible parents for node `1`. Each row tells how many parents bounded by `maxparents`and which.  For instance, node `1` could have none parents (the first row), one parent-node `2`( second row), one parent-node `3` (thrid row), and so on. Note **it doesn't involve acyclicity checking**. 
 
 ```{r, echo=T}
-maxparents=2; n=4
+maxparents=3; n=5
 listpossibleparents(maxparents, c(1:n))
 ```

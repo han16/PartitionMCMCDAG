@@ -1,34 +1,44 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
 
 <title>Running a simple simulation</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
-<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
 <style type="text/css">
 div.section {
@@ -36,12 +46,18 @@ div.section {
 }
 </style>
 
-<style type="text/css">code{white-space: pre;}</style>
+
+
 <style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -54,32 +70,8 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
+
+
 
 
 
@@ -90,13 +82,8 @@ h6 {
   margin-left: auto;
   margin-right: auto;
 }
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
-}
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -110,40 +97,16 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -171,7 +134,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -183,7 +146,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -193,11 +156,28 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.parent().addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -209,13 +189,12 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -223,16 +202,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -245,6 +217,7 @@ $(document).ready(function () {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -257,48 +230,9 @@ $(document).ready(function () {
 }
 </style>
 
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
-
 <!-- code folding -->
 
 
-
-<script>
-$(document).ready(function ()  {
-
-    // move toc-ignore selectors from section div to header
-    $('div.section.toc-ignore')
-        .removeClass('toc-ignore')
-        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
-
-    // establish options
-    var options = {
-      selectors: "h1,h2,h3",
-      theme: "bootstrap3",
-      context: '.toc-content',
-      hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
-      },
-      ignoreSelector: ".toc-ignore",
-      scrollTo: 0
-    };
-    options.showAndHide = true;
-    options.smoothScroll = true;
-
-    // tocify
-    var toc = $("#TOC").tocify(options).data("toc-tocify");
-});
-</script>
 
 <style type="text/css">
 
@@ -312,6 +246,12 @@ $(document).ready(function ()  {
 }
 }
 
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
 
 .toc-content {
   padding-left: 30px;
@@ -367,7 +307,7 @@ div.tocify {
 
 
 <!-- setup 3col/9col grid for toc_float and main content  -->
-<div class="row-fluid">
+<div class="row">
 <div class="col-xs-12 col-sm-4 col-md-3">
 <div id="TOC" class="tocify">
 </div>
@@ -381,7 +321,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -412,7 +352,7 @@ div.tocify {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -423,7 +363,9 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -432,7 +374,9 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -441,17 +385,27 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2021-04-01
+<strong>Last updated:</strong> 2023-10-05
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
 </p>
 <p>
-<strong>Knit directory:</strong> <code>PartitionMCMCDAG/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+<strong>Knit directory:</strong> <code>PartitionMCMCDAG/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
 </p>
 <p>
-This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
-  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
 </p>
 <hr>
 </div>
@@ -460,109 +414,155 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges"
+class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
 </p>
 </div>
 <div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20180606code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20180606)</code> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20180606code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20180606)</code> </a>
 </p>
 </div>
-<div id="strongSeedstrongcodesetseed20180606code" class="panel-collapse collapse">
+<div id="strongSeedstrongcodesetseed20180606code"
+class="panel-collapse collapse">
 <div class="panel-body">
-<p>The command <code>set.seed(20180606)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+<p>The command <code>set.seed(20180606)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
 </p>
 </div>
-<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
 </p>
 </div>
 <div id="strongCachestrongnone" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
 </p>
 </div>
 <div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
 </div>
 </div>
 </div>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtreed52e4ca3e5d14771f7b268c898bbf6b1b7c925e5targetblankd52e4caa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/han16/PartitionMCMCDAG/tree/d52e4ca3e5d14771f7b268c898bbf6b1b7c925e5" target="_blank">d52e4ca</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtreeea11c80f44d219c5196e78c8fa958494a77bceb3targetblankea11c80a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/han16/PartitionMCMCDAG/tree/ea11c80f44d219c5196e78c8fa958494a77bceb3" target="_blank">ea11c80</a>
+</a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtreed52e4ca3e5d14771f7b268c898bbf6b1b7c925e5targetblankd52e4caa" class="panel-collapse collapse">
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtreeea11c80f44d219c5196e78c8fa958494a77bceb3targetblankea11c80a"
+class="panel-collapse collapse">
 <div class="panel-body">
 <p>
-Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/han16/PartitionMCMCDAG/tree/d52e4ca3e5d14771f7b268c898bbf6b1b7c925e5" target="_blank">d52e4ca</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version
+<a href="https://github.com/han16/PartitionMCMCDAG/tree/ea11c80f44d219c5196e78c8fa958494a77bceb3" target="_blank">ea11c80</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
 </p>
 <p>
-Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
 </p>
 <pre><code>
 Ignored files:
-    Ignored:    analysis/.Rhistory
     Ignored:    analysis/figure/
 
-Untracked files:
-    Untracked:  analysis/Runningasimplesimulation.Rmd
-    Untracked:  analysis/runningasimpleexample.Rmd
-
 Unstaged changes:
-    Modified:   analysis/index.Rmd
-    Modified:   analysis/simpleexample.Rmd
-    Modified:   analysis/structureMCMC.Rmd
+    Modified:   analysis/Runningasimplesimulation.Rmd
+    Modified:   analysis/runningasimpleexample.Rmd
 
 </code></pre>
 <p>
-Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
 </p>
 </div>
 </div>
@@ -571,17 +571,85 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/Runningasimplesimulation.Rmd</code>) and HTML
+(<code>docs/Runningasimplesimulation.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/han16/PartitionMCMCDAG/blob/4e9ec1bb8a28c7b6aec92b0b62c97f8780ade126/analysis/Runningasimplesimulation.Rmd" target="_blank">4e9ec1b</a>
+</td>
+<td>
+Shengtong
+</td>
+<td>
+2021-04-01
+</td>
+<td>
+4/1/2021
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/PartitionMCMCDAG/4e9ec1bb8a28c7b6aec92b0b62c97f8780ade126/docs/Runningasimplesimulation.html" target="_blank">4e9ec1b</a>
+</td>
+<td>
+Shengtong
+</td>
+<td>
+2021-04-01
+</td>
+<td>
+4/1/2021
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
 </div>
-<p>For this example we simulate data from a DAG with n = 5 nodes and score with the BGe score. This code creates the graphs in the main paper.</p>
+<p>For this example we simulate data from a DAG with n = 5 nodes and
+score with the BGe score. This code creates the graphs in the main
+paper.</p>
 <pre class="r"><code>n &lt;- 5</code></pre>
 <p>First we load the R files needed to run the MCMC codes</p>
-<pre class="r"><code>path=&quot;C:/Shengtong/Research/PartitionMCMCDAG/&quot;
+<pre class="r"><code>path=&quot;C:/han/Projects/PartitionMCMCDAG/&quot;
 
 source(paste(path, &quot;partitionMCMCcode/edgerevandstructure/structurefns.R&quot;, sep=&quot;&quot;))
 source(paste(path, &quot;partitionMCMCcode/edgerevandstructure/structureMCMC.R&quot;, sep=&quot;&quot;))
@@ -601,7 +669,8 @@ source(paste(path, &quot;partitionMCMCcode/scoring/bgescorestable.R&quot;, sep=&
 <p>And then generate the data and load the score parameters</p>
 <pre class="r"><code>source(paste(path, &quot;partitionMCMCcode/initialisation/data5nodes.R&quot;, sep=&quot;&quot;))
 source(paste(path, &quot;partitionMCMCcode/initialisation/scoreparas.R&quot;, sep=&quot;&quot;))</code></pre>
-<p>We can also calculate the score of the DAG the data generated from</p>
+<p>We can also calculate the score of the DAG the data generated
+from</p>
 <pre class="r"><code>realDAGlogscore &lt;- sum(DAGnodescore(incidence, n, c(1:n)))</code></pre>
 <p>Then we build the score table of all parent sets</p>
 <pre class="r"><code>maxparents &lt;- n - 1 # Maximum number of parents to allow
@@ -610,7 +679,8 @@ parenttable &lt;- listpossibleparents(maxparents, c(1:n))
 tablelength &lt;- nrow(parenttable[[1]]) # size of the table
 # Now need to score them!
 scoretable &lt;- scorepossibleparents(parenttable, n)</code></pre>
-<p>so we can also calculate the scores of all orders that DAG is compatible with</p>
+<p>so we can also calculate the scores of all orders that DAG is
+compatible with</p>
 <pre class="r"><code># calculate score of orders compatible with the DAG that the
 # data is generated from
 realorderlogscores &lt;- rep(0, length(realorderpermys))
@@ -635,7 +705,8 @@ realpartitionlogscore &lt;- sum(realpartitionscores$totscores)</code></pre>
 stepsave &lt;- iterations/1000 #how often to save the result</code></pre>
 <p>and first we allow standard edge reversal by setting</p>
 <pre class="r"><code>revallowed &lt;- 1 # allow standard edge reversals</code></pre>
-<p>and exclude the new edge reversal move by giving the moveprobs vector a single element</p>
+<p>and exclude the new edge reversal move by giving the moveprobs vector
+a single element</p>
 <pre class="r"><code>moveprobs &lt;- c(1) # having length 1 disallows the new edge reversal move</code></pre>
 <p>Starting with a DAG with no edges</p>
 <pre class="r"><code>startDAG &lt;- matrix(numeric(n * n), nrow = n) # starting DAG is empty say</code></pre>
@@ -643,7 +714,10 @@ stepsave &lt;- iterations/1000 #how often to save the result</code></pre>
 <pre class="r"><code>set.seed(seednumber) # set the seed
 example &lt;- structureMCMC(n, startDAG, iterations, stepsave, maxparents,
 parenttable, scoretable, revallowed, moveprobs) # run the MCMC code</code></pre>
-<p>The result of the function is a list containing the sampled DAGs (stored as incidence matrices) as the first element and their scores as the second. We also perform a run with the standard edge reversal moves excluded</p>
+<p>The result of the function is a list containing the sampled DAGs
+(stored as incidence matrices) as the first element and their scores as
+the second. We also perform a run with the standard edge reversal moves
+excluded</p>
 <pre class="r"><code>revallowed &lt;- 0 # disable standard edge reversals
 set.seed(seednumber)
 example2 &lt;- structureMCMC(n, startDAG, iterations, stepsave, maxparents,
@@ -667,12 +741,52 @@ abline(h = maxDAGscore2, col = &quot;springgreen4&quot;, lwd = 3)
 abline(h = realDAGlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
 lines(1:nparts, example2[[2]], type = &quot;l&quot;, col = &quot;blue&quot;)</code></pre>
 <p><img src="figure/Runningasimplesimulation.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
+Past versions of unnamed-chunk-15-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-15-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/han16/PartitionMCMCDAG/blob/4e9ec1bb8a28c7b6aec92b0b62c97f8780ade126/docs/figure/Runningasimplesimulation.Rmd/unnamed-chunk-15-1.png" target="_blank">4e9ec1b</a>
+</td>
+<td>
+Shengtong
+</td>
+<td>
+2021-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="new-edge-reversal-move" class="section level2">
 <h2>2 New edge reversal move</h2>
-<p>We can include the new edge reversal move, by simply making the vector moveprobs have two elements, with the second corresponding to the probability of picking the new edge reversal move.</p>
+<p>We can include the new edge reversal move, by simply making the
+vector moveprobs have two elements, with the second corresponding to the
+probability of picking the new edge reversal move.</p>
 <pre class="r"><code>moveprobs &lt;- c(0.93, 0.07) # having length 1 disallows the new edge reversal move</code></pre>
-<p>Now we run the chains for 40000 iterations, once with the standard edge reversal and once without</p>
+<p>Now we run the chains for 40000 iterations, once with the standard
+edge reversal and once without</p>
 <pre class="r"><code>iterations &lt;- 40000 #number of iterations in the chain
 stepsave &lt;- iterations/1000 #how often to save the result
 revallowed &lt;- 1 # allow standard edge reversals
@@ -702,10 +816,50 @@ abline(h = maxDAGscore2, col = &quot;springgreen4&quot;, lwd = 3)
 abline(h = realDAGlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
 lines(1:nparts, example2[[2]], type = &quot;l&quot;, col = &quot;blue&quot;)</code></pre>
 <p><img src="figure/Runningasimplesimulation.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-18-1">
+Past versions of unnamed-chunk-18-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-18-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/han16/PartitionMCMCDAG/blob/4e9ec1bb8a28c7b6aec92b0b62c97f8780ade126/docs/figure/Runningasimplesimulation.Rmd/unnamed-chunk-18-1.png" target="_blank">4e9ec1b</a>
+</td>
+<td>
+Shengtong
+</td>
+<td>
+2021-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="order-mcmc" class="section level2">
 <h2>3 Order MCMC</h2>
-<p>For Order MCMC we now have three elements in the moveprobs vector. The first is the probability of swapping any two elements in the order, the second the probability of only swapping adjacent nodes and the last the probability to stay still (to enforce aperiodicity of the chain)</p>
+<p>For Order MCMC we now have three elements in the moveprobs vector.
+The first is the probability of swapping any two elements in the order,
+the second the probability of only swapping adjacent nodes and the last
+the probability to stay still (to enforce aperiodicity of the chain)</p>
 <pre class="r"><code>prob1 &lt;- 99
 if (n &gt; 3) {
 prob1 &lt;- round(6 * 99 * n/(n^2 + 10 * n - 24))
@@ -715,7 +869,8 @@ moveprobs &lt;- c(prob1, 0.99 - prob1, 0.01)
 moveprobs &lt;- moveprobs/sum(moveprobs) # normalisation
 moveprobs</code></pre>
 <pre><code>[1] 0.58 0.41 0.01</code></pre>
-<p>We also need to choose a starting order, for example the identity permutation</p>
+<p>We also need to choose a starting order, for example the identity
+permutation</p>
 <pre class="r"><code>startorder &lt;- c(1:n) # starting order</code></pre>
 <p>and then we can run the MCMC code for 20000 iterations</p>
 <pre class="r"><code>iterations &lt;- 20000 #number of iterations in the chain
@@ -723,7 +878,10 @@ stepsave &lt;- iterations/1000 #how often to save the result
 set.seed(seednumber) # set the seed
 example &lt;- orderMCMC(n, startorder, iterations, stepsave, parenttable,
 scoretable, moveprobs)</code></pre>
-<p>The output now contains four components, a sampled DAG and its score along with the score of the entire order and the sampled order itself (stored as a permutation vector). We can plot the outcome for both the orders and for the DAGs</p>
+<p>The output now contains four components, a sampled DAG and its score
+along with the score of the entire order and the sampled order itself
+(stored as a permutation vector). We can plot the outcome for both the
+orders and for the DAGs</p>
 <pre class="r"><code>par(mfrow = c(2, 1)) # plotting parameters
 par(mar = c(2.5, 5.75, 0.5, 0.75))
 nparts &lt;- length(example[[2]])
@@ -742,10 +900,52 @@ abline(h = maxDAGscore, col = &quot;springgreen4&quot;, lwd = 3)
 abline(h = realDAGlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
 lines(1:nparts, example[[2]], type = &quot;l&quot;, col = &quot;blue&quot;)</code></pre>
 <p><img src="figure/Runningasimplesimulation.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
+Past versions of unnamed-chunk-22-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/han16/PartitionMCMCDAG/blob/4e9ec1bb8a28c7b6aec92b0b62c97f8780ade126/docs/figure/Runningasimplesimulation.Rmd/unnamed-chunk-22-1.png" target="_blank">4e9ec1b</a>
+</td>
+<td>
+Shengtong
+</td>
+<td>
+2021-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="partition-mcmc" class="section level2">
 <h2>4 Partition MCMC</h2>
-<p>For Partiton MCMC we have five elements in the moveprobs vector. The first is the probability of swapping two nodes from different partititon elements, while the second for swapping nodes from adjacent partition elements. The third corresponds to joining and splitting partition elements with the fourth being the probability of moving a node from one element to another. The last is again the probability of not moving</p>
+<p>For Partiton MCMC we have five elements in the moveprobs vector. The
+first is the probability of swapping two nodes from different partititon
+elements, while the second for swapping nodes from adjacent partition
+elements. The third corresponds to joining and splitting partition
+elements with the fourth being the probability of moving a node from one
+element to another. The last is again the probability of not moving</p>
 <pre class="r"><code>prob1start &lt;- 40/100
 prob1 &lt;- prob1start * 100
 if (n &gt; 3) {
@@ -772,7 +972,9 @@ stepsave &lt;- iterations/1000 #how often to save the result
 set.seed(seednumber) # set the seed
 example &lt;- partitionMCMC(n, startpermutation, startpartition, iterations,
 stepsave, parenttable, scoretable, moveprobs)</code></pre>
-<p>The output now contains a five components: a sampled DAG and its score, the score of the entire partition and the sampled permutation and partition. The trace plot is</p>
+<p>The output now contains a five components: a sampled DAG and its
+score, the score of the entire partition and the sampled permutation and
+partition. The trace plot is</p>
 <pre class="r"><code>par(mfrow = c(2, 1)) # plotting parameters
 par(mar = c(2.5, 5.75, 0.5, 0.75))
 nparts &lt;- length(example[[2]])
@@ -791,10 +993,50 @@ abline(h = maxDAGscore, col = &quot;springgreen4&quot;, lwd = 3)
 abline(h = realDAGlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
 lines(1:nparts, example[[2]], type = &quot;l&quot;, col = &quot;blue&quot;)</code></pre>
 <p><img src="figure/Runningasimplesimulation.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
+Past versions of unnamed-chunk-26-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/han16/PartitionMCMCDAG/blob/4e9ec1bb8a28c7b6aec92b0b62c97f8780ade126/docs/figure/Runningasimplesimulation.Rmd/unnamed-chunk-26-1.png" target="_blank">4e9ec1b</a>
+</td>
+<td>
+Shengtong
+</td>
+<td>
+2021-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="partition-mcmc-with-edge-reversal" class="section level2">
 <h2>5 Partition MCMC with edge reversal</h2>
-<p>Finally we can include the new edge reversal move on an underlying Partition MCMC chain by including a sixth element in the moveprobs vector, corresponding to the probability of picking the edge reversal move</p>
+<p>Finally we can include the new edge reversal move on an underlying
+Partition MCMC chain by including a sixth element in the moveprobs
+vector, corresponding to the probability of picking the edge reversal
+move</p>
 <pre class="r"><code>prob1start &lt;- 37/100
 prob1 &lt;- prob1start * 100
 if (n &gt; 3) {
@@ -837,44 +1079,90 @@ abline(h = maxDAGscore, col = &quot;springgreen4&quot;, lwd = 3)
 abline(h = realDAGlogscore, col = &quot;red&quot;, lty = 3, lwd = 3)
 lines(1:nparts, example[[2]], type = &quot;l&quot;, col = &quot;blue&quot;)</code></pre>
 <p><img src="figure/Runningasimplesimulation.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-29-1">
+Past versions of unnamed-chunk-29-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-29-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/han16/PartitionMCMCDAG/blob/4e9ec1bb8a28c7b6aec92b0b62c97f8780ade126/docs/figure/Runningasimplesimulation.Rmd/unnamed-chunk-29-1.png" target="_blank">4e9ec1b</a>
+</td>
+<td>
+Shengtong
+</td>
+<td>
+2021-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
-<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
 </button>
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 3.6.0 (2019-04-26)
+<pre><code>R version 4.3.1 (2023-06-16 ucrt)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 18363)
+Running under: Windows 10 x64 (build 19045)
 
 Matrix products: default
 
+
 locale:
-[1] LC_COLLATE=English_United States.1252 
-[2] LC_CTYPE=English_United States.1252   
-[3] LC_MONETARY=English_United States.1252
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
 [4] LC_NUMERIC=C                          
-[5] LC_TIME=English_United States.1252    
+[5] LC_TIME=English_United States.utf8    
+
+time zone: America/Chicago
+tzcode source: internal
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] workflowr_1.6.2 Rcpp_1.0.1      rprojroot_1.3-2 digest_0.6.19  
- [5] later_0.8.0     R6_2.4.1        backports_1.1.4 git2r_0.26.1   
- [9] magrittr_1.5    evaluate_0.13   stringi_1.4.3   fs_1.3.1       
-[13] promises_1.0.1  rmarkdown_1.13  tools_3.6.0     stringr_1.4.0  
-[17] glue_1.4.1      httpuv_1.5.1    xfun_0.20       yaml_2.2.0     
-[21] compiler_3.6.0  htmltools_0.3.6 knitr_1.23     </code></pre>
+ [1] vctrs_0.6.3       cli_3.6.1         knitr_1.44        rlang_1.1.1      
+ [5] xfun_0.40         stringi_1.7.12    promises_1.2.1    jsonlite_1.8.7   
+ [9] workflowr_1.7.1   glue_1.6.2        rprojroot_2.0.3   git2r_0.32.0     
+[13] htmltools_0.5.6   httpuv_1.6.11     sass_0.4.7        fansi_1.0.4      
+[17] rmarkdown_2.25    tibble_3.2.1      evaluate_0.21     jquerylib_0.1.4  
+[21] fastmap_1.1.1     yaml_2.3.7        lifecycle_1.0.3   whisker_0.4.1    
+[25] stringr_1.5.0     compiler_4.3.1    fs_1.6.3          pkgconfig_2.0.3  
+[29] Rcpp_1.0.11       rstudioapi_0.15.0 later_1.3.1       digest_0.6.33    
+[33] R6_2.5.1          utf8_1.2.3        pillar_1.9.0      magrittr_2.0.3   
+[37] bslib_0.5.1       tools_4.3.1       cachem_1.0.8     </code></pre>
 </div>
 </div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
-http://docs.mathjax.org/en/latest/configuration.html.  This will make
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
 the presentation more consistent at the cost of the webpage sometimes
 taking slightly longer to load. Note that this only works because the
 footer is added to webpages before the MathJax javascript. -->
@@ -883,6 +1171,8 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
+
+
 
 
 </div>
@@ -894,13 +1184,59 @@ footer is added to webpages before the MathJax javascript. -->
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
 });
 
 
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
 </script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

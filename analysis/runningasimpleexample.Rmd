@@ -3,15 +3,14 @@ title: "runningasimpleexample"
 output: html_document
 ---
 
-For this example we will assume that the score of any DAG is simply proportional to its number
-of edges. The size of the DAGs is also restricted to n = 3
+For this example we will assume that the score of any DAG is simply proportional to its number of edges. The size of the DAGs is also restricted to n = 3
 
-```{r, echo=T}
+```{r, echo=T, message=F, warning=F}
 n <- 3
 ```
 First we load the R files needed to run the MCMC codes
 
-```{r, echo=T}
+```{r, echo=F, message=F, warning=F}
 path="C:/han/Projects/PartitionMCMCDAG/"
 
 source(paste(path, "partitionMCMCcode/edgerevandstructure/structurefns.R", sep=""))

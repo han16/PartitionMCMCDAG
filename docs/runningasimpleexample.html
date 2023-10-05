@@ -519,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtree3abc084745820299981d917b4a0bb65d67793bf4targetblank3abc084a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtreeea11c80f44d219c5196e78c8fa958494a77bceb3targetblankea11c80a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/han16/PartitionMCMCDAG/tree/3abc084745820299981d917b4a0bb65d67793bf4" target="_blank">3abc084</a>
+<a href="https://github.com/han16/PartitionMCMCDAG/tree/ea11c80f44d219c5196e78c8fa958494a77bceb3" target="_blank">ea11c80</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtree3abc084745820299981d917b4a0bb65d67793bf4targetblank3abc084a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomhan16PartitionMCMCDAGtreeea11c80f44d219c5196e78c8fa958494a77bceb3targetblankea11c80a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/han16/PartitionMCMCDAG/tree/3abc084745820299981d917b4a0bb65d67793bf4" target="_blank">3abc084</a>.
+<a href="https://github.com/han16/PartitionMCMCDAG/tree/ea11c80f44d219c5196e78c8fa958494a77bceb3" target="_blank">ea11c80</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -551,6 +551,9 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
+Ignored files:
+    Ignored:    analysis/figure/
+
 Unstaged changes:
     Modified:   analysis/runningasimpleexample.Rmd
 
@@ -603,6 +606,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/han16/PartitionMCMCDAG/blob/ea11c80f44d219c5196e78c8fa958494a77bceb3/analysis/runningasimpleexample.Rmd" target="_blank">ea11c80</a>
+</td>
+<td>
+han
+</td>
+<td>
+2023-10-05
+</td>
+<td>
+10/5/2023
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/han16/PartitionMCMCDAG/ea11c80f44d219c5196e78c8fa958494a77bceb3/docs/runningasimpleexample.html" target="_blank">ea11c80</a>
+</td>
+<td>
+han
+</td>
+<td>
+2023-10-05
+</td>
+<td>
+10/5/2023
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/han16/PartitionMCMCDAG/blob/4e9ec1bb8a28c7b6aec92b0b62c97f8780ade126/analysis/runningasimpleexample.Rmd" target="_blank">4e9ec1b</a>
 </td>
 <td>
@@ -644,25 +681,6 @@ proportional to its number of edges. The size of the DAGs is also
 restricted to n = 3</p>
 <pre class="r"><code>n &lt;- 3</code></pre>
 <p>First we load the R files needed to run the MCMC codes</p>
-<pre class="r"><code>path=&quot;C:/han/Projects/PartitionMCMCDAG/&quot;
-
-source(paste(path, &quot;partitionMCMCcode/edgerevandstructure/structurefns.R&quot;, sep=&quot;&quot;))
-source(paste(path, &quot;partitionMCMCcode/edgerevandstructure/structureMCMC.R&quot;, sep=&quot;&quot;))
-source(paste(path, &quot;partitionMCMCcode/edgerevandstructure/newedgerevfns.R&quot;, sep=&quot;&quot;))
-source(paste(path, &quot;partitionMCMCcode/edgerevandstructure/newedgerevmove.R&quot;, sep=&quot;&quot;))
-source(paste(path, &quot;partitionMCMCcode/orderandpartition/orderMCMC.R&quot;, sep=&quot;&quot;))
-source(paste(path, &quot;partitionMCMCcode/orderandpartition/orderfns.R&quot;, sep=&quot;&quot;))
-source(paste(path, &quot;partitionMCMCcode/orderandpartition/partitionMCMC.R&quot;, sep=&quot;&quot;))
-source(paste(path, &quot;partitionMCMCcode/orderandpartition/partitionmoves.R&quot;, sep=&quot;&quot;))
-source(paste(path, &quot;partitionMCMCcode/orderandpartition/partitionfns.R&quot;, sep=&quot;&quot;))
-source(paste(path, &quot;partitionMCMCcode/orderandpartition/samplefns.R&quot;, sep=&quot;&quot;))
-source(paste(path, &quot;partitionMCMCcode/scoring/combinations.R&quot;, sep=&quot;&quot;))
-source(paste(path, &quot;partitionMCMCcode/scoring/scorefns.R&quot;, sep=&quot;&quot;))
-source(paste(path, &quot;partitionMCMCcode/scoring/scoretables.R&quot;, sep=&quot;&quot;))
-
-# load a simple score proportional to the number of edges in the DAG
-
-source(paste(path, &quot;partitionMCMCcode/scoring/numedgescore.R&quot;, sep=&quot;&quot;))</code></pre>
 <p>Then we build the score table of all parent sets</p>
 <pre class="r"><code>maxparents &lt;- 2 # Maximum number of parents to allow
 # Fill up a matrix with possible parents
