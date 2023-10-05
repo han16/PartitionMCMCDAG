@@ -12,7 +12,7 @@ n <- 3
 First we load the R files needed to run the MCMC codes
 
 ```{r, echo=T}
-path="C:/Shengtong/Research/PartitionMCMCDAG/"
+path="C:/han/Projects/PartitionMCMCDAG/"
 
 source(paste(path, "partitionMCMCcode/edgerevandstructure/structurefns.R", sep=""))
 source(paste(path, "partitionMCMCcode/edgerevandstructure/structureMCMC.R", sep=""))
