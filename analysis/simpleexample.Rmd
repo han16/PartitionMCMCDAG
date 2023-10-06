@@ -8,15 +8,17 @@ output: workflowr::wflow_html
 "simpleexample.R" runs a small example on three nodes where the score is proportional to the number of edges in the DAG, different from BGe score for 5-node network example in Figure 1. 
 
 
+
+
 ```{r read-chunk, include=FALSE,eval=T}
-path="C:/Shengtong/Research/PartitionMCMCDAG/"
+path="C:/han/Projects/PartitionMCMCDAG/"
 source(paste(path, "partitionMCMCcode/edgerevandstructure/structurefns.R", sep=""))
 ```
 
 ## Call source code and set up parameters 
 
 ```{r, echo=T, eval=T}
-path="C:/Shengtong/Research/PartitionMCMCDAG/"
+path="C:/han/Projects/PartitionMCMCDAG/"
 # First choose the MCMC scheme
 
 MCMCtype<-1 # 1 means standard structure, 2 with new edge reversal

@@ -1,0 +1,50 @@
+---
+title: "BiDAG"
+output: html_document
+date: "2023-10-06"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+
+
+## 5.1 MAP discovery 
+
+```{r, echo=F, message=F, warning=F}
+# reference: https://www.research-collection.ethz.ch/bitstream/handle/20.500.11850/600749/2/v105i09.pdf
+set.seed(4419)
+library("BiDAG")
+data("gsim100", package = "BiDAG")
+score100 <- scoreparameters("bge", gsim100)
+
+### run order MCMC 
+basefit <- learnBN(scorepar = score100, algorithm = "order", plus1 = FALSE)
+getMCMCscore(basefit)
+
+####### ground truth 
+data("gsimmat", package = "BiDAG")
+DAGscore(scorepar = score100, incidence = gsimmat)
+
+compareDAGs(getDAG(basefit), gsimmat, cpdag = TRUE)[c("TPR", "FPRn", "SHD")]
+
+######### iterative MCMC 
+iterativefit <- learnBN(score100, algorithm = "orderIter", scoreout = TRUE, verbose = FALSE)
+summary(iterativefit)
+plot(iterativefit)
+
+it100 <- itercomp(iterativefit, gsimmat)
+plot(it100, vars = c("score", "TPR"), showit = 1:6)
+plot(it100, vars = c("FP", "SHD"), col = 2, showit = 1:6)
+```
+
+
+## 5.2 Sampling graphs from posterior distribution
+
+```{r, echo=F, message=F, warning=F}
+iterSpace <- getSpace(iterativefit)
+orderfit <- sampleBN(score100, algorithm = "order", scoretable = iterSpace)
+plot(orderfit)
+```

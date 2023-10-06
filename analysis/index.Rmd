@@ -22,7 +22,7 @@ output:
 * [smallsimmain.R](Simulation_studies.html)
 
 
-## R packages BiDAG
+## [R packages BiDAG](BiDAG.html)
 
 
 ```{r, echo=F, message=F, warning=F, eval=F}
